@@ -39,7 +39,11 @@ define(
             let title = 'updateCreatedFrom';
             let context = options.context;
 
-            if (context.type != 'create') {
+            let validEvents = [
+                'create',
+                'edit'
+            ];
+            if (validEvents.indexOf(context.type) < 0) {
                 log.error({
                     title: title,
                     details: `Invalid event type = ${context.type}. Exiting...`
