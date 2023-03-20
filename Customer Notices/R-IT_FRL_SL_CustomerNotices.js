@@ -1,46 +1,14 @@
 /**
- * Copyright 2023 Stratus-Sphere
- * All rights reserved
- * 
- * Summary:
- * UI for sending out customer notices
- * 
- * @NApiVersion         2.1
- * @NScriptType         Suitelet
- * @NModuleScope        SameAccount
- * @author              mvillarama
- * 
- * Date                 Summary
- * =====================================================================
- * 2023/03/17           Initial version
- * 
+ * @NApiVersion 2.x
+ * @NScriptType Suitelet
+ * @NModuleScope Public
  */
 
-define(
-    [
-        'N/email',
-        'N/error',
-        'N/format',
-        'N/record',
-        'N/render',
-        'N/runtime',
-        'N/search',
-        'N/task',
-        'N/ui/serverWidget'
-    ],
-    (
-        email,
-        error,
-        format,
-        record,
-        render,
-        runtime,
-        search,
-        task,
-        serverWidget
-    ) => {
+define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/runtime', 'N/render', 'N/email', 'N/task'],
 
-        var process = "Dunning Letters";
+    function (serverWidget, record, error, search, format, runtime, render, email, task) {
+
+        var process = "Customer Notices";
 
         /**
          * Definition of the Suitelet script trigger point.         
@@ -49,12 +17,14 @@ define(
          * @param {ServerResponse} context.response - Encapsulation of the Suitelet response
          */
         function onRequest(context) {
+
             try {
+
                 var form = serverWidget.createForm({
-                    title: 'Send Customer Statements'
+                    title: 'Send Customer Notices'
                 });
 
-                form.clientScriptModulePath = './R-IT_FRL_CS_DunningLetters.js'
+                form.clientScriptModulePath = './R-IT_FRL_CS_CustomerNotices.js'
 
                 log.debug(process, 'Begin SuiteLet');
 
@@ -101,7 +71,7 @@ define(
                 }).updateDisplayType({
                     displayType: serverWidget.FieldDisplayType.HIDDEN
                 });
-                btnAction.defaultValue = "Statement";
+                btnAction.defaultValue = "Notice";
 
                 var subsidiary = form.addField({
                     id: 'custpage_subsid',
@@ -129,45 +99,32 @@ define(
                 });
 
                 var condition = form.addField({
-                    id: 'custpage_condition',
-                    type: serverWidget.FieldType.SELECT,
-                    label: 'Condition',
+                    id : 'custpage_condition',
+                    type : serverWidget.FieldType.SELECT,
+                    label : 'Condition',
                     container: 'filtersgroup'
                 });
-
-                var cas = form.addField({
-                    id: 'custpage_cas',
-                    label: 'CAS',
-                    type: serverWidget.FieldType.SELECT,
-                    source: 'employee',
-                    container: 'filtersgroup'
-                });
-
-                log.debug(process, 'SuiteLet2');
-
                 condition.addSelectOption({
-                    value: '',
-                    text: ''
+                    value : '',
+                    text : ''
                 });
                 condition.addSelectOption({
-                    value: 'equalGreat',
-                    text: 'Equal To or Greater Than'
+                    value : 'equalGreat',
+                    text : 'Equal To or Greater Than'
                 });
                 condition.addSelectOption({
-                    value: 'equalLess',
-                    text: 'Equal To or Less Than'
+                    value : 'equalLess',
+                    text : 'Equal To or Less Than'
                 });
                 condition.addSelectOption({
-                    value: 'equal',
-                    text: 'Equal To'
+                    value : 'equal',
+                    text : 'Equal To'
                 });
-
-                log.debug(process, 'SuiteLet3');
 
                 condition.updateBreakType({
-                    breakType: serverWidget.FieldBreakType.STARTROW
+                    breakType : serverWidget.FieldBreakType.STARTROW
                 });
-
+                
                 var openBalance = form.addField({
                     id: 'custpage_open_balance',
                     label: 'Open Balance (USD)',
@@ -187,16 +144,11 @@ define(
                     customer.defaultValue = context.request.parameters.custpage_customer;
                 }
 
-                if (!empty(context.request.parameters.custpage_cas)) {
-                    cas.defaultValue = context.request.parameters.custpage_cas;
-                }
-
                 if (!empty(context.request.parameters.custpage_condition) && !empty(context.request.parameters.custpage_open_balance)) {
                     condition.defaultValue = context.request.parameters.custpage_condition;
                     openBalance.defaultValue = context.request.parameters.custpage_open_balance;
                 }
 
-                log.debug(process, 'SuiteLet4');
                 // DUNNING SUBLIST
                 var sublistCustomers = form.addSublist({
                     id: 'listcustlevel',
@@ -312,24 +264,25 @@ define(
                 });
 
                 sublistCustomers.addMarkAllButtons();
-                log.debug(process, 'SuiteLet5');
+
                 //BUTTONS
                 form.addSubmitButton({
-                    label: 'Send Statements'
+                    label: 'Send Notices'
                 });
 
                 if (context.request.method === 'GET') {
-                    log.debug(process, 'SuiteLet6');
                     var respDunningInfo = getDunningInfo();
-                    log.debug(process, 'respDunningInfo: ' + JSON.stringify(respDunningInfo));
+
                     if (!respDunningInfo.error && respDunningInfo.data.result.length > 0) {
                         //log.debug(process, JSON.stringify(respDunningInfo.data.result));
                         loadSubList(sublistCustomers, respDunningInfo.data, false);
                     }
-                    log.debug(process, 'SuiteLet7');
+
                     context.response.writePage(form);
-                } else {
+                }
+                else {
                     var accountSubsidiaries = getAcctSubsidiaries();
+                    log.debug(process, 'POST custpage_optionflag' + context.request.parameters.custpage_optionflag);
                     var optionFlag = empty(context.request.parameters.custpage_optionflag) ? context.request.parameters.submitter : context.request.parameters.custpage_optionflag;
                     log.debug(process, 'POST optionFlag: ' + optionFlag);
 
@@ -338,14 +291,14 @@ define(
 
                     if (!empty(optionFlag)) {
 
-                        if (optionFlag == 'Statement') {
+                        if (optionFlag == 'Notice') {
                             var contextRequest = context.request;
                             var lineCount = contextRequest.getLineCount({ group: 'listcustlevel' });
                             var customersArr = [];
                             for (var i = 0; i < lineCount; i++) {
                                 var lineSelected = contextRequest.getSublistValue({ group: 'listcustlevel', name: 'toprocess', line: i });
                                 if (lineSelected == 'T') {
-                                    var dunningLevel = "Statement";
+                                    var dunningLevel = "Notice";
                                     var custObj = {
                                         customer: contextRequest.getSublistValue({ group: 'listcustlevel', name: 'customersf', line: i }),
                                         level: dunningLevel,
@@ -355,23 +308,24 @@ define(
                                 }
                             }
                             var script = runtime.getCurrentScript();
-                            var sendDunningScriptId = script.getParameter('custscript_ss_mr_script_dunning_st');
-                            var sendDunningScriptDeploymentId = script.getParameter('custscript_mr_script_dep_dunning_st');
-                            sendDl(customersArr, sendDunningScriptId, sendDunningScriptDeploymentId);
+                            var sendDunningScriptId = script.getParameter('custscript_ss_mr_script_notices');
+                            // var sendDunningScriptDeploymentId = script.getParameter('custscript_mr_script_dep_dunning_st');
+                            // sendDl(customersArr, sendDunningScriptId, sendDunningScriptDeploymentId);
+                            sendDl(customersArr, sendDunningScriptId);
                             //NEW
                             var respDunningInfo = getDunningInfo();
 
                             if (!respDunningInfo.error && respDunningInfo.data.result.length > 0) {
                                 //log.debug(process, JSON.stringify(respDunningInfo.data.result));
                                 loadSubList(sublistCustomers, respDunningInfo.data, false);
-                                clearFilters(subsidiary, levels, customer, condition, openBalance, cas);
+                                clearFilters(subsidiary, levels, customer, condition, openBalance);
                             }
                             //END NEW
                         } else if (optionFlag == 'FILTERS') {
 
                             log.debug(process, 'Begin FILTERS');
 
-                            var respDunningInfo = getDunningInfo(subsidiary.defaultValue, levels.defaultValue, customer.defaultValue, condition.defaultValue, openBalance.defaultValue, cas.defaultValue);
+                            var respDunningInfo = getDunningInfo(subsidiary.defaultValue, levels.defaultValue, customer.defaultValue, condition.defaultValue, openBalance.defaultValue);
 
                             if (!respDunningInfo.error && respDunningInfo.data.result.length > 0) {
                                 log.debug(process, JSON.stringify(respDunningInfo));
@@ -527,14 +481,15 @@ define(
         }
 
         function sendDl(customersArr, mrScriptId, mrDeploymentId) {
+            log.debug('sendDl customersArr', JSON.stringify(customersArr));
             var objResponse = { error: false, message: '', data: null };
             try {
                 var mrScriptTask = task.create({
                     taskType: task.TaskType.MAP_REDUCE,
                     scriptId: mrScriptId,
-                    deploymentId: mrDeploymentId,
+                    // deploymentId: mrDeploymentId,
                     params: {
-                        custscript_ss_customers_array: JSON.stringify(customersArr)
+                        custscript_ss_notices_customer_array: JSON.stringify(customersArr)
                     }
                 });
                 var taskId = mrScriptTask.submit();
@@ -546,12 +501,11 @@ define(
             }
         }
 
-        function getDunningInfo(subsid, dlevel, customer, condition, openBalance, cas) {
+        function getDunningInfo(subsid, dlevel, customer, condition, openBalance) {
 
             var objResponse = { error: false, message: '', data: null };
 
             try {
-                log.debug(process, "getDunningInfo");
                 var searchObj = search.load({
                     id: 'customsearch_ss_dunning_4'
                 });
@@ -564,26 +518,21 @@ define(
                     filters.push("AND", ["subsidiary", "anyof", subsid]);
                 }
 
-                if (!empty(cas)) {
-                    filters.push("AND", ["customermain.custentity_cas", "anyof", cas]);
-                }
-
                 if (!empty(customer)) {
                     filters.push("AND", ["name", "anyof", customer]);
                 }
 
                 if (!empty(condition) && !empty(openBalance)) {
-                    if (condition == "equal") {
+                    if(condition == "equal"){
                         filters.push("AND", ["sum(amountremaining)", "equalto", openBalance]);
-                    } else if (condition == "equalGreat") {
+                    }else if(condition == "equalGreat"){
                         filters.push("AND", ["sum(amountremaining)", "greaterthanorequalto", openBalance]);
-                    } else if (condition == "equalLess") {
+                    }else if(condition == "equalLess"){
                         filters.push("AND", ["sum(amountremaining)", "lessthanorequalto", openBalance]);
                     }
                 }
 
-                //var levelIds = [null, '1', '2', '3', '0', '4'];
-                var levelIds = [null, '0', '1', '2', '3', '4'];
+                var levelIds = [null, '1', '2', '3', '0', '4'];
                 var dunningLevelNum = levelIds[dlevel];
                 log.audit('MM', "dlevel: " + dlevel);
                 log.audit('MM', "dunningLevelNum: " + dunningLevelNum);
@@ -618,7 +567,7 @@ define(
             return objResponse;
         }
 
-        function clearFilters(subsidiary, levels, customer, condition, openBalance, cas) {
+        function clearFilters(subsidiary, levels, customer, condition, openBalance) {
             var logTitle = "clearFilters";
             try {
                 subsidiary.defaultValue = null;
@@ -626,7 +575,6 @@ define(
                 customer.defaultValue = null;
                 condition.defaultValue = null;
                 openBalance.defaultValue = null;
-                cas.defaultValue = null;
             } catch (exD) {
                 log.error(logTitle, 'error: ' + exD);
             }
@@ -659,8 +607,8 @@ define(
                 var retArr = [];
                 var subsidiarySearchObj = search.create({
                     type: "subsidiary",
-                    filters: [],
-                    columns: [search.createColumn({ name: "namenohierarchy", label: "Name (no hierarchy)" }), search.createColumn({ name: "internalid", label: "Internal ID" })]
+                    filters:[],
+                    columns:[search.createColumn({ name: "namenohierarchy", label: "Name (no hierarchy)" }), search.createColumn({ name: "internalid", label: "Internal ID" })]
                 });
                 subsidiarySearchObj.run().each(function (result) {
                     retArr[result.getValue('namenohierarchy')] = result.getValue('internalid');
@@ -680,5 +628,4 @@ define(
             onRequest: onRequest
         };
 
-    }
-);
+    });
