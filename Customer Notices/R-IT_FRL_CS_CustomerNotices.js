@@ -18,7 +18,7 @@
         var btnIds = ['NextLevel', 'CurrentLevel', 'Level1', 'Level2', 'Level3', 'Level4', 'Notice'];
         var cRecord = currentRecord.get();
         var optionFlag = cRecord.getValue({fieldId : 'custpage_optionflag'});   
-        alert('optionFlag = ' + optionFlag);
+        // alert('optionFlag = ' + optionFlag);
         var selected = btnIds.indexOf(optionFlag);
         
         if(selected == -1 && optionFlag != 'FILTERS') {

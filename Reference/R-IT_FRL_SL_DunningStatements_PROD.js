@@ -8,7 +8,7 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
 
     function (serverWidget, record, error, search, format, runtime, render, email, task) {
 
-        var process = "Customer Notices";
+        var process = "Dunning Letters";
 
         /**
          * Definition of the Suitelet script trigger point.         
@@ -21,10 +21,10 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
             try {
 
                 var form = serverWidget.createForm({
-                    title: 'Send Customer Notices'
+                    title: 'Send Customer Statements'
                 });
 
-                form.clientScriptModulePath = './R-IT_FRL_CS_CustomerNotices.js'
+                form.clientScriptModulePath = './R-IT_FRL_CS_DunningLetters.js'
 
                 log.debug(process, 'Begin SuiteLet');
 
@@ -71,7 +71,7 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
                 }).updateDisplayType({
                     displayType: serverWidget.FieldDisplayType.HIDDEN
                 });
-                btnAction.defaultValue = "Notice";
+                btnAction.defaultValue = "Statement";
 
                 var subsidiary = form.addField({
                     id: 'custpage_subsid',
@@ -99,9 +99,9 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
                 });
 
                 var condition = form.addField({
-                    id : 'custpage_condition',
-                    type : serverWidget.FieldType.SELECT,
-                    label : 'Condition',
+                    id: 'custpage_condition',
+                    type: serverWidget.FieldType.SELECT,
+                    label: 'Condition',
                     container: 'filtersgroup'
                 });
 
@@ -116,28 +116,28 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
                 log.debug(process, 'SuiteLet2');
 
                 condition.addSelectOption({
-                    value : '',
-                    text : ''
+                    value: '',
+                    text: ''
                 });
                 condition.addSelectOption({
-                    value : 'equalGreat',
-                    text : 'Equal To or Greater Than'
+                    value: 'equalGreat',
+                    text: 'Equal To or Greater Than'
                 });
                 condition.addSelectOption({
-                    value : 'equalLess',
-                    text : 'Equal To or Less Than'
+                    value: 'equalLess',
+                    text: 'Equal To or Less Than'
                 });
                 condition.addSelectOption({
-                    value : 'equal',
-                    text : 'Equal To'
+                    value: 'equal',
+                    text: 'Equal To'
                 });
 
                 log.debug(process, 'SuiteLet3');
 
                 condition.updateBreakType({
-                    breakType : serverWidget.FieldBreakType.STARTROW
+                    breakType: serverWidget.FieldBreakType.STARTROW
                 });
-                
+
                 var openBalance = form.addField({
                     id: 'custpage_open_balance',
                     label: 'Open Balance (USD)',
@@ -298,7 +298,7 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
                 log.debug(process, 'SuiteLet5');
                 //BUTTONS
                 form.addSubmitButton({
-                    label: 'Send Notices'
+                    label: 'Send Statements'
                 });
 
                 if (context.request.method === 'GET') {
@@ -313,7 +313,6 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
                     context.response.writePage(form);
                 } else {
                     var accountSubsidiaries = getAcctSubsidiaries();
-                    log.debug(process, 'POST custpage_optionflag' + context.request.parameters.custpage_optionflag);
                     var optionFlag = empty(context.request.parameters.custpage_optionflag) ? context.request.parameters.submitter : context.request.parameters.custpage_optionflag;
                     log.debug(process, 'POST optionFlag: ' + optionFlag);
 
@@ -322,14 +321,14 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
 
                     if (!empty(optionFlag)) {
 
-                        if (optionFlag == 'Notice') {
+                        if (optionFlag == 'Statement') {
                             var contextRequest = context.request;
                             var lineCount = contextRequest.getLineCount({ group: 'listcustlevel' });
                             var customersArr = [];
                             for (var i = 0; i < lineCount; i++) {
                                 var lineSelected = contextRequest.getSublistValue({ group: 'listcustlevel', name: 'toprocess', line: i });
                                 if (lineSelected == 'T') {
-                                    var dunningLevel = "Notice";
+                                    var dunningLevel = "Statement";
                                     var custObj = {
                                         customer: contextRequest.getSublistValue({ group: 'listcustlevel', name: 'customersf', line: i }),
                                         level: dunningLevel,
@@ -339,10 +338,9 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
                                 }
                             }
                             var script = runtime.getCurrentScript();
-                            var sendDunningScriptId = script.getParameter('custscript_ss_mr_script_notices');
-                            // var sendDunningScriptDeploymentId = script.getParameter('custscript_mr_script_dep_dunning_st');
-                            // sendDl(customersArr, sendDunningScriptId, sendDunningScriptDeploymentId);
-                            sendDl(customersArr, sendDunningScriptId);
+                            var sendDunningScriptId = script.getParameter('custscript_ss_mr_script_dunning_st');
+                            var sendDunningScriptDeploymentId = script.getParameter('custscript_mr_script_dep_dunning_st');
+                            sendDl(customersArr, sendDunningScriptId, sendDunningScriptDeploymentId);
                             //NEW
                             var respDunningInfo = getDunningInfo();
 
@@ -512,15 +510,14 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
         }
 
         function sendDl(customersArr, mrScriptId, mrDeploymentId) {
-            log.debug('sendDl customersArr', JSON.stringify(customersArr));
             var objResponse = { error: false, message: '', data: null };
             try {
                 var mrScriptTask = task.create({
                     taskType: task.TaskType.MAP_REDUCE,
                     scriptId: mrScriptId,
-                    // deploymentId: mrDeploymentId,
+                    deploymentId: mrDeploymentId,
                     params: {
-                        custscript_ss_notices_customer_array: JSON.stringify(customersArr)
+                        custscript_ss_customers_array: JSON.stringify(customersArr)
                     }
                 });
                 var taskId = mrScriptTask.submit();
@@ -537,6 +534,7 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
             var objResponse = { error: false, message: '', data: null };
 
             try {
+                log.debug(process, "getDunningInfo");
                 var searchObj = search.load({
                     id: 'customsearch_ss_dunning_4'
                 });
@@ -562,16 +560,16 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
                 }
 
                 if (!empty(condition) && !empty(openBalance)) {
-                    if(condition == "equal"){
+                    if (condition == "equal") {
                         filters.push("AND", ["sum(amountremaining)", "equalto", openBalance]);
-                    }else if(condition == "equalGreat"){
+                    } else if (condition == "equalGreat") {
                         filters.push("AND", ["sum(amountremaining)", "greaterthanorequalto", openBalance]);
-                    }else if(condition == "equalLess"){
+                    } else if (condition == "equalLess") {
                         filters.push("AND", ["sum(amountremaining)", "lessthanorequalto", openBalance]);
                     }
                 }
 
-                // var levelIds = [null, '1', '2', '3', '0', '4'];
+                //var levelIds = [null, '1', '2', '3', '0', '4'];
                 var levelIds = [null, '0', '1', '2', '3', '4'];
                 var dunningLevelNum = levelIds[dlevel];
                 log.audit('MM', "dlevel: " + dlevel);
@@ -649,8 +647,8 @@ define(['N/ui/serverWidget', 'N/record', 'N/error', 'N/search', 'N/format', 'N/r
                 var retArr = [];
                 var subsidiarySearchObj = search.create({
                     type: "subsidiary",
-                    filters:[],
-                    columns:[search.createColumn({ name: "namenohierarchy", label: "Name (no hierarchy)" }), search.createColumn({ name: "internalid", label: "Internal ID" })]
+                    filters: [],
+                    columns: [search.createColumn({ name: "namenohierarchy", label: "Name (no hierarchy)" }), search.createColumn({ name: "internalid", label: "Internal ID" })]
                 });
                 subsidiarySearchObj.run().each(function (result) {
                     retArr[result.getValue('namenohierarchy')] = result.getValue('internalid');

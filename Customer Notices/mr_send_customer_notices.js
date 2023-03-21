@@ -28,18 +28,18 @@
              log.debug(logTitle, "context: " + JSON.stringify(context));
              var contextValues = JSON.parse(context.values[0]);
 
-             var dunningIds = [null, 1, 2, 3, null, 4, 'Notice']; //ver PROD.
+             var dunningIds = [null, 1, 2, 3, null, 4, 'Statement', 'Notice']; //ver PROD.
              var script = runtime.getCurrentScript();
-            //  var invoiceSearchId = script.getParameter('custscript_ss_notices_invoices');
+             var invoiceSearchId = script.getParameter('custscript_ss_notices_invoices');
              var invoiceGroupComponentsSearchId = script.getParameter('custscript_ss_notices_grpcomp');
              var dunningSearchId = script.getParameter('custscript_ss_notices_dunning');
              var dunningMessageSearchId = script.getParameter('custscript_ss_notices_dunning_msg');
              var emailMessageSearchId = script.getParameter('custscript_ss_notices_emailmsg');
              var statementFormId = script.getParameter('custscript_ss_notices_form');
             //  var fileCabinetFolderForInvoicePdfs = script.getParameter('custscript_ss_invoice_pdf_folder');
-            //  var invoiceGroupEmailTemplateId = script.getParameter('custscript_ss_invoice_group_template');
+            //  var invoiceGroupEmailTemplateId = script.getParameter('custscript_ss_notices_email_tmpl');
              log.debug(logTitle, "statementFormId: " + statementFormId);
-            //  var invoiceSearch = search.load({ id: invoiceSearchId });
+             var invoiceSearch = search.load({ id: invoiceSearchId });
              var dunningSearch = search.load({ id: dunningSearchId });
              var emailMessageSearch = search.load({ id: emailMessageSearchId });
              var dunningMessageSearch = search.load({ id: dunningMessageSearchId });
@@ -60,6 +60,7 @@
                      values: dunningLevelId
                  });
                  dunningSearch.filters.push(levelFilter);
+                 log.debug(logTitle, JSON.stringify(dunningSearch.filters));
                  var dunningRecordId;
                  dunningSearch.run().each(function (result) {
                      dunningRecordId = result.getValue('internalid')
@@ -146,9 +147,9 @@
                          var groupsCovered = [];
                          var bodyStr = message;
                          log.audit("MaM", "contextValues.invoice " + contextValues.invoice);
-                         /* if (!isEmpty(contextValues.invoice)) {
+                         if (!isEmpty(contextValues.invoice)) {
                              log.audit("MaM", "contextValues.invoiceGroup " + contextValues.invoiceGroup);
-                             bodyStr += '<br /><br /><table style="width:98%; border: 1px solid black; border-collapse: collapse;"><th style="width:11%;  border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Advertiser</th><th style="width:14%;  border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Invoice</th><th style="width:13%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Invoice Date</th><th style="width:13%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Due Date</th><th style="width:9%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Days Overdue</th><th style="width:6%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Currency</th>  <th style="width:17%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Invoice Amount</th><th style="width:17%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Amount Remaining</th>';
+                            //  bodyStr += '<br /><br /><table style="width:98%; border: 1px solid black; border-collapse: collapse;"><th style="width:11%;  border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Advertiser</th><th style="width:14%;  border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Invoice</th><th style="width:13%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Invoice Date</th><th style="width:13%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Due Date</th><th style="width:9%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Days Overdue</th><th style="width:6%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Currency</th>  <th style="width:17%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Invoice Amount</th><th style="width:17%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Amount Remaining</th>';
                              if (contextValues.invoiceGroup) {
                                  groupsCovered.push(contextValues.invoice);
                                  var invoiceGroupComponentsSearch = search.load({ id: invoiceGroupComponentsSearchId });
@@ -190,7 +191,7 @@
                                      invoiceEmails.push(invoiceGroupEmail);
                                  }
 
-                                 bodyStr += '<tr style="text-align: center;">    <td style="width:11%; border: 1px solid black; border-collapse: collapse;">' + advertiser + '</td>    <td style="width:14%; border: 1px solid black; border-collapse: collapse;">' + contextValues.invoice + '</td>    <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + formatLongDate(invDate) + '</td>    <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + formatLongDate(dueDate) + '</td>    <td style="width:9%; border: 1px solid black; border-collapse: collapse;">' + maxDaysOverdue + '</td>    <td style="width:6%; border: 1px solid black; border-collapse: collapse;">' + groupCurrency + '</td>    <td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + format.format({ value: groupAmount, type: format.Type.CURRENCY }) + '</td>    <td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + format.format({ value: groupAmountRemaining, type: format.Type.CURRENCY }) + '</td></tr>';
+                                //  bodyStr += '<tr style="text-align: center;">    <td style="width:11%; border: 1px solid black; border-collapse: collapse;">' + advertiser + '</td>    <td style="width:14%; border: 1px solid black; border-collapse: collapse;">' + contextValues.invoice + '</td>    <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + formatLongDate(invDate) + '</td>    <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + formatLongDate(dueDate) + '</td>    <td style="width:9%; border: 1px solid black; border-collapse: collapse;">' + maxDaysOverdue + '</td>    <td style="width:6%; border: 1px solid black; border-collapse: collapse;">' + groupCurrency + '</td>    <td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + format.format({ value: groupAmount, type: format.Type.CURRENCY }) + '</td>    <td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + format.format({ value: groupAmountRemaining, type: format.Type.CURRENCY }) + '</td></tr>';
                                  var invoiceGroupNumFilter = search.createFilter({
                                      name: 'groupedto',
                                      operator: search.Operator.ANYOF,
@@ -215,7 +216,7 @@
                                  var invAmountRemaining = invoiceInfo.amountremaining;
                                  var advertiser = !isEmpty(invoiceInfo.custbody_atlas_advertiser_lst[0]) ? invoiceInfo.custbody_atlas_advertiser_lst[0].text : "";
 
-                                 bodyStr += '<tr style="text-align: center;"> <td style="width:11%; border: 1px solid black; border-collapse: collapse;">' + advertiser + '</td> <td style="width:14%; border: 1px solid black; border-collapse: collapse;">' + invNum + '</td> <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + formatLongDate(invDate) + '</td> <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + formatLongDate(dueDate) + '</td> <td style="width:9%; border: 1px solid black; border-collapse: collapse;">' + invDaysOverdue + '</td> <td style="width:6%; border: 1px solid black; border-collapse: collapse;">' + invCurrency + '</td><td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + format.format({ value: invAmount, type: format.Type.CURRENCY }) + '</td><td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + format.format({ value: invAmountRemaining, type: format.Type.CURRENCY }) + '</td></tr>';
+                                //  bodyStr += '<tr style="text-align: center;"> <td style="width:11%; border: 1px solid black; border-collapse: collapse;">' + advertiser + '</td> <td style="width:14%; border: 1px solid black; border-collapse: collapse;">' + invNum + '</td> <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + formatLongDate(invDate) + '</td> <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + formatLongDate(dueDate) + '</td> <td style="width:9%; border: 1px solid black; border-collapse: collapse;">' + invDaysOverdue + '</td> <td style="width:6%; border: 1px solid black; border-collapse: collapse;">' + invCurrency + '</td><td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + format.format({ value: invAmount, type: format.Type.CURRENCY }) + '</td><td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + format.format({ value: invAmountRemaining, type: format.Type.CURRENCY }) + '</td></tr>';
 
                                  var invoiceIdFilter = search.createFilter({
                                      name: 'internalid',
@@ -242,7 +243,7 @@
                                      }
                                  }
                              }
-                             bodyStr += '</table>';
+                            //  bodyStr += '</table>';
                          } else {
                              log.audit("MaM", "!invoice");
                              var customerFilter = search.createFilter({
@@ -375,16 +376,16 @@
                              log.debug("MM2", JSON.stringify(currencies));
                              //var formattedAmountRemaining = format.format({ value: totalAmountRemaining, type: format.Type.CURRENCY });
                              //bodyStr += '<tr style="text-align: center;"><td style="width:18%; border-left: 1px solid white; border-bottom: 1px solid white;"> </td><td style="width:13%; border-bottom: 1px solid white;"> </td><td style="width:13%; border-bottom: 1px solid white;"> </td><td style="width:12%; border-bottom: 1px solid white;"> </td><td style="width:22%; border-bottom: 1px solid white;"> </td><td style="width:22%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2; font-weight: bold;">' + CURRENCIES[currency] + formattedAmountRemaining + '</td></tr>';
-                             for (var i = 0; i < currencies.length; i++) {
+                             /* for (var i = 0; i < currencies.length; i++) {
                                  var currencyRows = groupedRows[currencies[i]];
                                  bodyStr += '<br /><br /><table style="width:98%; border: 1px solid black; border-collapse: collapse;"><th style="width:11%;  border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Advertiser</th><th style="width:14%;  border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Invoice</th><th style="width:13%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Invoice Date</th><th style="width:13%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Due Date</th><th style="width:9%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Days Overdue</th><th style="width:6%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Currency</th>  <th style="width:17%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Invoice Amount</th><th style="width:17%; border: 1px solid black; border-collapse: collapse; background-color: #E2E2E2;">Amount Remaining</th>';
                                  for (var j = 0; j < currencyRows.length; j++) {
                                      bodyStr += '<tr style="text-align: center;"> <td style="width:11%; border: 1px solid black; border-collapse: collapse;">' + currencyRows[j].advertiser + '</td> <td style="width:14%; border: 1px solid black; border-collapse: collapse;">' + currencyRows[j].invNum + '</td> <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + currencyRows[j].invDate + '</td> <td style="width:13%; border: 1px solid black; border-collapse: collapse;">' + currencyRows[j].dueDate + '</td> <td style="width:9%; border: 1px solid black; border-collapse: collapse;">' + currencyRows[j].daysOverdue + '</td> <td style="width:6%; border: 1px solid black; border-collapse: collapse;">' + currencyRows[j].currency + '</td><td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + currencyRows[j].amount + '</td><td style="width:17%; border: 1px solid black; border-collapse: collapse;">' + currencyRows[j].amountRemaining + '</td></tr>';
                                  }
                                  bodyStr += '</table>';
-                             }
+                             } */
 
-                         } */
+                         }
                          log.audit("MaM", "AAA ");
 
                          bodyStr += '<br />';
@@ -395,7 +396,7 @@
                          var emailBody = renderer.renderAsString();
 
                          log.audit("MM1", "SubsidiaryId: " + subsId);
-                         var customerStatement = render.statement({ entityId: Number(customerId), printMode: render.PrintMode.PDF, openTransactionsOnly: true, inCustLocale: true, formId: Number(statementFormId), subsidiaryId: Number(subsId) });
+                        //  var customerStatement = render.statement({ entityId: Number(customerId), printMode: render.PrintMode.PDF, openTransactionsOnly: true, inCustLocale: true, formId: Number(statementFormId), subsidiaryId: Number(subsId) });
 
                          /* var consolidatedPDF;
                          if (!isEmpty(contextValues.invoice)) {
@@ -501,19 +502,19 @@
                                  log.debug(logTitle, "bbb2::" + JSON.stringify(groupsCovered));
                                  for (var i = 0; i < singleInvoices.length; i++) {
                                      createStatementEmailRecord(null, singleInvoices[i], emailMessageId, dateToday);
-                                     if (dunningLevel == 'Statement') {
+                                     if (dunningLevel == 'Notice') {
                                          log.debug(logTitle, "A1::" + singleInvoices[i]);
                                          record.submitFields({
                                              type: record.Type.INVOICE,
                                              id: singleInvoices[i],
-                                             values: { 'custbody_ss_last_statement_comm_date': dateToday }
+                                             values: { 'custbody_ss_last_notice_date': dateToday }
                                          });
                                      } else {
                                          log.debug(logTitle, "A2::" + singleInvoices[i]);
                                          record.submitFields({
                                              type: record.Type.INVOICE,
                                              id: singleInvoices[i],
-                                             values: { 'custbody_ss_last_dunning_comm_date': dateToday }
+                                             values: { 'custbody_ss_last_notice_date': dateToday }
                                          });
                                      }
                                  }
@@ -527,19 +528,19 @@
                                      invoiceGroupComponentsSearch.filters.push(groupFilter);
                                      invoiceGroupComponentsSearch.run().each(function (component) {
                                          createStatementEmailRecord(groupsCovered[i], component.getText('internalid'), emailMessageId, dateToday);
-                                         if (dunningLevel == 'Statement') {
+                                         if (dunningLevel == 'Notice') {
                                              log.debug(logTitle, "B1::" + component.getText('internalid'));
                                              record.submitFields({
                                                  type: record.Type.INVOICE,
                                                  id: component.getText('internalid'),
-                                                 values: { 'custbody_ss_last_statement_comm_date': dateToday }
+                                                 values: { 'custbody_ss_last_notice_date': dateToday }
                                              });
                                          } else {
                                              log.debug(logTitle, "B2::" + component.getText('internalid'));
                                              record.submitFields({
                                                  type: record.Type.INVOICE,
                                                  id: component.getText('internalid'),
-                                                 values: { 'custbody_ss_last_dunning_comm_date': dateToday }
+                                                 values: { 'custbody_ss_last_notice_date': dateToday }
                                              });
                                          }
                                          return true;
