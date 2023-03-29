@@ -5,17 +5,23 @@
  *
  */
 
-define(['N/search', "N/record"], function (search, record) {
+define(['N/log', 'N/search', 'N/runtime', 'N/task'], function (log, search, runtime, task) {
 
     function beforeSubmit(context) {
         var logTitle = 'beforeSubmit';
         try {
             log.debug(logTitle, '** START **');
             var jeRecord = context.newRecord;
-            var keySourceArray = getKeySourceArray(jeRecord.id);
+            // var keySourceArray = getKeySourceArray(jeRecord.id);
 
             var lineCount = jeRecord.getLineCount({ sublistId: 'line' });
             log.debug(logTitle, "lines: " + lineCount);
+
+            if (lineCount > 2) {
+                log.debug(logTitle, 'JE has more than 20 lines. Delegating to After Submit...');
+                return;
+            }
+
             for (var i = 0; i < lineCount; i++) {
                 var lineSourceRecPlan = jeRecord.getSublistValue({ sublistId: 'line', fieldId: 'sourcerevenueplan', line: i });
                 log.debug(logTitle, "lineSourceRecPlan: " + lineSourceRecPlan);
@@ -23,7 +29,7 @@ define(['N/search', "N/record"], function (search, record) {
                     var transactionId = getSourceTransactionId(lineSourceRecPlan);
                     log.debug(logTitle, "transactionId: " + transactionId);
                     if (!isEmpty(transactionId)) {
-                        jeRecord.setSublistValue({ sublistId: 'line', fieldId: 'custcol_ss_oi_source_trans', line: i, value: transactionId });
+                        jeRecord.setSublistValue({ sublistId: 'line', fieldId: 'custcol_ss_oi_source_transaction', line: i, value: transactionId });
                     }
                 }
                 //---
@@ -33,20 +39,53 @@ define(['N/search', "N/record"], function (search, record) {
                     var sourceTran = getSourceTransactionIdAmortSched(lineShedule);
                     log.debug(logTitle, "sourceTran: " + sourceTran);
                     if (!isEmpty(sourceTran)) {
-                        jeRecord.setSublistValue({ sublistId: 'line', fieldId: 'custcol_ss_oi_source_trans', line: i, value: sourceTran });
+                        jeRecord.setSublistValue({ sublistId: 'line', fieldId: 'custcol_ss_oi_source_transaction', line: i, value: sourceTran });
                     }
                 }
             }
+            
+            jeRecord.setValue({
+                fieldId: 'custbody_oi_source_transactions',
+                value: true
+            });
+            log.debug(logTitle, 'Remaining usage = ' + runtime.getCurrentScript().getRemainingUsage());
             log.debug(logTitle, '** END **');
         } catch (error) {
             log.error(logTitle, error);
         }
     }
+
+    function processJEByMapReduce(jeId) {
+        var logTitle = 'processJEByMapReduce';
+        var mrTask = task.create({
+            taskType: task.TaskType.MAP_REDUCE,
+            scriptId: 'customscript_mr_set_je_source_adhoc',
+            params: {
+                custscript_journal_entry_id: jeId
+            }
+        });
+        var mrTaskId = mrTask.submit();
+        log.debug({
+            title: logTitle,
+            details: 'Successfully submitted MR task ID = ' + mrTaskId + '.'
+        });
+    }
     
     function afterSubmit(context) {
         var logTitle = 'afterSubmit';
+        var jeRecord = context.newRecord;
+
         try {
             log.debug(logTitle, '** START **');
+
+            var lineCount = jeRecord.getLineCount({ sublistId: 'line' });
+            log.debug(logTitle, "lines: " + lineCount);
+
+            if (lineCount > 2) {
+                log.debug(logTitle, 'JE has more than 20 lines. Delegating to map/reduce execution...');
+                processJEByMapReduce(jeRecord.id);
+                return;
+            }
         } catch (error) {
             log.error(logTitle, error);
         }
@@ -119,7 +158,7 @@ define(['N/search', "N/record"], function (search, record) {
                         retId = result.getValue('internalid');
                         return false;
                     });
-                    log.debug(logTitle, "RET ID: " + retId)
+                    log.debug(logTitle, "RET ID: " + retId);
                     return retId;
                 }
             }

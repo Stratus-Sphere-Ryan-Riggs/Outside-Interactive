@@ -28,7 +28,16 @@
              log.debug(logTitle, "context: " + JSON.stringify(context));
              var contextValues = JSON.parse(context.values[0]);
 
-             var dunningIds = [null, 1, 2, 3, null, 4, 'Statement', 'Notice']; //ver PROD.
+            //  var dunningIds = [null, 1, 2, 3, null, 4, 'Statement', 'Notice']; //ver PROD.
+            var dunningIds = {
+                "0": 1,
+                "1": 2,
+                "2": 3,
+                "3": 4,
+                "4": 5,
+                "statement": 6,
+                "notice": 101
+            };
              var script = runtime.getCurrentScript();
              var invoiceSearchId = script.getParameter('custscript_ss_notices_invoices');
              var invoiceGroupComponentsSearchId = script.getParameter('custscript_ss_notices_grpcomp');
@@ -51,7 +60,8 @@
              log.debug(logTitle, "customerId: " + customerId);
              log.debug(logTitle, "subsId sss: " + subsId);
 
-             var dunningLevelId = dunningIds.indexOf(dunningLevel);
+            //  var dunningLevelId = dunningIds.indexOf(dunningLevel);
+            var dunningLevelId = dunningIds[dunningLevel.toLowerCase()];
              log.debug(logTitle, "dunningLevelId: " + dunningLevelId);
              if (!isEmpty(dunningLevelId)) {
                  var levelFilter = search.createFilter({
