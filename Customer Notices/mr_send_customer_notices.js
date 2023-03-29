@@ -473,13 +473,18 @@
                          var customerSalesRepInfo = search.lookupFields({
                              type: record.Type.CUSTOMER,
                              id: customerId,
-                             columns: ["salesrep", "email"],
+                             columns: ["salesrep", "email", "custentity_ss_additional_emails"],
                          });
                          //var customerSalesRep = customerSalesRepInfo.salesrep[0];
                          var customerEmail = customerSalesRepInfo.email;
                          if (!isEmpty(customerEmail) && (invoiceEmails.indexOf(customerEmail) == -1)) {
                              invoiceEmails.push(customerEmail);
                          }
+                         var additionalEmails = customerSalesRepInfo.custentity_ss_additional_emails;
+                         if (!isEmpty(additionalEmails)) {
+                            invoiceEmails = invoiceEmails.concat(additionalEmails.split(';'));
+                         }
+
                          log.debug("MM", "Emails: " + JSON.stringify(invoiceEmails));
                          if (invoiceEmails.length > 0) {
                              if (!isEmpty(sender)) {
