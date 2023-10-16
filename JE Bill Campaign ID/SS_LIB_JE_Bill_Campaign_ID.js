@@ -23,9 +23,15 @@ define(
             let billIdList = [];
             let lineCount = journalEntry.getLineCount({ sublistId: 'line' });
             for (let i = 0; i < lineCount; i++) {
-                billIdList.push(
-                    journalEntry.getSublistValue({ sublistId: 'line', line: i, fieldId: 'custcol_ss_oi_source_trans' })
-                );
+                let sourceId = journalEntry.getSublistValue({ sublistId: 'line', line: i, fieldId: 'custcol_ss_oi_source_trans' });
+                if (!sourceId) {
+                    continue;
+                }
+
+                billIdList.push(sourceId);
+            }
+            if (billIdList.length <= 0) {
+                return null;
             }
             
             let billSearch = nsSearch.load({ id: searchId });
@@ -60,6 +66,10 @@ define(
         const getJournalBillData = ({ journalEntry, parameters }) => {
             let title = `${MODULE_NAME}.GetJournalBillData`;
             let billSearch = buildBillSearch({ journalEntry, searchId: parameters.SearchCampaignIds });
+            if (!billSearch) {
+                return [];
+            }
+            
             let billResults = getAllResults({ search: billSearch });
             nsLog.debug({ title: `${title} billResults`, details: `length = ${billResults.length}` });
 
@@ -117,9 +127,10 @@ define(
 
                 let lineId = journalEntry.getSublistValue({ ...sublistLine, fieldId: 'custcol_ss_oi_source_trans' });
                 let lineAmount = journalEntry.getSublistValue({ ...sublistLine, fieldId: 'credit' }) || journalEntry.getSublistValue({ ...sublistLine, fieldId: 'debit' });
+                nsLog.debug({ title: title, details: `lineId = ${lineId}, lineAmount = ${lineAmount}` });
                 // let lineMemo = journalEntry.getSublistValue({ ...sublistLine, fieldId: 'memo' });
 
-                let billLineData = billData.find(b => b.id == lineId && b.amount == lineAmount);
+                let billLineData = billData.find(b => b.id == lineId);
                 // nsLog.debug({ title: `${title} i=${i}, lineId=${lineId}, lineAmount=${lineAmount}`, details: `lineMemo = ${lineMemo}` });
                 nsLog.debug({ title: `${title} i=${i} lineId=${lineId}, lineAmount=${lineAmount}`, details: billLineData ? JSON.stringify(billLineData) : '-NONE-' });
                 if (!billLineData) { continue; }
