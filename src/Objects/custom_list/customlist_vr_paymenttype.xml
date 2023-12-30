@@ -1,0 +1,16 @@
+<customlist scriptid="customlist_vr_paymenttype">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Vendor Onboarding Payment Type</name>
+  <customvalues>
+    <customvalue scriptid="val_182781_4860067_sb1_778">
+      <isinactive>F</isinactive>
+      <value>ACH Transfer (Domestic)</value>
+    </customvalue>
+    <customvalue scriptid="val_182782_4860067_sb1_682">
+      <isinactive>F</isinactive>
+      <value>Wire Transfer (International)</value>
+    </customvalue>
+  </customvalues>
+</customlist>

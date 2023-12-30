@@ -1,0 +1,20 @@
+<customlist scriptid="customlist_vr_ns5categories">
+  <description>NS5 Categories for Vendor Onboarding</description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>NS5 Categories </name>
+  <customvalues>
+    <customvalue scriptid="val_182774_4860067_sb1_917">
+      <isinactive>F</isinactive>
+      <value>On-Board Service</value>
+    </customvalue>
+    <customvalue scriptid="val_182775_4860067_sb1_461">
+      <isinactive>F</isinactive>
+      <value>Off-Site Service</value>
+    </customvalue>
+    <customvalue scriptid="val_182776_4860067_sb1_278">
+      <isinactive>F</isinactive>
+      <value>Supplier</value>
+    </customvalue>
+  </customvalues>
+</customlist>

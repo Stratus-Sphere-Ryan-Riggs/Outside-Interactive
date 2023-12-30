@@ -1,0 +1,24 @@
+<customlist scriptid="customlist_vr_vendortype">
+  <description>Vendor Type for Vendor Onboarding process.</description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Vendor Type for Vendor Onboard</name>
+  <customvalues>
+    <customvalue scriptid="val_182786_4860067_sb1_428">
+      <isinactive>F</isinactive>
+      <value>Rent - Misc 1</value>
+    </customvalue>
+    <customvalue scriptid="val_182787_4860067_sb1_310">
+      <isinactive>F</isinactive>
+      <value>Medical / Health Care Provider - Misc 6</value>
+    </customvalue>
+    <customvalue scriptid="val_182788_4860067_sb1_184">
+      <isinactive>F</isinactive>
+      <value>All Other Vendor Types - Misc 7</value>
+    </customvalue>
+    <customvalue scriptid="val_182789_4860067_sb1_937">
+      <isinactive>F</isinactive>
+      <value>Legal (Special) - Misc 14</value>
+    </customvalue>
+  </customvalues>
+</customlist>

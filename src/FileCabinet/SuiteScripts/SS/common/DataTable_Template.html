@@ -1,0 +1,143 @@
+<link type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+<link type="text/css" href="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/css/dataTables.checkboxes.css" rel="stylesheet" />
+<style>
+    .hidden {
+        opacity: 0;
+    }
+    .text-center {
+        text-align: center !important;
+    }
+    #details-dialog {
+        padding: 0;
+        width: 60%;
+        max-width: 60%;
+        border: 1px solid #666;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+    ::backdrop {
+        opacity: 0.8;
+    }
+    #details-dialog > div {
+        padding: 8px 16px;
+    }
+    #dlg-title {
+        background-color: #666;
+        color: white;
+        font-size: 0.875rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    #dlg-content {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+</style>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://gyrocode.github.io/jquery-datatables-checkboxes/1.2.12/js/dataTables.checkboxes.min.js"></script>
+<script>
+    window.suiteletTableData = {};
+    window.suiteletTableResults = {};
+
+    function all(selector)  {
+        return document.querySelectorAll(selector);
+    }
+
+    function get(selector) {
+        return document.querySelector(selector);
+    }
+
+    function getKeyRows(key) {
+        let output = [];
+        let keyGroup = window.suiteletTableData.keys.find(row => row.key === key);
+        if (!keyGroup) {
+            return output;
+        }
+
+        let keyIds = keyGroup.id;
+        let rawData = window.suiteletTableData.raw;
+        let keyRows = rawData.rows.filter(row => keyIds.includes(row.id));
+
+        return keyRows;
+    }
+    
+    function showKeyDetails(key) {
+        let TABLE_ID = 'dlg-content-tbl';
+        if (DataTable.isDataTable(`#${TABLE_ID}`)) {
+            jQuery(`#${TABLE_ID}`).DataTable().destroy();
+            get(`#${TABLE_ID}`).textContent = '';
+        }
+
+        let displayData = window.suiteletTableData?.raw;
+        if (!displayData) {
+            console.log('displayData is NULL');
+            return;
+        }
+            
+        let dataColumns = displayData.columns.filter(col => col.data !== 'id');
+        let dataRows = getKeyRows(key);
+        console.log('dataRows', dataRows);
+
+        let columnIndexes = {};
+        for (let i = 0, count = dataColumns.length; i < count; i++) {
+            let col = dataColumns[i];
+            columnIndexes[col.data] = dataColumns.findIndex(c => c.data === col.data);
+        }
+
+        DATA_TABLE = jQuery(`#${TABLE_ID}`).DataTable({
+            /* columnDefs: [{
+                targets: dataColumns.findIndex(c => c.data === 'invoiceamount'),
+                className: 'dt-body-right',
+                render: function (data) {
+                    return columnIndexes.invoiceamount >= 0 ? DataTable.render.number(',', '.', 2, '$').display(data) : data;
+                }
+            }, {
+                targets: dataColumns.findIndex(c => c.data === 'mediafulfillment'),
+                className: 'dt-body-center',
+                render: function (data) {
+                    return columnIndexes.mediafulfillment >= 0 ?
+                        `<a href="${window.urlValues.Media.replace('ID', data)}" target="_blank">${data}</a>` : data;
+                }
+            }, {
+                targets: dataColumns.findIndex(c => c.data === 'transactionnumber'),
+                className: 'dt-body-center',
+                render: function (data) {
+                    let parts = data.split(';');
+                    return columnIndexes.transactionnumber >= 0 ?
+                        `<a href="${window.urlValues.Transaction}${parts[0]}" target="_blank">${parts[1]}</a>` : parts[1];
+                }
+            }], */
+            columns: dataColumns,
+            data: getKeyRows(key),
+            pageLength: 25,
+            pagingType: 'full_numbers',
+            order: [[1, 'asc']],
+            select: { style: 'multi' }
+        });
+        
+        toggleModal();
+    }
+
+    function toggleModal(show = true) {
+        let dlg = get('#details-dialog');
+        if (show === true) {
+            dlg.showModal();
+        }
+        else {
+            dlg.close();
+        }
+    }
+</script>
+<div id="datatable_container" class="hidden">
+    <table id="custpage_table" class="display row-border stripe hover" style="width:100%;"></table>
+</div>
+<dialog id="details-dialog">
+    <div id="dlg-title">
+        <span>View Details</span>
+        <button type="button" onclick="javascript:toggleModal(false);">Close</button>
+    </div>
+    <div id="dlg-content">
+        <table id="dlg-content-tbl" class="display row-border stripe hover" style="width:100%;"></table>
+    </div>
+</dialog>

@@ -1,0 +1,16 @@
+<customlist scriptid="customlist_vr_typeofaccount">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Type of Account</name>
+  <customvalues>
+    <customvalue scriptid="val_182594_4860067_sb1_389">
+      <isinactive>F</isinactive>
+      <value>Checking</value>
+    </customvalue>
+    <customvalue scriptid="val_182595_4860067_sb1_903">
+      <isinactive>F</isinactive>
+      <value>Savings</value>
+    </customvalue>
+  </customvalues>
+</customlist>

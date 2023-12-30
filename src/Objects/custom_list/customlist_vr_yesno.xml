@@ -1,0 +1,16 @@
+<customlist scriptid="customlist_vr_yesno">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Vendor Onboarding Yes No</name>
+  <customvalues>
+    <customvalue scriptid="val_182798_4860067_sb1_868">
+      <isinactive>F</isinactive>
+      <value>Yes</value>
+    </customvalue>
+    <customvalue scriptid="val_182799_4860067_sb1_499">
+      <isinactive>F</isinactive>
+      <value>No</value>
+    </customvalue>
+  </customvalues>
+</customlist>

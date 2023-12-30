@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSG - Vendor Onboarding Form</title>
+    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+    <link rel="stylesheet" href="https://4860067-sb1.app.netsuite.com/core/media/media.nl?id=18867&c=4860067_SB1&h=n6wmFOIiKl21Nei5cZy2gjpyKXZB2ozjDIgCcAf0oDPbIgd9&_xt=.css&{TIME_STAMP}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img decoding="async" loading="lazy" width="94" height="50" src="https://www.osg.com/wp-content/uploads/2023/03/osg-logo.png" alt="osg-logo" title="osg-logo" class="wp-image-835">
+            <span class="title">New Vendor Request / Amendment</span>
+        </div>
+    </header>
+    <main>
+        <nav class="sidebar-nav">
+            <span class="reminder">Sections</span>
+            <ol>
+                <li><a href="#primary_information">Primary Information</a></li>
+                <li><a href="#legal_address">Legal Address</a></li>
+                <li><a href="#remittance_address">Remittance Address</a></li>
+                <li><a href="#additional_information">Additional Information</a></li>
+                <li><a href="#documents">Documents</a></li>
+                <li><a href="#banking">Banking</a></li>
+                <li><a href="#small_business">Small Business Categories</a></li>
+            </ol>
+        </nav>
+        <div class="content">
+            <span class="reminder">Please ensure all vendor details are fully completed.</span>
+            <div class="sections">
+                <section id="primary_information">
+                    <div class="title">Primary Information</div>
+                    <div class="fields">
+                        <div class="field">
+                            <label for="custrecord_vr_companyname">Vendor Name</label>
+                            <input type="text" id="custrecord_vr_companyname" name="custrecord_vr_companyname" class="fld" maxlength="80" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_primary_contact">Primary Contact</label>
+                            <input type="text" id="custrecord_vr_primary_contact" name="custrecord_vr_primary_contact" class="fld" maxlength="80" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_email">Email</label>
+                            <input type="email" id="custrecord_vr_email" name="custrecord_vr_email" class="fld" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_phone">Telephone</label>
+                            <input type="tel" id="custrecord_vr_phone" name="custrecord_vr_phone" class="fld" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" />
+                        </div>
+                        <div class="field optional">
+                            <label for="custrecord_vr_fax">Fax</label>
+                            <input type="tel" id="custrecord_vr_fax" name="custrecord_vr_fax" class="fld" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" />
+                        </div>
+                    </div>
+                </section>
+                <section id="legal_address">
+                    <div class="title">Legal Address</div>
+                    <div class="fields">
+                        <div class="field">
+                            <label for="custrecord_vr_addr1">Legal Address (Line 1)</label>
+                            <input type="text" id="custrecord_vr_addr1" class="fld" />
+                        </div>
+                        <div class="field optional">
+                            <label for="custrecord_vr_addr2">Legal Address (Line 2)</label>
+                            <input type="text" id="custrecord_vr_addr2" class="fld" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_country">Country</label>
+                            <select id="custrecord_vr_country" class="fld country w400"></select>
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_zip">Zip Code</label>
+                            <input type="text" id="custrecord_vr_zip" class="fld zip w80" maxlength="9" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_city">City</label>
+                            <input type="text" id="custrecord_vr_city" class="fld w400" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_state">State</label>
+                            <select id="custrecord_vr_state" class="fld w240"></select>
+                        </div>
+                    </div>
+                </section>
+                <section id="remittance_address">
+                    <div class="title">Remittance Address</div>
+                    <div class="fields">
+                        <div class="field-cb optional">
+                            <input type="checkbox" id="custrecord_vr_sameaslegal" />
+                            <label for="custrecord_vr_sameaslegal">Same as legal address?</label>
+                        </div>
+                        <div class="field remit_opt">
+                            <label for="custrecord_vr_remaddr1">Legal Address (Line 1)</label>
+                            <input type="text" id="custrecord_vr_remaddr1" class="fld" />
+                        </div>
+                        <div class="field remit_opt optional">
+                            <label for="custrecord_vr_remaddr2">Legal Address (Line 2)</label>
+                            <input type="text" id="custrecord_vr_remaddr2" class="fld" />
+                        </div>
+                        <div class="field remit_opt">
+                            <label for="custrecord_vr_remcountry">Country</label>
+                            <select id="custrecord_vr_remcountry" class="fld country w400"></select>
+                        </div>
+                        <div class="field remit_opt">
+                            <label for="custrecord_vr_remzip">Zip Code</label>
+                            <input type="text" id="custrecord_vr_remzip" class="fld zip w80" maxlength="9" />
+                        </div>
+                        <div class="field remit_opt">
+                            <label for="custrecord_vr_remcity">City</label>
+                            <input type="text" id="custrecord_vr_remcity" class="fld w400" />
+                        </div>
+                        <div class="field remit_opt">
+                            <label for="custrecord_vr_remstate">State</label>
+                            <select id="custrecord_vr_remstate" class="fld w240">{STATE}</select>
+                        </div>
+                    </div>
+                </section>
+                <section id="additional_information">
+                    <div class="title">Additional Information</div>
+                    <div class="fields">
+                        <div class="field">
+                            <label for="custrecord_vr_tax_id">Company W-9 Tax ID / SSN (US only)</label>
+                            <input type="text" id="custrecord_vr_tax_id" class="fld w160" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_typicalprodserv">Typical Products / Services</label>
+                            <textarea id="custrecord_vr_typicalprodserv" class="fld"></textarea>
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_addtlveninfo">Additional Vendor Information / Instruction</label>
+                            <textarea id="custrecord_vr_addtlveninfo" class="fld"></textarea>
+                        </div>
+                    </div>
+                </section>
+                <section id="documents">
+                    <div class="title">Documents</div>
+                    <div class="fields">
+                        <div class="field optional">
+                            <label for="custrecord_vr_w9">W-9</label>
+                            <input type="file" id="custrecord_vr_w9" class="fld file" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_certofinsurance">Certificate of Insurance</label>
+                            <input type="file" id="custrecord_vr_certofinsurance" class="fld file" />
+                        </div>
+                        <div class="field optional">
+                            <label for="custrecord_signed_tc">Terms & Conditions</label>
+                            <input type="file" id="custrecord_signed_tc" class="fld file" />
+                        </div>
+                    </div>
+                </section>
+                <section id="banking">ƒ
+                    <div class="title">Banking</div>
+                    <div class="fields">
+                        <div class="field">
+                            <label for="custrecord_vr_bankdetailmethod_grp">Banking Method (Select one)</label>
+                            <div class="field-rb-grp" id="custrecord_vr_bankdetailmethod_grp">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_bankcountry">Country</label>
+                            <select id="custrecord_vr_bankcountry" class="fld country w400"></select>
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_bankaccountcurrency">Currency</label>
+                            <select id="custrecord_vr_bankaccountcurrency" class="fld currency w160"></select>
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_receivingbankname">Receiving Bank Name</label>
+                            <input type="text" id="custrecord_vr_receivingbankname" class="fld" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_bankstreetaddress">Receiving Bank Street Address</label>
+                            <input type="text" id="custrecord_vr_intl_bankstreetaddress" class="fld" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_bankcity">Receiving Bank City</label>
+                            <input type="text" id="custrecord_vr_intl_bankcity" class="fld" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_stateprovince">Receiving State/Province</label>
+                            <input type="text" id="custrecord_vr_intl_stateprovince" class="fld" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_postalcode">Postal Code</label>
+                            <input type="text" id="custrecord_vr_intl_postalcode" class="fld" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_bicswift">Credit Agent BIC / Swift Code</label>
+                            <input type="text" id="custrecord_vr_bicswift" class="fld w80" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vendor_request_eft_bill_pay">Type of Account (Select one)</label>
+                            <div class="field-rb-grp" id="custrecord_vendor_request_eft_bill_pay_grp">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_accountnumber">Receiving Account Number</label>
+                            <input type="text" id="custrecord_vr_accountnumber" class="fld w120" maxlength="10" />
+                        </div>
+                        <div class="field">
+                            <label for="custrecord_vr_bankroutingnumber">Bank Routing Number</label>
+                            <input type="text" id="custrecord_vr_bankroutingnumber" class="fld w120" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_fininstnum">Financial Institution Number (3 digits)</label>
+                            <input type="text" id="custrecord_vr_intl_fininstnum" class="fld w80" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_branchtransnum">Branch Transit Number (5 digits)</label>
+                            <input type="text" id="custrecord_vr_intl_branchtransnum" class="fld w80" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_iban">IBAN</label>
+                            <input type="text" id="custrecord_vr_intl_iban" class="fld w80" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_purposeofpayment">Purpose of Payment</label>
+                            <input type="text" id="custrecord_vr_intl_purposeofpayment" class="fld" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_banksortcode">Bank Sort Code (UK only)</label>
+                            <input type="text" id="custrecord_vr_intl_banksortcode" class="fld w120" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_bsbcode">BSB Code</label>
+                            <input type="text" id="custrecord_vr_intl_bsbcode" class="fld w80" />
+                        </div>
+                        <div class="field bank_intl">
+                            <label for="custrecord_vr_intl_bankingdetails">Miscellaneous Banking Details</label>
+                            <input type="text" id="custrecord_vr_intl_bankingdetails" class="fld" />
+                        </div>
+                    </div>
+                </section>
+                <section id="small_business">
+                    <div class="title">Small Business Categories</div>
+                    <div class="fields">
+                        <div class="field-cb">
+                            <input type="checkbox" name="custrecord_vr_smallbiz" id="custrecord_vr_smallbiz">
+                            <label for="custrecord_vr_smallbiz">Small Business?</label>
+                        </div>
+                        <div class="field small_biz_opt hidden">
+                            <label for="custrecord_vr_naicscode">NAICS Code</label>
+                            <input type="text" name="custrecord_vr_naicscode" id="custrecord_vr_naicscode" class="fld w120">
+                        </div>
+                        <div class="field small_biz_opt hidden">
+                            <label for="custrecord_vr_revenue">Revenue</label>
+                            <input type="text" name="custrecord_vr_revenue" id="custrecord_vr_revenue" class="fld w120">
+                        </div>
+                        <div class="field small_biz_opt hidden">
+                            <label for="custrecord_vr_numemployee">Number of Employees</label>
+                            <input type="text" name="custrecord_vr_numemployee" id="custrecord_vr_numemployee" class="fld w120">
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_womenownedbiz" id="custrecord_vr_womenownedbiz">
+                            <label for="custrecord_vr_womenownedbiz">Women-owned Business?</label>
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_vetownedbiz" id="custrecord_vr_vetownedbiz">
+                            <label for="custrecord_vr_vetownedbiz">Veteran-owned Business?</label>
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_hubzone" id="custrecord_vr_hubzone">
+                            <label for="custrecord_vr_hubzone">HubZone Small Business?</label>
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_sdvosmallbiz" id="custrecord_vr_sdvosmallbiz">
+                            <label for="custrecord_vr_sdvosmallbiz">Service-Disabled Veteran-Owned Small Business?</label>
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_affirmaction" id="custrecord_vr_affirmaction">
+                            <label for="custrecord_vr_affirmaction">Affirmative Action Acknowledge?</label>
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_minorityosb" id="custrecord_vr_minorityosb">
+                            <label for="custrecord_vr_minorityosb">Minority-Owned Small Business?</label>
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_ghgemission" id="custrecord_vr_ghgemission">
+                            <label for="custrecord_vr_ghgemission">GHG Emissions Calculated?</label>
+                        </div>
+                        <div class="field small_biz_opt hidden">
+                            <label for="custrecord_vr_ghgemissionamount">GHG Emission Amounts</label>
+                            <input type="text" name="custrecord_vr_ghgemissionamount" id="custrecord_vr_ghgemissionamount" class="fld w80">
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_ghgaudit" id="custrecord_vr_ghgaudit">
+                            <label for="custrecord_vr_ghgaudit">GHG Emissions Audited?</label>
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_antihtp" id="custrecord_vr_antihtp">
+                            <label for="custrecord_vr_antihtp">Anti-Human Trafficking Policy?</label>
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_sustreport" id="custrecord_vr_sustreport">
+                            <label for="custrecord_vr_sustreport">Sustainability Report Available?</label>
+                        </div>
+                        <div class="field-cb small_biz_opt hidden">
+                            <input type="checkbox" name="custrecord_vr_antibribcorrup" id="custrecord_vr_antibribcorrup">
+                            <label for="custrecord_vr_antibribcorrup">Anti-Bribery and Anti-Corruption Policy?</label>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div id="footer">
+                <button type="button" id="submit" name="submit">Submit Form</button>
+                <button type="button" id="reset" name="reset">Reset</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        window.backendURL = `{BACKEND_URL}`;
+        window.currencyData = {CURRENCIES};
+        window.fieldData = {FIELD_DATA};
+        window.radioGroupData = {LIST_DATA};
+        window.stateCountryData = {STATE_COUNTRIES};
+        window.vendorRequestData = {REQUEST_DATA};
+        window.vendorRequestBackup = {REQUEST_DATA};
+        window.isServiceProvider = {SERVICE_PROVIDER};
+    </script>
+    <script src="https://4860067-sb1.app.netsuite.com/core/media/media.nl?id=18866&c=4860067_SB1&h=oy421RsAukulr7K1bdbEdNkwwYfcLqKYzChUpG5ZmNnBXh4D&_xt=.js&{TIME_STAMP}"></script>
+    <!-- <script src="https://4860067-sb1.app.netsuite.com/core/media/media.nl?id=24981&c=4860067_SB1&h=j_QX94VQj-COFJk5jtZFqVevJhg3_nhNQgPkDKi1P-arv_aI&_xt=.js&{TIME_STAMP}"></script> -->
+</body>
+</html>

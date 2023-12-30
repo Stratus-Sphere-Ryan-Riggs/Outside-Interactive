@@ -1,0 +1,16 @@
+OPEN ACTION ITEMS
+- Fix Failure to Load PDF Document. Not sure why this is happening. **DONE**
+- Make Phone # Mandatory **DONE**
+- When "Same as Legal Address" is set, make sure that Remittance Address fields are set on submit of the record. **DONE**
+- Set NAME {altname} to internal id of the record when submitting the Suitelet **DONE**
+- Tax ID – update to “Company W-9 Tax ID / SSN (US Only) – grey out if country != USA. **DONE**
+- Certificate of Insurance is ONLY required when they are a service provider. **DONE**
+  - If NS5 {custrecord_vr_ns5categories} = On-Board Service, then make certificate of insurance mandatory. **DONE**
+- W-9 = Domestic only, leave as non-mandatory. **DONE**
+- Additional Attachment Fields. Include T&C {custrecord_signed_tc} **DONE**
+- When Banking Method = Domestic (United States), set Country under Banking to United States and Currency to USD. **DONE**
+- NAICS Code, Revenue, # of Employees Mandatory when exposed if Small Business? is checked as true. **DONE**
+- Type of Account, ACH, Bank Detail Method, Currency, Receiving Bank Name = not mapping over to document on submit. **DONE**
+- Check Vendor Form Submitted {custrecord_vr_vendorformsubmitted} on submission of vendor form. **DONE**
+- Role Restrictions (Ryan):
+  - Controller, AP Analyst, Admin.

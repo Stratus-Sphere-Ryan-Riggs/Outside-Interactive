@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OSG - Vendor Onboarding Form</title>
+    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+    <!-- <link rel="stylesheet" href="https://4860067-sb1.app.netsuite.com/core/media/media.nl?id=25183&c=4860067_SB1&h=4ABB8avy0UuHgxIBcA3s0a79ockl9KB9YXDU8iwBP6Qh1BmC&_xt=.css"> -->
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.backendURL = `{BACKEND_URL}`;
+      window.currencyData = {CURRENCIES};
+      window.fieldData = {FIELD_DATA};
+      window.radioGroupData = {LIST_DATA};
+      window.stateCountryData = {STATE_COUNTRIES};
+      window.vendorRequestData = {REQUEST_DATA};
+      window.vendorRequestBackup = {REQUEST_DATA};
+      window.isServiceProvider = {SERVICE_PROVIDER};
+    </script>
+    <script type="module" src="/src/main.js"></script>
+    <!-- <script src="https://4860067-sb1.app.netsuite.com/core/media/media.nl?id=25184&c=4860067_SB1&h=0aXk4tUWbpCXVtRWtkHicUOj13w2MjVRo2LDR9vTSTuCN2aL&_xt=.js"></script> -->
+  </body>
+</html>

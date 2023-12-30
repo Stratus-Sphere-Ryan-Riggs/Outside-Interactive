@@ -1,0 +1,16 @@
+<customlist scriptid="customlist_vr_bankdetailmethod">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Bank Detail Method</name>
+  <customvalues>
+    <customvalue scriptid="val_182598_4860067_sb1_761">
+      <isinactive>F</isinactive>
+      <value>Domestic (United States)</value>
+    </customvalue>
+    <customvalue scriptid="val_182599_4860067_sb1_532">
+      <isinactive>F</isinactive>
+      <value>International</value>
+    </customvalue>
+  </customvalues>
+</customlist>

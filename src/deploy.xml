@@ -1,14 +1,5 @@
 <deploy>
-    <configuration>
-        <path>~/AccountConfiguration/*</path>
-    </configuration>
-    <files>
-        <path>~/FileCabinet/*</path>
-    </files>
     <objects>
-        <path>~/Objects/*</path>
+        <path>~/Objects/suitelets/customscript_ss_sl_ven_onboard_form.xml</path>
     </objects>
-    <translationimports>
-        <path>~/Translations/*</path>
-    </translationimports>
 </deploy>
