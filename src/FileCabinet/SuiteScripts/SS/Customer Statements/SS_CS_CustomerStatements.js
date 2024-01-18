@@ -68,7 +68,7 @@ define(
             let { action, urlParams } = options;
             let parts = [ urlPath, `action=${action}` ];
 
-            if (!!urlParams === true) {
+            if (urlParams.length > 0) {
                 parts.push(urlParams.join('&'));
             }
             console.log(`parts = ${parts.length}`, parts);
@@ -78,13 +78,11 @@ define(
         };
 
         const collateData = (options) => {
-            let { consolidated, data } = options;
+            console.log('collateData', options);
+            let { columns, rows } = options;
             let keys = [ 'transactionnumber' ];
-            if (consolidated === false) {
-                keys.push('invoicedate');
-            }
 
-            let groupedData = data.rows.reduce((objectsByKeyValue, obj) => {
+            let groupedData = rows.reduce((objectsByKeyValue, obj) => {
                 const value = keys.map(key => obj[key]).join('-');
                 objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
                 return objectsByKeyValue;
@@ -96,7 +94,7 @@ define(
                 'item',
                 'mediafulfillment'
             ];
-            let showColumns = data.columns.filter(col => hideColumns.includes(col.data) === false);
+            let showColumns = columns.filter(col => hideColumns.includes(col.data) === false);
             let displayData = { rows: [] };
 
             let keyData = [];
@@ -136,7 +134,7 @@ define(
                 display: displayData,
                 grouped: groupedData,
                 keys: keyData,
-                raw: data,
+                raw: options,
             };
         };
 
@@ -340,7 +338,7 @@ define(
 
             // applyUrl = [ applyUrl, `action=${options.action}` ].join('&');
             console.log(`applyUrl ==> `, applyUrl);
-            return;
+            // return;
 
             fetch(applyUrl, options.requestParams)
                 .then(data => data.json())

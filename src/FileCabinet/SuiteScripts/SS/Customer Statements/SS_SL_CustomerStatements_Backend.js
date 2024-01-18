@@ -28,7 +28,7 @@ define(
             }
 
             switch(request.parameters.action.toLowerCase()) {
-                case 'search_statements': {
+                case 'search': {
                     let data = LIB.getTableData({ parameters: requestParameters });
                     response.write({
                         output: JSON.stringify({
@@ -38,7 +38,7 @@ define(
                     });
                     break;
                 }
-                case 'process_statements': {
+                case 'process': {
                     let jsonBody = parseRequestBody({ input: request.body });
                     if (!jsonBody) {
                         sendError({

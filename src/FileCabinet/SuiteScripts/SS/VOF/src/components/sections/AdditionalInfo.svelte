@@ -27,7 +27,15 @@
 <Section id="{id}" title="{title}">
     <InputText
         id="{$formFields.TAX_ID}"
-        label="Company W-9 Tax ID / SSN (US only)"
+        label="Company W-9 Tax ID (US only)"
+        cls="w160"
+        bind:optional={taxId.optional}
+        bind:visible={taxId.visible}
+        bind:value={$formValues[$formFields.TAX_ID]}
+    />
+    <InputText
+        id="{$formFields.TAX_ID}"
+        label="SSN (US only)"
         cls="w160"
         bind:optional={taxId.optional}
         bind:visible={taxId.visible}

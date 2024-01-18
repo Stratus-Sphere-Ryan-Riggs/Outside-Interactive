@@ -122,6 +122,7 @@ define(
                     SAME_AS_LEGAL_ADDRESS       : 'custrecord_vr_sameaslegal',
                     // SEARCH_VENDOR_MASTER        : 'custrecord_search_vendor_master',
                     // SIGNED_TC                   : 'custrecord_signed_tc',
+                    SSN                         : 'custrecord_vr_ssn',
                     STATE                       : 'custrecord_vr_state',
                     STATUS                      : 'custrecord_vr_status',
                     // SUBSIDIARY                  : 'custrecord_vr_subsidiary',
