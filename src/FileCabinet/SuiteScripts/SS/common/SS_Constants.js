@@ -26,6 +26,16 @@ define(
 
         const CUSTOM_LISTS = {
             BankingMethod: 'customlist_vr_bankdetailmethod',
+            DataTableSuiteletTypes: {
+                DUNNING_STATEMENTS: '1'
+            },
+            DataTableTaskStatus: {
+                PENDING: '1',
+                IN_PROGRESS: '2',
+                COMPLETED: '3',
+                COMPLETED_WITH_ERRORS: '4',
+                FAILED: '5'
+            },
             DunningLevels: {
                 Id: 'customlist_ss_dunning_levels',
                 Values: [
@@ -40,6 +50,17 @@ define(
         };
 
         const CUSTOM_RECORDS = {
+            DataTableTask: {
+                Id: 'customrecord_ss_dt_task',
+                Fields: {
+                    DATA                        : 'custrecord_ss_dt_task_data',
+                    ERRORS                      : 'custrecord_ss_dt_task_errors',
+                    EXPECTED                    : 'custrecord_ss_dt_task_expected',
+                    GENERATED                   : 'custrecord_ss_dt_task_generated',
+                    STATUS                      : 'custrecord_ss_dt_task_status',
+                    TYPE                        : 'custrecord_ss_dt_task_type'
+                }
+            },
             VendorRequest: {
                 Id: 'customrecord_vendor_request',
                 Fields: {
@@ -139,7 +160,7 @@ define(
         };
 
         const FORMS = {
-            CustomerStatements: {
+            DUNNING_STATEMENTS: {
                 Title: 'Send Customer Statements',
                 Buttons: [
                     {
@@ -152,7 +173,7 @@ define(
                         submit: true
                     }
                 ],
-                ClientScriptFile: 'SS_CS_CustomerStatements.js',
+                ClientScriptFile: 'SS_CS_DunningStatements.js',
                 FieldGroups: [
                     {
                         id: 'custpage_filters',
@@ -249,7 +270,11 @@ define(
         };
 
         const REQUEST_PARAMETERS = {
-            CustomerStatements: [
+            DATATABLE_BACKEND: [
+                'action',
+                'sltype'
+            ],
+            DUNNING_STATEMENTS: [
                 'dosearch',
                 'subsidiary',
                 'levels',
@@ -258,33 +283,43 @@ define(
                 'cas',
                 'openbalanceusd',
                 'lastcommunication'
-            ]
+            ],
         };
 
         const SCRIPTS = {
-            CustomerStatement: {
-                Backend: {
-                    scriptId: 'customscript_ss_sl_cust_stm_backend',
-                    deploymentId: 'customdeploy_ss_sl_cust_stm_backend'
+            DataTableSuitelet: {
+                BACKEND: {
+                    scriptId: 'customscript_ss_sl_dt_backend',
                 },
-                MapReduce: {
-                    scriptId: ''
-                },
-                UI: {
-                    scriptId: 'customscript_ss_sl_cust_stm',
-                    deploymentId: 'customdeploy_ss_sl_cust_stm'
+                DUNNING_STATEMENTS: {
+                    deploymentId: 'customdeploy_ss_sl_dt_backend_dunstm'
                 }
+            },
+            DataTableTaskMapReduce: {
+                scriptId: 'customscript_ss_mr_dt_task'
             }
         };
 
         const SCRIPT_PARAMETERS = {
-            CustomerStatements: {
+            /* DunningStatements: {
                 StatementSearchId       : 'custscript_ss_cs_search',
                 TaskSearchId            : 'custscript_ss_cs_tasks_search'
-            },
+            }, */
             CustomerStatementTaskSearch : '',
             FileUploadFolder            : 'custscript_ss_sl_ven_onboard_form_folder',
-            HtmlTemplateFile            : 'custscript_ss_sl_ven_onboard_form_html'
+            HtmlTemplateFile            : 'custscript_ss_sl_ven_onboard_form_html',
+            // DataTableTaskRecord         : 'custscript_ss_mr_dt_task_record',
+            DataTableSuitelet: {
+                Type                    : 'custscript_ss_sl_dt_type'
+            },
+            DataTableSuiteletBackend    : {
+                InProgressTasks         : 'custscript_ss_sl_dt_backend_inprog_tasks',
+                RowSearch               : 'custscript_ss_sl_dt_backend_row_search',
+                TaskFolder              : 'custscript_ss_sl_dt_backend_task_folder'
+            },
+            DataTableTaskMapReduce      : {
+                TaskRecord              : 'custscript_ss_mr_dt_task_record'
+            }
         };
 
         return {
@@ -297,7 +332,7 @@ define(
             ScriptParameters    : SCRIPT_PARAMETERS,
             Scripts             : SCRIPTS,
             Templates           : {
-                DataTable       : 'DataTable_Template.html'
+                DataTableSuitelet       : 'DataTable_Template.html'
             },
             Transaction         : TRANSACTION
         };

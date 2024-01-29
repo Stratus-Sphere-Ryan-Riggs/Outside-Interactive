@@ -140,6 +140,57 @@ define(
             return { status: 1, object: form };
         };
 
+        const createStatementTask = (options) => {
+            let title = `${MODULE}.CreateStatementTask`;
+            let { parameters } = options;
+            log.debug({ title: `${title} parameters`, details: JSON.stringify(parameters) });
+
+            let taskRecord = createStatementTaskRecord(options);
+            if (!taskRecord.status) {
+                return taskRecord;
+            }
+
+            log.debug({ title: TITLE, details: `taskRecord = ${taskRecord.data}` });
+            
+            /* let params = {};
+            params[SS_Constants.ScriptParameters.MapReduceTaskRecord] = taskRecord.data;
+
+            let taskStatus = SS_Task.createMapReduceTask({
+                scriptId: SS_Constants.Scripts.MapReduceTask.scriptId,
+                params
+            });
+            log.debug({ title: `${title} taskStatus`, details: JSON.stringify(taskStatus) }); */
+            
+            taskRecord.url = SS_Url.resolveRecord({
+                recordType: SS_Constants.CustomRecords.MapReduceTask.Id,
+                recordId: taskRecord.data
+            });
+            return taskRecord;
+        };
+
+        const createStatementTaskRecord = (options) => {
+            let title = `${MODULE}.CreateStatementTaskRecord`;
+            let { parameters } = options;
+            let TASK = SS_Constants.CustomRecords.MapReduceTask
+            let FIELDS = TASK.Fields;
+
+            try {
+                let mrTask = SS_Record.create({ type: TASK.Id });
+                mrTask.setValue({ fieldId: FIELDS.DATA, value: parameters });
+                mrTask.setValue({ fieldId: FIELDS.STATUS, value: SS_Constants.CustomLists.MapReduceTaskStatus.PENDING });
+                mrTask.setValue({ fieldId: FIELDS.TYPE, value: SS_Constants.CustomLists.MapReduceType.CUSTOMER_STATEMENT });
+                
+                let mrTaskId = mrTask.save();
+                log.debug({ title, details: `Successfully created Task ID ${mrTaskId}.` });
+                return { status: true, data: mrTaskId };
+            }
+            catch (ex) {
+                let errorMessage = ex.message || ex.toString();
+                log.error({ title, details: errorMessage });
+                return { status: false, error: errorMessage };
+            }
+        };
+
         const getRequestParameters = (options) => {
             let title = `${MODULE}.GetRequestParameters`;
             let output = {};
@@ -254,8 +305,6 @@ define(
             return output;
         };
 
-        const processStatements = (options) => {};
-
         const writeDataTable = (options) => {
             let title = `${MODULE}.WriteDataTable`;
             let { form, template } = options;
@@ -268,9 +317,9 @@ define(
 
         return {
             buildUI,
+            createStatementTask,
             getRequestParameters,
-            getTableData,
-            processStatements
+            getTableData
         };
     }
 );

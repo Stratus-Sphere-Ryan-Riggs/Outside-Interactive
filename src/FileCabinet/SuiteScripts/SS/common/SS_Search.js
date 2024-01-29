@@ -8,12 +8,12 @@
 define(
     [
         'N/search',
-        './SS_Format',
+        './SS_Script',
         './SS_String'
     ],
     (
         NS_Search,
-        SS_Format,
+        SS_Script,
         SS_String
     ) => {
         const MODULE = {
@@ -101,6 +101,7 @@ define(
             };
 
             getResults() {
+                log.debug({ title: `SS.Search|GetResults search`, details: JSON.stringify(this.search) });
                 let allResults = [];
                 let subResults = [];
                 let start = 0;
@@ -122,18 +123,19 @@ define(
                         keys.push(SS_String.normalize(column.label) || column.name);
                     }
                 } */
-
+                log.debug({ title: `SS.Search|GetResults`, details: `allResults = ${allResults.length}` });
                 allResults = allResults.map(row => {
                     let rowObject = { id: row.id };
 
                     for (let i = 0, count = this.search.columns.length; i < count; i++) {
                         let column = this.search.columns[i];
-                        let label = SS_Format.clean(column.label) || column.name;
+                        let label = SS_String.normalize(column.label) || column.name;
                         rowObject[label] = row.getValue(column);
                     }
 
                     return rowObject;
                 });
+                log.debug({ title: `SS.Search|GetResults`, details: `allResults = ${allResults.length}` });
 
                 return allResults;
             }
@@ -179,6 +181,17 @@ define(
                 }
 
                 return this.cast(NS_Search.load(options));
+            },
+            loadFromParameter(options) {
+                let title = `${MODULE}.LoadFromParameter`;
+                let { name } = options;
+                let searchIdParam = SS_Script.getParameter({ name });
+                if (!searchIdParam) {
+                    log.error({ title: title, details: `Missing required value: Search ID` })
+                    return null;
+                }
+    
+                return this.load({ id: searchIdParam });
             },
             lookup(options) {
                 const TITLE = `${MODULE}.Lookup`;

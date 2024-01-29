@@ -29,7 +29,7 @@ define(
             let thisRecord = SS_CR.get();
             let params = [];
 
-            let filters = SS_Constants.Forms.CustomerStatements.Fields.filter(f => f.filter === true);
+            let filters = SS_Constants.Forms.DUNNING_STATEMENTS.Fields.filter(f => f.filter === true);
             for (let i = 0, count = filters.length; i < count; i++) {
                 let key = SS_String.normalize(filters[i].label);
                 console.log(`key = "${key}"`);
@@ -47,15 +47,15 @@ define(
             sendRequest({
                 urlParams: params,
                 action: 'search',
+                type: SS_Constants.CustomLists.DataTableSuiteletTypes.DUNNING_STATEMENTS,
                 success: (data) => {
                     console.log('backend response', data);
-                    if (data.status <= 0) {
+                    if (data.status === false) {
                         alert(data.error);
                         return;
                     }
 
-                    let tableData = collateData(data.output);
-                    window.suiteletTableData = tableData;
+                    window.suiteletTableData = data.output;
                     initDataTable();
                     getById('datatable_container').classList.remove('hidden');
                 }
@@ -63,79 +63,17 @@ define(
         };
 
         const buildUrlWithParams = (options) => {
-            // let urlPath = nsCR.get().getValue({ fieldId: 'custpage_url_values' });
             let urlPath = window.urlValues.Backend;
-            let { action, urlParams } = options;
-            let parts = [ urlPath, `action=${action}` ];
+            let { action, type, urlParams } = options;
+            let parts = [ urlPath, `action=${action}`, `sltype=${type}` ];
 
-            if (urlParams.length > 0) {
-                parts.push(urlParams.join('&'));
+            if (urlParams) {
+                if (urlParams.length > 0) {
+                    parts.push(urlParams.join('&'));
+                }
             }
             console.log(`parts = ${parts.length}`, parts);
             return parts.join('&');
-
-            // return urlPath;
-        };
-
-        const collateData = (options) => {
-            console.log('collateData', options);
-            let { columns, rows } = options;
-            let keys = [ 'transactionnumber' ];
-
-            let groupedData = rows.reduce((objectsByKeyValue, obj) => {
-                const value = keys.map(key => obj[key]).join('-');
-                objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj);
-                return objectsByKeyValue;
-            }, {});
-            console.log(`groupedData`, groupedData);
-
-            let hideColumns = [
-                'id',
-                'item',
-                'mediafulfillment'
-            ];
-            let showColumns = columns.filter(col => hideColumns.includes(col.data) === false);
-            let displayData = { rows: [] };
-
-            let keyData = [];
-            for (const [groupKey, groupValue] of Object.entries(groupedData)) {
-                let rowKey = SS_String.generateRandomString();
-                let rowObject = { key: rowKey, link: rowKey };
-
-                for (let i = 0, showCount = showColumns.length; i < showCount; i++) {
-                    let showCol = showColumns[i].data;
-
-                    if (showCol === 'invoiceamount') {
-                        rowObject[showCol] = groupValue.reduce((total, next) => total += parseFloat(next.invoiceamount), 0);
-                    }
-                    else {
-                        rowObject[showCol] = groupValue[0][showCol];
-                    }
-                }
-                console.log(`rowKey = ${rowKey}`, rowObject);
-
-                let keyObject = { key: rowKey };
-                for (let i = 0, hideCount = hideColumns.length; i < hideCount; i++) {
-                    let hideCol = hideColumns[i];
-                    keyObject[hideCol] = groupValue.map(g => g[hideCol]);
-                }
-                keyData.push(keyObject);
-
-                displayData.rows.push(rowObject);
-            }
-
-            // DO NOT CHANGE - Specific unshift order
-            showColumns.unshift({ data: 'link', title: '' });
-            showColumns.unshift({ data: 'key', title: 'Select' });
-
-            displayData.columns = showColumns;
-
-            return {
-                display: displayData,
-                grouped: groupedData,
-                keys: keyData,
-                raw: options,
-            };
         };
 
         const getById = (id) => {
@@ -147,20 +85,19 @@ define(
             console.log('selectedRows', selectedRows);
 
             let selectedIds = [];
-            let selectedKeys = [];
-            jQuery.each(selectedRows, (index, value) => {
-                selectedKeys.push(value);
-            })
-            selectedKeys = [ ...new Set(selectedKeys) ];
-            console.log({ orders: selectedKeys });
-
-            for (let i = 0, count = selectedKeys.length; i < count; i++) {
-                let keyData = window.suiteletTableData.keys.find(row => row.key === selectedKeys[i]);
-                selectedIds.push({ index: i, list: keyData.id });
-                // selectedIds = selectedIds.concat(keyData.id);
-            }
-            // console.log('selectedIds', selectedIds);
-
+            jQuery.each(selectedRows, (index, rowValue) => {
+                console.log(`getSelectedIds index=${index}`, rowValue);
+                let inputText = query(`#${TABLE_ID} input[type="text"][data-override-client="${rowValue}"]`);
+                console.log(`#${TABLE_ID} input[type="text"][data-override-client="${rowValue}"]`, inputText);
+                console.log('input value', inputText.value);
+                selectedIds.push({
+                    id: rowValue,
+                    override: inputText.value
+                });
+            });
+            selectedIds = [ ...new Set(selectedIds) ];
+            console.log({ orders: selectedIds });
+            
             return selectedIds;
         };
 
@@ -171,7 +108,8 @@ define(
                 getById(TABLE_ID).textContent = '';
             }
 
-            let displayData = window.suiteletTableData?.display;
+            // let displayData = window.suiteletTableData?.display;
+            let displayData = window.suiteletTableData;
             if (!displayData) {
                 console.log('displayData is NULL');
                 return;
@@ -184,6 +122,7 @@ define(
                 let col = dataColumns[i];
                 columnIndexes[col.data] = dataColumns.findIndex(c => c.data === col.data);
             }
+            console.log(`columnIndexes`, columnIndexes);
 
             DATA_TABLE = jQuery(`#${TABLE_ID}`).DataTable({
                 columnDefs: [{
@@ -193,25 +132,22 @@ define(
                         selectRow: true
                     }
                 }, {
-                    targets: dataColumns.findIndex(c => c.data === 'invoiceamount'),
+                    targets: dataColumns.findIndex(c => c.data === 'amountpastdueusd'),
                     className: 'dt-body-right',
                     render: function (data) {
-                        return columnIndexes.invoiceamount >= 0 ? DataTable.render.number(',', '.', 2, '$').display(data) : data;
+                        return columnIndexes.amountpastdueusd >= 0 ? DataTable.render.number(',', '.', 2, '$').display(data) : data;
                     }
                 }, {
-                    targets: dataColumns.findIndex(c => c.data === 'link') || -1,
-                    className: 'dt-body-center',
+                    targets: dataColumns.findIndex(c => c.data === 'openbalanceusd'),
+                    className: 'dt-body-right',
                     render: function (data) {
-                        return columnIndexes.link >= 0 ?
-                            `<a href="#" onclick="javascript:event.preventDefault();showKeyDetails('${data.trim()}');">View Details</a>` : data;
+                        return columnIndexes.openbalanceusd >= 0 ? DataTable.render.number(',', '.', 2, '$').display(data) : data;
                     }
                 }, {
-                    targets: dataColumns.findIndex(c => c.data === 'transactionnumber'),
-                    className: 'dt-body-center',
+                    targets: dataColumns.findIndex(c => c.data === 'overrideemailrecipients') || -1,
                     render: function (data) {
-                        let parts = data.split(';');
-                        return columnIndexes.transactionnumber >= 0 ?
-                            `<a href="${window.urlValues.Transaction}${parts[0]}" target="_blank">${parts[1]}</a>` : parts[1];
+                        return columnIndexes.overrideemailrecipients >= 0 ?
+                            `<input type="text" style="padding:4px 6px; width: 250px; font-size: inherit;" data-override-client="${data.trim()}">` : data;
                     }
                 }],
                 columns: dataColumns,
@@ -245,6 +181,10 @@ define(
             applyFilters();
         };
 
+        const query = (selector) => {
+            return document.querySelector(selector);
+        };
+
         const saveRecord = (context) => {
             if (!DataTable.isDataTable(`#${TABLE_ID}`)) {
                 SS_Dialog.alert({
@@ -264,26 +204,12 @@ define(
             }
             console.log('selectedIds', selectedIds);
 
-            /* let selectedIdValues = selectedIds.reduce((all, row) => {
-                all = all.concat(row.list);
-                return all;
-            }, []);
-            console.log('selectedIdValues', selectedIdValues);
-            let selectedRowData = window.suiteletTableData.raw.rows.filter(row => selectedIds.indexOf(row.id) >= 0);
-            console.log('selectedRowData', selectedRowData);
-
-            let invoiceCount = [ ...new Set(selectedRowData.map(row => row.transactionnumber)) ].length;
-            let consolidated = context.currentRecord.getValue({ fieldId: 'custpage_consolidate' });
-            if (consolidated) {
-                invoiceCount = [ ...new Set(selectedRowData.map(row => row.customer)) ].length;
-            } */
-
             let statementCount = selectedIds.length;
             SS_Dialog.confirm({
                 title: TITLE,
                 message: `You are about to send ${statementCount} customer statement${ statementCount > 1 ? 's' : '' }. Are you sure you want to proceed?`
             }).then(result => {
-                console.log('selectedIds', selectedIds);
+                console.log('dialog selectedIds', selectedIds);
                 console.log('result', result);
                 if (!result) {
                     return;
@@ -294,19 +220,19 @@ define(
             return false;
         };
 
-        const sendCustomerStatementRequest = (idList) => {
+        const sendCustomerStatementRequest = (list) => {
             sendRequest({
-                action: 'process_statements',
+                action: 'dunning_statement',
                 requestParams: {
                     method: 'post',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ idList })
+                    body: JSON.stringify({ list })
                 },
                 success: (data) => {
-                    console.log('backend response', data);
+                    console.log('POST backend response', data);
                     if (!data.status) {
                         SS_Dialog.alert({
                             message: data.error,
@@ -326,12 +252,14 @@ define(
         };
 
         const sendRequest = (options) => {
-            if (!options.action) {
+            const TITLE = `sendRequest`;
+            let { action, requestParams, success } = options;
+            if (!action) {
                 console.log(`Missing action.`);
                 return;
             }
 
-            console.log(`sendRequest parameters`, options.requestParams);
+            console.log(`sendRequest parameters`, requestParams);
             let applyUrl = buildUrlWithParams(options);
             // console.log('applyUrl', applyUrl);
             // if (!applyUrl) { return; }
@@ -340,7 +268,7 @@ define(
             console.log(`applyUrl ==> `, applyUrl);
             // return;
 
-            fetch(applyUrl, options.requestParams)
+            fetch(applyUrl, requestParams)
                 .then(data => data.json())
                 .then(options.success);
         };

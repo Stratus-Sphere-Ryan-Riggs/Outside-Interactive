@@ -8,12 +8,14 @@ define(
         'N/ui/serverWidget',
         './SS_File',
         './SS_Format',
+        './SS_String',
         './SS_Script'
     ],
     (
         NS_ServerWidget,
         SS_File,
         SS_Format,
+        SS_String,
         SS_Script
     ) => {
         const MODULE_NAME = 'SS.UI';
@@ -270,6 +272,47 @@ define(
                 }
     
                 return options.config.Fields.find(f => SS_Format.clean(f.label) === SS_Format.clean(options.label));
+            },
+            mapParametersToFields (options) {
+                const TITLE = `${MODULE_NAME}.MapParametersToFields`;
+                let { fields, form, parameters } = options;
+                let output = {};
+    
+                log.debug({ title: `${TITLE} fields`, details: JSON.stringify(fields) });
+    
+                for (let i = 0, count = fields.length; i < count; i++) {
+                    let key = fields[i];
+                    if (!parameters[key]) {
+                        continue;
+                    }
+    
+                    let field = form.Fields.find(f => {
+                        return f.filter === true &&
+                            key === SS_String.normalize(f.label);
+                    })?.id
+                    if (!field) {
+                        continue;
+                    }
+                    output[field] = parameters[key];
+                }
+                log.debug({ title: `${TITLE} output`, details: JSON.stringify(output) });
+    
+                return output;
+            },
+            readQueryParameters (options) {
+                const title = `${MODULE_NAME}.ReadQueryParameters`;
+                let output = {};
+                let { fields, request } = options;
+                let params = request.parameters;
+                
+                output.action = params.action;
+                for (let i = 0, count = fields.length; i < count; i++) {
+                    let key = fields[i];
+                    output[key] = params[key];
+                }
+                
+                log.debug({ title: title, details: JSON.stringify(output) });
+                return output;
             },
             writeSublistData (options) {
                 let title = `${MODULE_NAME}.WriteSublistData`;
