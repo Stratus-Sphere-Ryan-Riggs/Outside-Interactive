@@ -6,7 +6,9 @@
  function (record, search, runtime, format, runtime, render, email, xml, file, SS_Constants) {
 
      const CURRENCIES = { 'USD': '$', 'GBP': '£', 'CAD': '$', 'EUR': '€', 'AUD': '$', 'MXN': '$', 'JPY': '￥', 'NZD': '$' }
-     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+     const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+     const SCRIPT_PARAMETERS = SS_Constants.ScriptParameters.DunningStatementMapReduce;
+     const TASK = SS_Constants.CustomRecords.DataTableTask;
 
      function getInputData() {
          var logTitle = 'getInputData';
@@ -15,8 +17,7 @@
              var script = runtime.getCurrentScript();
 
             //  Read Task Record
-            const TASK = SS_Constants.CustomRecords.DataTableTask;
-            let taskRecordId = script.getParameter('custscript_ss_mr_dt_task_record');
+            let taskRecordId = script.getParameter(SCRIPT_PARAMETERS.TaskRecord);
             if (!taskRecordId) {
                 log.debug({ title: logTitle, details: `Missing required parameter: Task Record ID.` });
                 return;
@@ -59,7 +60,7 @@
             //  var customersArrayStr = script.getParameter('custscript_ss_customers_array');
             //  var customersArray = JSON.parse(customersArrayStr);
             //  return customersArray;
-            return [];
+            return list;
          } catch (error) {
              log.error(logTitle, 'error: ' + error);
          }
@@ -68,24 +69,23 @@
      function reduce(context) {
          var logTitle = 'reduce';
          var errorEmailSender;
+
          try {
              log.debug(logTitle, "Reduce Start");
              log.debug(logTitle, "context: " + JSON.stringify(context));
              var contextValues = JSON.parse(context.values[0]);
 
-             //SBX
-             //var dunningIds = [null, 1, 2, 3, null, 4, 'Statement']; //ver PROD.
-             //PROD
              var dunningIds = [null, null, 1, 2, 3, 4, 'Statement'];
              var script = runtime.getCurrentScript();
-             var invoiceSearchId = script.getParameter('custscript_ss_invoices_saved_search');
-             var invoiceGroupComponentsSearchId = script.getParameter('custscript_ss_invoices_group_comp');
-             var dunningSearchId = script.getParameter('custscript_ss_dunnings_search');
-             var dunningMessageSearchId = script.getParameter('custscript_ss_dunning_msg_search');
-             var emailMessageSearchId = script.getParameter('custscript_ss_email_msg_search');
-             var statementFormId = script.getParameter('custscript_ss_statement_form');
-             var fileCabinetFolderForInvoicePdfs = script.getParameter('custscript_ss_invoice_pdf_folder');
-             var invoiceGroupEmailTemplateId = script.getParameter('custscript_ss_invoice_group_template');
+             var invoiceSearchId = script.getParameter(SCRIPT_PARAMETERS.SearchInvoices);
+             var invoiceGroupComponentsSearchId = script.getParameter(SCRIPT_PARAMETERS.SearchInvoiceGroupComp);
+             var dunningSearchId = script.getParameter(SCRIPT_PARAMETERS.SearchDunning);
+             var dunningMessageSearchId = script.getParameter(SCRIPT_PARAMETERS.SearchDunningMessage);
+             var emailMessageSearchId = script.getParameter(SCRIPT_PARAMETERS.SearchEmailMessage);
+            //  var statementFormId = script.getParameter(SCRIPT_PARAMETERS.StatementForm);
+             var statementFormId = script.getParameter('sss');
+             var fileCabinetFolderForInvoicePdfs = script.getParameter(SCRIPT_PARAMETERS.PDFFolder);
+             var invoiceGroupEmailTemplateId = script.getParameter(SCRIPT_PARAMETERS.TemplateId);
              log.debug(logTitle, "statementFormId: " + statementFormId);
              var invoiceSearch = search.load({ id: invoiceSearchId });
              var dunningSearch = search.load({ id: dunningSearchId });
@@ -650,17 +650,52 @@
                                      return true;
                                  });*/
                                  //Remove Invoice PDFs from File Cabinet?
+                                 context.write({
+                                    key: context.key,
+                                    value: {
+                                        success: true,
+                                        task: contextValues.task
+                                    }
+                                 });
                              } else {
                                  log.error(logTitle, 'Error: No sender.');
+                                 context.write({
+                                    key: context.key,
+                                    value: {
+                                        error: 'Error: No sender.',
+                                        task: contextValues.task
+                                    }
+                                 });
                              }
                          } else {
                              log.error(logTitle, 'Error: No emails for customer.');
+                             context.write({
+                                key: context.key,
+                                value: {
+                                    error: 'Error: No emails for customer.',
+                                    task: contextValues.task
+                                }
+                             });
                          }
                      } else {
                          log.error(logTitle, 'Error: No dunning message found.');
+                         context.write({
+                            key: context.key,
+                            value: {
+                                error: 'Error: No dunning message found.',
+                                task: contextValues.task
+                            }
+                         });
                      }
                  } else {
                      log.error(logTitle, 'Error: No dunning record found.');
+                     context.write({
+                        key: context.key,
+                        value: {
+                            error: 'Error: No dunning record found.',
+                            task: contextValues.task
+                        }
+                     });
                  }
              }
          } catch (error) {
@@ -671,11 +706,61 @@
                  subject: "Dunning Script Error",
                  body: error.message
              });
+             context.write({
+                key: context.key,
+                value: {
+                    error: error.toString(),
+                    task: contextValues.task
+                }
+             });
          }
      }
 
      function summarize(summary) {
          var logTitle = 'summarize';
+         let { output } = summary;
+         let tasks = [];
+
+         output.iterator().each((key, value) => {
+            log.debug({ title: `${logTitle} key=${key}`, details: value });
+            let valueJSON = JSON.parse(value);
+            if (tasks.filter(t => t.id === valueJSON.task).length <= 0) {
+                tasks.push({
+                    id: valueJSON.task,
+                    errors: []
+                });
+            }
+            let task = tasks.find(t => t.id === valueJSON.task);
+            log.debug({ title: `${logTitle} task`, details: JSON.stringify(task) });
+
+            if (valueJSON.error) {
+                task.errors.push(valueJSON.error);
+                return true;
+            }
+
+            return true;
+         });
+         log.debug({ title: `${logTitle} tasks`, details: JSON.stringify(tasks) });
+
+         for (let i=0, count=tasks.length; i<count; i++) {
+            let task = tasks[i];
+            let updateValues = {};
+            if (task.errors.length > 0) {
+                updateValues[TASK.Fields.STATUS] = SS_Constants.CustomLists.DataTableTaskStatus.COMPLETED_WITH_ERRORS;
+                updateValues[TASK.Fields.ERRORS] = task.errors.join('\n');
+            }
+            else {
+                updateValues[TASK.Fields.STATUS] = SS_Constants.CustomLists.DataTableTaskStatus.COMPLETED;
+            }
+   
+            record.submitFields({
+                type: TASK.Id,
+                id: task.id,
+                values: updateValues
+            });
+            log.debug({ title: logTitle, details: `Successfully updated task ID ${task.id}.` });
+         }
+
          try {
              log.debug(logTitle, 'End');
          } catch (error) {

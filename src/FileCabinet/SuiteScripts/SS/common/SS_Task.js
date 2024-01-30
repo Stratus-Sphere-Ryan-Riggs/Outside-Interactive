@@ -18,6 +18,7 @@ define(
         return {
             createMapReduceTask(options) {
                 const title = `${MODULE}.CreateMapReduceTask`;
+                log.debug({ title, details: JSON.stringify(options) });
 
                 if (!options.scriptId) {
                     return { status: false, error: 'Missing required value: Script ID.' };

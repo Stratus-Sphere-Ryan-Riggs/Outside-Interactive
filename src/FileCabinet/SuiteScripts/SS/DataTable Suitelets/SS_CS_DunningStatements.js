@@ -247,7 +247,8 @@ define(
                         title: `SUCCESS: ${TITLE}`
                     });
                     applyFilters();
-                }
+                },
+                type: SS_Constants.CustomLists.DataTableSuiteletTypes.DUNNING_STATEMENTS
             });
         };
 

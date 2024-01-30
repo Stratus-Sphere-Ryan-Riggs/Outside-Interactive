@@ -8,12 +8,14 @@ define(
         './SS_Constants',
         './SS_DataTableTask',
         './SS_Search',
+        './SS_Task',
         './SS_UI'
     ],
     (
         SS_Constants,
         SS_DataTableTask,
         SS_Search,
+        SS_Task,
         SS_UI
     ) => {
         const MODULE = `SS|DunningStatements`;
@@ -26,13 +28,13 @@ define(
         const buildSearchFilters = (options) => {
             const TITLE = `${MODULE}.BuildSearchFilters`;
             let {
-                balance,
+                // balance,
                 cas,
                 condition,
                 customer,
-                inProgress,
                 lastcomm,
-                level,
+                levels,
+                openbalanceusd,
                 subsidiary
             } = options;
             log.debug({ title: `${TITLE} options`, details: JSON.stringify(options) });
@@ -73,7 +75,7 @@ define(
                 );
             }
 
-            if (condition && !!balance === true) {
+            if (condition && !!openbalanceusd === true) {
                 let operator = OPERATOR.EQUALTO;
                 switch (condition.toLowerCase()) {
                     case 'equalgreat': {
@@ -86,12 +88,12 @@ define(
                     }
                 }
                 filters = filters.concat([
-                    [ `sum(${TRANSACTION.Fields.AMOUNT_REMAINING})`, operator, balance ],
+                    [ `sum(${TRANSACTION.Fields.AMOUNT_REMAINING})`, operator, openbalanceusd ],
                     'AND'
                 ]);
             }
 
-            let dunningLevel = SS_Constants.CustomLists.DunningLevels.Values.find(d => d.id === level);
+            let dunningLevel = SS_Constants.CustomLists.DunningLevels.Values.find(d => d.id === levels);
             if (dunningLevel) {
                 filters = filters.concat([
                     [ `max(${TRANSACTION.Fields.DAYS_OVERDUE})`, OPERATOR.BETWEEN, dunningLevel.from, dunningLevel.to ],
@@ -112,6 +114,19 @@ define(
             let { body, query, response, script } = options;
             log.debug({ title: `${TITLE} body`, details: body });
             
+            // Build customers array
+            /* let jsonBody = JSON.parse(body);
+            let customers = jsonBody.list.map(d => {
+                let split = d.split('-');
+                return {
+                    customer: split[0],
+                    level: 'Statement',
+                    overrideEmails: d.override,
+                    subsidiary: split[1]
+                };
+            });
+            log.debug({ title: `${TITLE} customers`, details: JSON.stringify(customers) }); */
+
             // Create MR Task
             let dtTask = SS_DataTableTask.create({
                 data: body,
@@ -119,6 +134,15 @@ define(
             });
             log.debug({ title: `${TITLE} dtTask`, details: JSON.stringify(dtTask) });
 
+            let mrTaskParams = {};
+            mrTaskParams[SS_Constants.ScriptParameters.DunningStatementMapReduce.TaskRecord] = dtTask.data;
+            // mrTaskParams[SS_Constants.ScriptParameters.DataTableTaskMapReduce.CustomersArray] = customers;
+            SS_Task.createMapReduceTask({
+                scriptId: SS_Constants.Scripts.DunningStatementsMapReduce.scriptId,
+                params: mrTaskParams
+            });
+
+            // log.debug({ title: TITLE, details: `Successfully created map/reduce task ID ${mrTask.data}.` });
             response.write({
                 output: JSON.stringify(dtTask)
             });

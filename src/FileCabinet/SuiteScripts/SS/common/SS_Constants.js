@@ -214,7 +214,13 @@ define(
                         label: 'Condition',
                         type: 'select',
                         filter: true,
-                        container: 'custpage_filters'
+                        container: 'custpage_filters',
+                        items: [
+                            { text: '', value: '' },
+                            { text: 'Equal To or Greater Than', value: 'equalGreat' },
+                            { text: 'Equal To or Less Than', value: 'equalLess' },
+                            { text: 'Equal To', value: 'equal' }
+                        ]
                     },
                     {
                         id: 'custpage_cas',
@@ -252,6 +258,12 @@ define(
                         type: 'inlinehtml',
                         container: 'custpage_filters'
                     },
+                    /* {
+                        id: 'custpage_table_css',
+                        label: 'CSS',
+                        type: 'inlinehtml',
+                        container: 'custpage_filters'
+                    }, */
                     {
                         id: 'custpage_table',
                         label: 'Table',
@@ -295,8 +307,11 @@ define(
                     deploymentId: 'customdeploy_ss_sl_dt_backend_dunstm'
                 }
             },
-            DataTableTaskMapReduce: {
-                scriptId: 'customscript_ss_mr_dt_task'
+            /* DataTableTaskMapReduce: {
+                scriptId: 'customscript_ss_send_dunning_emails'
+            }, */
+            DunningStatementsMapReduce: {
+                scriptId: 'customscript_ss_mr_dun_stm'
             }
         };
 
@@ -318,7 +333,19 @@ define(
                 TaskFolder              : 'custscript_ss_sl_dt_backend_task_folder'
             },
             DataTableTaskMapReduce      : {
+                CustomersArray          : 'custscript_ss_customers_array',
                 TaskRecord              : 'custscript_ss_mr_dt_task_record'
+            },
+            DunningStatementMapReduce   : {
+                PDFFolder               : 'custscript_ss_mr_dun_stm_invpdf_folder',
+                SearchDunning           : 'custscript_ss_mr_dun_stm_dunning',
+                SearchDunningMessage    : 'custscript_ss_mr_dun_stm_dun_msg',
+                SearchEmailMessage      : 'custscript_ss_mr_dun_stm_email_msg',
+                SearchInvoiceGroupComp  : 'custscript_ss_mr_dun_stm_invgrp_comp',
+                SearchInvoices          : 'custscript_ss_mr_dun_stm_invoices',
+                StatementForm           : 'custscript_ss_mr_dun_stm_form',
+                TaskRecord              : 'custscript_ss_mr_dun_stm_task',
+                TemplateId              : 'custscript_ss_mr_dun_stm_invgrp_template'
             }
         };
 

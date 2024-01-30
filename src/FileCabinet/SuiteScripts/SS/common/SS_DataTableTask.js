@@ -35,19 +35,7 @@ define(
                 let dtTaskId = dtTask.save();
                 log.debug({ title: TITLE, details: `Successfully created Task ID ${dtTaskId}.` });
 
-                let mrTaskParams = {};
-                mrTaskParams[SS_Constants.ScriptParameters.DataTableTaskMapReduce.TaskRecord] = dtTaskId;
-                let mrTask = SS_Task.createMapReduceTask({
-                    scriptId: SS_Constants.Scripts.DataTableTaskMapReduce.scriptId,
-                    params: mrTaskParams
-                });
-                if (mrTask.status === true) {
-                    log.debug({ title: TITLE, details: `Successfully created map/reduce task ID ${mrTask.data}.` });
-                    taskRecord = { status: true, data: dtTaskId };
-                }
-                else {
-                    taskRecord = mrTask;
-                }
+                taskRecord = { status: true, data: dtTaskId };
             }
             catch (ex) {
                 let errorMessage = ex.message || ex.toString();

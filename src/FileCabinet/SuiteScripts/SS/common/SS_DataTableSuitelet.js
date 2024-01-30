@@ -130,6 +130,10 @@ define(
                 response,
                 defaultValues: {
                     custpage_url_values: JSON.stringify(getDefaultUrlValues({ type: scriptParams.type }))
+                    /* custpage_table_css: `<style>body {
+                        transition: background-color 2s cubic-bezier(1, 1, 1, 1);
+                        transition-delay: 0s;
+                    }</style>` */
                 }
             };
             
