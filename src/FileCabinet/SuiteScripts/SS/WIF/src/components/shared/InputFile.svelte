@@ -7,7 +7,7 @@
     export let cls = '';
 
     import { createEventDispatcher } from "svelte";
-    import { formValues } from "../../store/pageData";
+    // import { formValues } from "../../store/pageData";
     const dispatch = createEventDispatcher();
 
     let wrCls = [ 'field' ];
@@ -45,7 +45,7 @@
         /* if (!!value === true) {
             errorSpan.classList.add('hidden');
         } */
-        console.log(`  ++ InputText id=${id} value=${value}`, $formValues);
+        // console.log(`  ++ InputText id=${id} value=${value}`, $formValues);
     };
 </script>
 
