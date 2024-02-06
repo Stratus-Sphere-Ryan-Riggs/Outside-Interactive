@@ -1,40 +1,47 @@
 <script>
-    export let id = "dd_field";
-    export let label = "Dropdown";
+    export let id = "text_field";
+    export let label = "Text Field";
+    export let value = "";
+    export let maxlength = 80;
     export let optional = false;
     export let visible = true;
-    export let value = "";
     export let wr = '';
     export let cls = '';
-    export let items = [];
 
     import { createEventDispatcher } from "svelte";
-    // import { formFields, formValues } from "../../store/pageData";
     const dispatch = createEventDispatcher();
 
     let wrCls = [ 'field' ];
     if (wr) {
         wrCls = wrCls.concat(wr.split(' '));
     }
-    
+
     let fldCls = [ 'fld' ];
     if (cls) {
         fldCls = fldCls.concat(cls.split(' '));
     }
 
     $: isChanged = false;
-    const onChange = () => {
-        let el = document.getElementById(id);
-        console.log(`onChange id = ${id}, optional = ${optional}`, el['value']);
-
+    const onBlur = () => {
+        console.log(`onChange id = ${id}, required = ${optional}`, value);
         isChanged = true;
-        dispatch('change', {
-            id,
-            value: el['value']
-        });
+        dispatch('change', { value });
 
-        // validate();
-    };
+        let errorSpan = document.getElementById(`${id}_error`);
+        if (errorSpan.classList.contains('hidden') === false) {
+            errorSpan.classList.add('hidden');
+        }
+
+        if (optional === true) {
+            console.log(`${id} is optional...`);
+            return;
+        }
+
+        if (!!value === false) {
+            errorSpan.classList.remove('hidden');
+        }
+        // console.log(`  ++ InputText id=${id} value=${value}`, $formValues);
+    }
 </script>
 
 <div class="{wrCls.join(' ')}"
@@ -42,17 +49,20 @@
     class:hidden={visible === false}
 >
     <label for="{id}">{label}</label>
-    <select id="{id}" class="{fldCls.join(' ')}" on:change={onChange} bind:value={value}>
-        {#each items as item}
-            <option value="{item.value}">{item.text}</option>
-        {/each}
-    </select>
+    <input type="text"
+        id="{id}"
+        name="{id}"
+        class="{fldCls.join(' ')}"
+        bind:value="{value}"
+        maxlength="{maxlength}"
+        on:blur="{onBlur}"
+    />
     <span id="{id}_error" class="field-error"
         class:hidden={isChanged === false || !!value === true || optional === true}>{label} is required.</span>
 </div>
 
 <style>
-    select {
+    input[type=text] {
         background-color: white;
         border-radius: 4px;
         padding: 12px 16px;
