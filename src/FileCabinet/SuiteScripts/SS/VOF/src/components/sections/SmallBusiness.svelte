@@ -1,7 +1,8 @@
 <script>
-    import Section from "../form/Section.svelte";
+    import Card from "../form/Card.svelte";
     import InputCheckbox from "../form/InputCheckbox.svelte";
     import InputText from "../form/InputText.svelte";
+    import Row from "../form/Row.svelte";
 
     import { formFields, formValues } from "../../store/pageData";
 
@@ -58,7 +59,7 @@
     };
 </script>
 
-<Section id="{id}" title="{title}">
+<Card {id} {title}>
     <InputCheckbox
         id="{$formFields.IS_BIZ_SMALL}"
         label="Small Business?"
@@ -69,27 +70,29 @@
     <div class="small_biz_opt"
         class:hidden={isNotSmallBiz}
     >
-        <InputText
-            id="{$formFields.NAICS_CODE}"
-            label="NAICS Code"
-            cls="w120"
-            bind:optional={isNotSmallBiz}
-            bind:value={$formValues[$formFields.NAICS_CODE]}
+        <!-- <Row columns=3> -->
+            <InputText
+                id="{$formFields.NAICS_CODE}"
+                label="NAICS Code"
+                cls="w120"
+                bind:optional={isNotSmallBiz}
+                bind:value={$formValues[$formFields.NAICS_CODE]}
+                />
+            <InputText
+                id="{$formFields.REVENUE}"
+                label="Revenue"
+                cls="w120"
+                bind:optional={isNotSmallBiz}
+                bind:value={$formValues[$formFields.REVENUE]}
             />
-        <InputText
-            id="{$formFields.REVENUE}"
-            label="Revenue"
-            cls="w120"
-            bind:optional={isNotSmallBiz}
-            bind:value={$formValues[$formFields.REVENUE]}
-        />
-        <InputText
-            id="{$formFields.NUMBER_OF_EMPLOYEES}"
-            label="Number of Employees"
-            cls="w120"
-            bind:optional={isNotSmallBiz}
-            bind:value={$formValues[$formFields.NUMBER_OF_EMPLOYEES]}
-        />
+            <InputText
+                id="{$formFields.NUMBER_OF_EMPLOYEES}"
+                label="Number of Employees"
+                cls="w120"
+                bind:optional={isNotSmallBiz}
+                bind:value={$formValues[$formFields.NUMBER_OF_EMPLOYEES]}
+            />
+        <!-- </Row> -->
 
         <InputCheckbox
             id="{$formFields.IS_BIZ_WOMEN_OWNED}"
@@ -158,7 +161,7 @@
             bind:checked={$formValues[$formFields.ANTI_BRIBERY_POLICY]}
         />
     </div>
-</Section>
+</Card>
 
 <style>
     .small_biz_opt {

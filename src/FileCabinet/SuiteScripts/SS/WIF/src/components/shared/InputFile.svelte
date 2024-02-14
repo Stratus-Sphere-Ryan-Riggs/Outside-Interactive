@@ -52,7 +52,7 @@
 <div class="{wrCls.join(' ')}"
     class:optional={optional === true}
     class:hidden={visible === false}
->
+    >
     <label for="{id}">{label}</label>
     <input type="file"
         id="{id}"

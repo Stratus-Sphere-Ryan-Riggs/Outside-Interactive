@@ -4,9 +4,9 @@
     import { createEventDispatcher } from "svelte";
     import { onMount } from "svelte";
     
-    import Section from "../form/Section.svelte";
-    import InputText from "../form/InputText.svelte";
+    import Card from "../form/Card.svelte";
     import Dropdown from "../form/Dropdown.svelte";
+    import InputText from "../form/InputText.svelte";
     import Row from "../form/Row.svelte";
 
     export let id = 'legal_address';
@@ -84,49 +84,50 @@
     };
 </script>
 
-<Section id="{id}" title="{title}">
+<Card {id} {title}>
     <Dropdown
         id="{$formFields.COUNTRY}"
         label="Country"
-        cls="country w400"
+        cls="country"
         items={addressCountries}
         bind:value={$formValues[$formFields.COUNTRY]}
         on:change="{onChangeCountry}"
     />
     <InputText
+        id="{$formFields.ADDRESSEE}"
+        label="Addressee"
+        bind:value={$formValues[$formFields.ADDRESSEE]}
+    />
+    <InputText
         id="{$formFields.ADDRESS_1}"
-        label="Legal Address (Line 1)"
+        label="Address - Line 1"
         bind:value={$formValues[$formFields.ADDRESS_1]}
     />
     <InputText
         id="{$formFields.ADDRESS_2}"
-        label="Legal Address (Line 2)"
+        label="Address - Line 2"
         optional
         bind:value={$formValues[$formFields.ADDRESS_2]}
     />
 
+    <Row>
         <InputText
             id="{$formFields.ZIP_CODE}"
             label="Zip Code"
-            cls="zip w80"
+            cls="zip w120"
             bind:value={$formValues[$formFields.ZIP_CODE]}
             on:change={onChangeZip}
         />
         <InputText
             id="{$formFields.CITY}"
             label="City"
-            cls="w240"
             bind:value={$formValues[$formFields.CITY]}
         />
+    </Row>
 
-    <Dropdown
+    <InputText
         id="{$formFields.STATE}"
-        label="State"
-        cls="w240"
-        items={addressStates}
-        bind:optional={statesOptional}
-        bind:visible={statesVisible}
-        bind:this={stateField}
+        label="State/Province"
         bind:value={$formValues[$formFields.STATE]}
     />
-</Section>
+</Card>

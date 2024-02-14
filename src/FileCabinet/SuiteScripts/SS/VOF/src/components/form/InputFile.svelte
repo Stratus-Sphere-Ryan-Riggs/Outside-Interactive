@@ -67,6 +67,11 @@
 
 <style>
     input[type=file] {
-        width: 400px;
+        /* width: 400px; */
+        background-color: white;
+        border-radius: 4px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #DEDEDE;
+        font-size: 0.875rem;
     }
 </style>

@@ -65,7 +65,7 @@
         box-sizing: border-box;
     }
     .field-cb label {
-        font-size: 12px;
+        font-size: 0.875rem;
         padding: 0 4px;
         cursor: pointer;
         display: flex;
@@ -77,11 +77,10 @@
     }
     .field-cb label::before {
         content: '';
-        width: 18px;
-        height: 18px;
+        width: 1.25rem;
+        height: 1.25rem;
         border-radius: 2px;
-        margin-right: 12px;
-        margin-top: -4px;
+        margin-right: 1.125rem;
         border: .05em solid var(--gray-lite-1);
     }
     .field-cb label:hover::before,
@@ -90,7 +89,7 @@
     }
     .field-cb input:checked + label::before {
         content: '\002714';
-        background-color: var(--blue-interactive);
+        background-color: var(--brown-interactive);
         display: flex;
         justify-content: center;
         align-items: center;

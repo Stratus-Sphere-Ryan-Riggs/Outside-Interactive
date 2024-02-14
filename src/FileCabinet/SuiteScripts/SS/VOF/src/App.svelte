@@ -1,13 +1,14 @@
 <script>
+    import Banking from './components/sections/Banking.svelte';
+    import Button from './components/form/Button.svelte';
+    import Documents from './components/sections/Documents.svelte';
     import Header from './components/header/Header.svelte';
-    import Sidebar from './components/sidebar/Sidebar.svelte';
-    import PrimaryInformation from './components/sections/PrimaryInformation.svelte';
     import LegalAddress from './components/sections/LegalAddress.svelte';
+    import PrimaryInformation from './components/sections/PrimaryInformation.svelte';
+    import SmallBusiness from './components/sections/SmallBusiness.svelte';
+
     import RemittanceAddress from './components/sections/RemittanceAddress.svelte';
     import AdditionalInfo from './components/sections/AdditionalInfo.svelte';
-    import Documents from './components/sections/Documents.svelte';
-    import Banking from './components/sections/Banking.svelte';
-    import SmallBusiness from './components/sections/SmallBusiness.svelte';
     import Footer from './components/footer/Footer.svelte';
 
     let isUS = true;
@@ -23,30 +24,46 @@
     </div>
 </div>
 
-<Header title="New Vendor Request / Amendment" />
-
 <main>
-    <Sidebar />
+    <div class="sections">
+        <Header />
+        <PrimaryInformation title="Main Vendor Information" />
+        <LegalAddress on:change-country={onChangeCountry} />
+        <Documents title="Vendor Documents" />
+        <SmallBusiness title="Small Business Categories" />
+        <Banking title="Banking Information" />
+    </div>
 
-    <div class="content">
-        <span class="reminder">Please ensure all required details are fully completed.</span>
-        <div class="sections">
-            <PrimaryInformation />
-            <LegalAddress on:change-country={onChangeCountry} />
-            <RemittanceAddress />
-            <AdditionalInfo bind:isUS={isUS} />
-            <Documents />
-            <Banking />
-            <SmallBusiness />
+    <div class="buttons">
+        <div class="left">
+            <Button id="back" label="Back" />
+            <Button id="clear" label="Clear" />
         </div>
-
-        <Footer />
+        <div class="right">
+            <Button id="next" label="Next" />
+            <Button id="submit" label="Submit" submit />
+        </div>
     </div>
 </main>
 
 <style>
     main {
-        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        /* flex: 1; */
+        /* display: grid;
+        grid-template-columns: 300px 1fr; */
+        max-width: 720px;
+        min-width: 480px;
+        width: 50%;
+        margin: 0 auto;
+        padding-bottom: 4rem;
+        /* padding-top: 100px; */
+        /* border-left: 1px solid white; */
+        /* border-right: 1px solid white; */
+
+        /* flex: 1;
         display: grid;
         grid-template-columns: 300px 1fr;
         max-width: 1080px;
@@ -55,9 +72,14 @@
         padding-top: 100px;
         background-color: white;
         border-left: 20px solid white;
-        border-right: 20px solid white;
+        border-right: 20px solid white; */
     }
-    .content {
+    .sections {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    /* .content {
         display: flex;
         flex-direction: column;
         gap: 20px;
@@ -66,7 +88,7 @@
         display: flex;
         flex-direction: column;
         gap: 60px;
-    }
+    } */
     #overlay{	
         position: fixed;
         top: 0;
@@ -93,5 +115,16 @@
         100% { 
             transform: rotate(360deg); 
         }
+    }
+    .buttons, .left, .right {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .buttons {
+        justify-content: space-between;
+    }
+    .buttons .left, .buttons .right {
+        gap: 12px;
     }
 </style>

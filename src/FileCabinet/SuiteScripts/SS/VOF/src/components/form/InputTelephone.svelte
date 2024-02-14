@@ -14,7 +14,7 @@
         wrCls.push('optional');
     }
 
-    let fldCls = [ 'fld', 'w120' ];
+    let fldCls = [ 'fld', 'w160' ];
     if (cls) {
         fldCls = fldCls.concat(cls.split(' '));
     }

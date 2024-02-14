@@ -1,5 +1,5 @@
 <script>
-    import Section from "../form/Section.svelte";
+    import Card from "../form/Card.svelte";
     import InputFile from "../form/InputFile.svelte";
 
     import { formFields, formValues } from "../../store/pageData";
@@ -39,24 +39,31 @@
     };
 </script>
 
-<Section id="{id}" title="{title}">
+<Card {id} {title}>
     <InputFile
-        id="custrecord_vr_w9"
-        label="W-9"
-        bind:optional={w9Optional}
-        bind:visible={w9Visible}
+        id="{$formFields.W9}"
+        label="W-9/W-8"
         on:change={onFileChange}
     />
     <InputFile
-        id="custrecord_vr_certofinsurance"
+        id="{$formFields.CERTIFICATE_OF_INSURANCE}"
         label="Certificate of Insurance"
-        bind:optional={insuranceOptional}
         on:change={onFileChange}
     />
     <InputFile
-        id="custrecord_signed_tc"
-        label="Terms & Conditions"
+        id="{$formFields.SOC_CERTIFICATE}"
+        label="SOC"
+        on:change={onFileChange}
+    />
+    <InputFile
+        id="{$formFields.DATA_BREACH_REPORT}"
+        label="Data Breach Report"
         optional
         on:change={onFileChange}
     />
-</Section>
+    <InputFile
+        id="{$formFields.OFAC_CHECK}"
+        label="OFAC Check"
+        on:change={onFileChange}
+    />
+</Card>

@@ -1,17 +1,31 @@
 :root {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    /* line-height: 1.5; */
+    line-height: 1.5;
     font-weight: 400;
+    font-size: 16px;
+    /* font-size: 12px; */
+    /* line-height: 1.5; */
+    /* font-weight: 400; */
 
     /* background-color: #242424; */
+    color-scheme: light dark;
+    color: #666;
 
+    background-color: rgb(219, 206, 180);
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    --blue-pantone: #002D72;
+    --brown-interactive: rgb(135, 91, 5);
+    --gray-pantone: #676C73;
+    --gray-process: #5A6666;
+    --gray-interactive: #3C444B;
+    --gray-text-1: #666;
+    --gray-lite-1: #CCC;
+    --gray-lite-2: #DEDEDE;
+
+    /* --blue-pantone: #002D72;
     --blue-process: #0041C4;
     --blue-bg: #004B8D;
     --blue-interactive: #204C8A;
@@ -20,9 +34,13 @@
     --gray-interactive: #3C444B;
     --gray-text-1: #666;
     --gray-lite-1: #CCC;
-    --gray-lite-2: #DEDEDE;
+    --gray-lite-2: #DEDEDE; */
 }
 
+* {
+    box-sizing: border-box;
+}
+  
 html, body {
     height: 100%;
 }
@@ -32,18 +50,24 @@ html {
 }
 
 body {
-    background-color: var(--blue-bg);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-size: 1rem;
+    /* background-color: var(--blue-bg);
     color: var(--gray-interactive);
     margin: 0;
-    min-height: 100vh;
+    min-height: 100vh; */
 }
 
 .container {
     width: 70%;
-    max-width: 1080px;
-    min-width: 800px;
+    max-width: 720px;
+    min-width: 480px;
     margin: auto;
     position: relative;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
 }
 
 .hidden {
@@ -67,22 +91,25 @@ body {
     gap: 4px;
 }
 .field > label {
-    font-size: 12px;
+    font-size: 0.875rem;
     padding: 0 4px;
     font-weight: 600;
 }
 .field.optional > label {
-    font-weight: 400;
+    font-weight: 300;
 }
 .field.optional > label::after {
     content: ' - Optional';
-    font-weight: 400;
+    font-weight: 300;
     font-style: italic;
 }
 .field-error {
     color: red;
-    font-size: 12px;
-    padding: 0 8px;
+    font-size: 0.8125rem;
+    padding: 0 4px;
+}
+.field.inline > .content {
+    padding: 0.75rem 0.25rem;
 }
 .fld {
     border: 1px solid var(--gray-lite-1);
@@ -94,10 +121,10 @@ body {
 .field-rb-grp {
     display: flex;
     flex-direction: row;
-    gap: 16px;
+    gap: 1rem;
 }
 .field-rb {
-    padding: 12px 0;
+    padding: 0.75rem 0;
 }
 .field-rb input[type=radio] {
     display: none;
@@ -106,21 +133,28 @@ body {
 .field-rb label {
     position: relative;
     cursor: pointer;
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     border: 2px solid var(--gray-lite-2);
-    border-radius: 8px;
+    border-radius: 0.25rem;
     /* transition: all 100ms ease-in-out; */
 }
 .field-rb input[type=radio]:checked + label {
-    background-color: var(--blue-interactive);
-    border: 2px solid var(--blue-interactive);
+    background-color: var(--brown-interactive);
+    border: 2px solid var(--brown-interactive);
     opacity: 0.9;
     color: white;
     font-weight: 600;
 }
 .field-rb input[type=radio]:checked + label::before {
     content: '\002714';
-    margin-right: 12px;
+    margin-right: 0.75rem;
+}
+.blurb {
+    line-height: 1.8;;
+}
+.blurb .title {
+    font-weight: bold;
+    font-size: 1.125rem;
 }
 .w400 {
     width: 400px !important;
@@ -149,6 +183,14 @@ body {
     display: inline-block;
     box-sizing: border-box;
     animation: rotation 1s linear infinite;
+}
+input[type=text],
+input[type=tel] {
+    background-color: white;
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #DEDEDE;
+    font-size: 0.875rem;
 }
 
 @keyframes rotation {

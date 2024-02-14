@@ -76,4 +76,12 @@
         class:hidden={isChanged === false || !!value === true || optional === true}>{label} is required.</span>
 </div>
 
-<style></style>
+<style>
+    select {
+        background-color: white;
+        border-radius: 4px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #DEDEDE;
+        font-size: 0.875rem;
+    }
+</style>

@@ -2,18 +2,20 @@
     import { countryStates, currencies, formFields, formValues } from "../../store/pageData";
     import { onMount } from "svelte";
 
-    import Section from "../form/Section.svelte";
-    import InputText from "../form/InputText.svelte";
+    import Blurb from "../form/Blurb.svelte";
+    import Card from "../form/Card.svelte";
     import Dropdown from "../form/Dropdown.svelte";
+    import InputCheckbox from "../form/InputCheckbox.svelte";
+    import InputText from "../form/InputText.svelte";
     import RadioGroup from "../form/RadioGroup.svelte";
     import Row from "../form/Row.svelte";
 
     export let id = 'banking';
     export let title = 'Banking';
 
-    let bankingMethods = [
-        { text: 'Domestic (United States)', value: '1' },
-        { text: 'International', value: '2' }
+    let paymentMethods = [
+        { text: 'Wire', value: '1' },
+        { text: 'ACH/EFT', value: '2' }
     ];
     let accountTypes = [
         { text: 'Checking', value: '1' },
@@ -72,9 +74,9 @@
         isInternational = !isDomestic;
 
         if (e.origin !== 'method') {
-            bankingMethod = isDomestic === true ? '1' : '2';
+            paymentMethod = isDomestic === true ? '1' : '2';
             formValues.update(o => {
-                o[$formFields.BANK_DETAIL_METHOD] = bankingMethod;
+                o[$formFields.BANK_DETAIL_METHOD] = paymentMethod;
                 return o;
             });
         }
@@ -102,14 +104,14 @@
         }));
     }
 
-    const onChangeBankingMethod = (e) => {
-        console.log(`onChangeBankingMethod value = ${e.detail.value}`);
-        bankingMethod = e.detail.value;
+    const onChangePaymentMethod = (e) => {
+        console.log(`onChangePaymentMethod value = ${e.detail.value}`);
+        paymentMethod = e.detail.value;
         formValues.update(o => {
             o[$formFields.BANK_DETAIL_METHOD] = e.detail.value;
             return o;
         });
-        console.log(`onChangeBankingMethod updated BANK_DETAIL_METHOD = ${$formValues[$formFields.BANK_DETAIL_METHOD]}`);
+        console.log(`onChangePaymentMethod updated BANK_DETAIL_METHOD = ${$formValues[$formFields.BANK_DETAIL_METHOD]}`);
 
         onChangeCountry({
             origin: 'method',
@@ -136,7 +138,7 @@
     $: bankCurrency = '';
     $: isDomestic = bankCountry === 'United States';
     $: isInternational = !isDomestic;
-    $: bankingMethod = isDomestic === true ? '1' : '2';
+    $: paymentMethod = isDomestic === true ? '1' : '2';
     $: isUK = bankCountry === 'United Kingdom';
     $: isNotUK = !isUK;
     $: hasStates = false;
@@ -151,7 +153,7 @@
             (bankCountry === 'United States' ? 'USD' : '');
         isDomestic = bankCountry === 'United States';
         isInternational = !isDomestic;
-        bankingMethod = isDomestic === true ? '1' : '2';
+        paymentMethod = isDomestic === true ? '1' : '2';
         isUK = bankCountry === 'United Kingdom';
         isNotUK = !isUK;
         hasStates = false;
@@ -187,96 +189,136 @@
     });
 </script>
 
-<Section id="{id}" title="{title}">
-    <RadioGroup
-        id="{$formFields.BANK_DETAIL_METHOD}"
-        label="Banking Method (Select one)"
-        bind:items={bankingMethods}
-        bind:value={bankingMethod}
-        on:change={onChangeBankingMethod}
-    />
+<Card {id} {title}>
     <Dropdown
-        id="{$formFields.BANK_COUNTRY}"
-        label="Country"
-        cls="country w400"
-        bind:items={bankCountries}
-        bind:value={bankCountry}
-        on:change={onChangeCountry}
-    />
-    <Dropdown
-        id="{$formFields.BANK_CURRENCY}"
+        id="{$formFields.CURRENCY}"
         label="Currency"
         cls="currency w160"
         bind:items={bankCurrencies}
         bind:value={bankCurrency}
         on:change={onChangeCurrency}
     />
-    <InputText
-        id="{$formFields.RECEIVING_BANK_NAME}"
-        label="Receiving Bank Name"
-        bind:value={$formValues[$formFields.RECEIVING_BANK_NAME]}
+    <RadioGroup
+        id="{$formFields.PAYMENT_TYPE}"
+        label="Payment Method"
+        bind:items={paymentMethods}
+        bind:value={paymentMethod}
+        on:change={onChangePaymentMethod}
     />
-    <InputText
-        id="{$formFields.BANK_STREET}"
-        label="Receiving Bank Street Address"
-        wr="bank_intl"
-        optional
-        bind:visible={isInternational}
-        bind:value={$formValues[$formFields.BANK_STREET]}
+    <Dropdown
+        id="{$formFields.BANK_COUNTRY}"
+        label="Bank Country"
+        cls="country w400"
+        bind:items={bankCountries}
+        bind:value={bankCountry}
+        on:change={onChangeCountry}
+    />
+    
+    <Blurb id="blurb_legal_disclaimer">
+        <span class="title">Legal Disclaimer</span>
+        <span class="blurb">I (we) hereby authorize Outside Interactive Inc. or its affiliated entities (THE COMPANY) to initiate entries to my (our) checking/savings accoutns at the financial institution listed below (THE FINANCIAL INSTITUTION), and, if nevessary, initiate adjustments for any transations credited/debited in error. This authority will remain in effect until THE COMPANY is notified by me (us) in writing to cancel it in such time as to afford THE COMPANY and THE FINANCIAL INSTITUTION a reasonable opportunity to act on it.</span>
+    </Blurb>
+
+    <InputCheckbox
+        id="{$formFields.LEGAL_DISCLAIMER}"
+        label="Do you agree?"
+        bind:checked={$formValues[$formFields.LEGAL_DISCLAIMER]}
     />
 
-    <Row
+    <InputCheckbox
+        id="{$formFields.FPS_ID}"
+        label="Do you have an FPS ID?"
+        checked={false}
+        on:change={onChangeTypeOfAccount}
+    />
+
+    <InputText
+        id="{$formFields.FPS_ID_IS_YES}"
+        label="Email, FPS ID, or Mobile Number Linked to Recipient's Account"
+        bind:value={$formValues[$formFields.FPS_ID_IS_YES]}
+    />
+
+    <InputText
+        id="{$formFields.ACCOUNT_HOLDER_FULL_NAME}"
+        label="Full Name of Account Holder"
+        bind:value={$formValues[$formFields.ACCOUNT_HOLDER_FULL_NAME]}
+    />
+
+    <InputText
+        id="{$formFields.IBAN}"
+        label="IBAN"
+        cls="w80"
+        optional
         bind:visible={isInternational}
-    >
+        bind:value={$formValues[$formFields.IBAN]}
+    />
+
+    <InputText
+        id="{$formFields.SWIFT_BIC_CODE}"
+        label="SWIFT/BIC Code"
+        cls="w160"
+        bind:value={$formValues[$formFields.SWIFT_BIC_CODE]}
+    />
+
+    <InputText
+        id="{$formFields.BANK_SORT_CODE}"
+        label="UK Sort Code"
+        cls="w120"
+        bind:optional={isNotUK}
+        bind:visible={isUK}
+        bind:value={$formValues[$formFields.BANK_SORT_CODE]}
+    />
+    
+    <Row>
+        <InputText
+            id="{$formFields.BANK_ROUTING_NUMBER}"
+            label="ACH Routing Number"
+            cls="w160"
+            bind:value={$formValues[$formFields.BANK_ROUTING_NUMBER]}
+        />
+        <InputText
+            id="{$formFields.ACCOUNT_NUMBER}"
+            label="Account Number"
+            cls="w160"
+            bind:value={$formValues[$formFields.ACCOUNT_NUMBER]}
+        />
+    </Row>
+
         <InputText
             id="{$formFields.BANK_CITY}"
-            label="Receiving Bank City"
-            wr="bank_intl"
+            label="City"
             cls="w240"
-            optional
             bind:visible={isInternational}
             bind:value={$formValues[$formFields.BANK_CITY]}
         />
+        <InputText
+            id="{$formFields.BANK_STREET}"
+            label="Recipient Address"
+            bind:visible={isInternational}
+            bind:value={$formValues[$formFields.BANK_STREET]}
+        />
+
         <InputText
             id="{$formFields.BANK_ZIP}"
             label="Postal Code"
             wr="bank_intl"
             cls="w80"
-            optional
             bind:visible={isInternational}
             bind:value={$formValues[$formFields.BANK_ZIP]}
         />
-    </Row>
 
-    <Dropdown
-        id="{$formFields.BANK_STATE}"
-        label="Receiving State/Province"
-        wr="bank_intl"
-        cls="w240"
-        bind:items={bankStates}
-        optional
-        bind:visible={hasStates}
-        bind:value={$formValues[$formFields.BANK_STATE]}
+    <InputText
+        id="{$formFields.REMITTANCE_EMAIL}"
+        label="Email for Remittance"
+        bind:value={$formValues[$formFields.REMITTANCE_EMAIL]}
     />
 
-    <Row>
-        <RadioGroup
-            id="{$formFields.TYPE_OF_ACCOUNT}"
-            label="Type of Account (Select one)"
-            bind:items={accountTypes}
-            bind:value={typeOfAccount}
-            on:change={onChangeTypeOfAccount}
-        />
-
-        <InputText
-            id="{$formFields.CREDITOR_SWIFT_CODE}"
-            label="Credit Agent BIC / Swift Code"
-            wr="bank_intl"
-            cls="w80"
-            optional
-            bind:value={$formValues[$formFields.CREDITOR_SWIFT_CODE]}
-        />
-    </Row>
+    <InputText
+        id="{$formFields.DIFFERENT_NAME}"
+        label="Name (if different from account holder name)"
+        optional
+        bind:value={$formValues[$formFields.DIFFERENT_NAME]}
+    />
 
     <Row>
         <InputText
@@ -323,15 +365,6 @@
         bind:visible={isInternational}
     >
         <InputText
-            id="{$formFields.IBAN}"
-            label="IBAN"
-            wr="bank_intl"
-            cls="w80"
-            optional
-            bind:visible={isInternational}
-            bind:value={$formValues[$formFields.IBAN]}
-        />
-        <InputText
             id="{$formFields.BSB_CODE}"
             label="BSB Code"
             wr="bank_intl"
@@ -342,24 +375,4 @@
         />
     </Row>
 
-    <InputText
-        id="{$formFields.BANK_SORT_CODE}"
-        label="Bank Sort Code (UK only)"
-        wr="bank_intl"
-        cls="w120"
-        bind:optional={isNotUK}
-        bind:visible={isUK}
-        bind:value={$formValues[$formFields.BANK_SORT_CODE]}
-    />
-    <InputText
-        id="{$formFields.PURPOSE_OF_PAYMENT}"
-        label="Purpose of Payment"
-        wr="bank_intl"
-        bind:value={$formValues[$formFields.PURPOSE_OF_PAYMENT]}
-    />
-    <InputText
-        id="{$formFields.MISC_BANKING_DETAILS}"
-        label="Miscellaneous Banking Details"
-        bind:value={$formValues[$formFields.MISC_BANKING_DETAILS]}
-    />
-</Section>
+</Card>
