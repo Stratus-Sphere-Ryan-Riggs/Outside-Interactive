@@ -4,7 +4,6 @@
     export let id = (new Date()).getTime().toString();
     export let notitle = false;
     export let compress = false;
-    
 </script>
 
 <div class="card" data-id={id}>

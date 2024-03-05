@@ -3,6 +3,7 @@
     export let label = "Text Area Field";
     export let value = "";
     export let optional = false;
+    export let visible = true;
     export let wr = '';
     export let cls = '';
     
@@ -30,6 +31,7 @@
 
 <div class="{wrCls.join(' ')}"
     class:optional={optional === true}
+    class:hidden={visible === false}
 >
     <label for="{id}">{label}</label>
     <textarea id="{id}" class="{fldCls.join(' ')}" on:blur={onBlur} bind:value={value}></textarea>

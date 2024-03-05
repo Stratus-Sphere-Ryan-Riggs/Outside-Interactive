@@ -69,7 +69,7 @@
         {#each items as item}
             <!-- <option value="{item.value}" selected={item.value === value || item.text === value}>{item.text}</option> -->
             <!-- <option value="{item.text}" selected={item.text === value}>{item.text}</option> -->
-            <option value="{item.text}">{item.text}</option>
+            <option value="{item.id||item.text}">{item.text}</option>
         {/each}
     </select>
     <span id="{id}_error" class="field-error"

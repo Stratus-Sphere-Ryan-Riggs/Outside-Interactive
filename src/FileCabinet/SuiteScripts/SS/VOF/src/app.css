@@ -98,8 +98,13 @@ body {
 .field.optional > label {
     font-weight: 300;
 }
-.field.optional > label::after {
+.field.optional:not(.optional-no-label) > label::after {
     content: ' - Optional';
+    font-weight: 300;
+    font-style: italic;
+}
+.field.optional.optional-no-label > label::after {
+    content: '';
     font-weight: 300;
     font-style: italic;
 }

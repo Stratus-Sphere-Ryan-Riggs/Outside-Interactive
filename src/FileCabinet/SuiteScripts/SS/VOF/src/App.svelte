@@ -3,18 +3,16 @@
     import Button from './components/form/Button.svelte';
     import Documents from './components/sections/Documents.svelte';
     import Header from './components/header/Header.svelte';
-    import LegalAddress from './components/sections/LegalAddress.svelte';
     import PrimaryInformation from './components/sections/PrimaryInformation.svelte';
-    import SmallBusiness from './components/sections/SmallBusiness.svelte';
-
-    import RemittanceAddress from './components/sections/RemittanceAddress.svelte';
-    import AdditionalInfo from './components/sections/AdditionalInfo.svelte';
-    import Footer from './components/footer/Footer.svelte';
+    import NameAndAddress from './components/sections/NameAndAddress.svelte';
 
     let isUS = true;
+    $: country = '';
     const onChangeCountry = (e) => {
         console.log(`App onChangeCountry`, e.detail);
-        isUS = e.detail.value.toLowerCase() === 'united states';
+        country = e.detail.value.toLowerCase();
+        console.log('country', country);
+        // isUS = country === 'united states';
     };
 </script>
 
@@ -28,9 +26,8 @@
     <div class="sections">
         <Header />
         <PrimaryInformation title="Main Vendor Information" />
-        <LegalAddress on:change-country={onChangeCountry} />
-        <Documents title="Vendor Documents" />
-        <SmallBusiness title="Small Business Categories" />
+        <NameAndAddress title="Name and Address" />
+        <Documents title="Documents" />
         <Banking title="Banking Information" />
     </div>
 

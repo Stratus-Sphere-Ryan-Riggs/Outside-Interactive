@@ -7,8 +7,9 @@
     import RadioGroup from "../form/RadioGroup.svelte";
     import TextArea from "../form/TextArea.svelte";
     
-    import { formFields, formValues, taxClassifications } from "../../store/pageData";
+    import { countryStates, formFields, formValues, dropdownData, radioData } from "../../store/pageData";
     import Row from "../form/Row.svelte";
+    import { fields } from "../../store/fields";
 
     export let id = 'primary_information';
     export let title = 'Primary Information';
@@ -17,6 +18,17 @@
         { text: 'Individual', value: '1' },
         { text: 'Company', value: '2' }
     ];
+
+    let taxClassifications = [];
+    taxClassifications = taxClassifications.concat(
+        $dropdownData[$formFields.TAX_CLASSIFICATION].map(c => {
+            return {
+                text: c.name,
+                id: c.id
+            };
+        })
+    );
+    console.log('taxClassifications', taxClassifications);
 
     const onChangeVendorType = (e) => {
         console.log(`onChangeVendorType value = ${e.detail.value}`);
@@ -27,6 +39,7 @@
         });
         console.log(`onChangeVendorType updated CATEGORY = ${$formValues[$formFields.CATEGORY]}`);
 
+        vendorType = $formValues[$formFields.CATEGORY];
         /* onChangeCountry({
             origin: 'method',
             detail: {
@@ -40,13 +53,40 @@
         }); */
     };
 
+    /* const changeCountry = (c) => {
+        isUS = c.toLowerCase() === 'united states';
+        notUS = !isUS;
+        // isUSCompany = isCompany === true && isUS === true;
+        // notUSCompany = (isCompany === true && isUS === false) || isIndividual === true;
+        isUSCompany = isCompany === true && isUS === true;
+        notUSCompany = isCompany === true && isUS === false;
+        isUSIndividual = isIndividual === true && isUS === true;
+        notUSIndividual = isIndividual === true && isUS === false;
+
+        console.log(`PrimaryInformation changeCountry`, `isCompany = ${isCompany}; isIndividual = ${isIndividual}; isUS = ${isUS}; isUSCompany = ${isUSCompany}; notUS = ${notUS}; notUSCompany = ${notUSCompany}`);
+        taxIdLabel = `Tax ID ${isUS === true ? '(XX-XXXXXXX)' : ''}`;
+    }; */
+
+    // $: country = $formValues[$formFields.COUNTRY];
+    // $: changeCountry($formValues[$formFields.COUNTRY]);
+    $: taxIdLabel = '';
     $: vendorType = $formValues[$formFields.CATEGORY];
     $: isIndividual = vendorType === '1';
     $: isCompany = !isIndividual;
-    // console.log(`formValues`, formValues);
-</script>
+    $: outsideRepContact = `${$formValues[$formFields.REQUESTER_FIRST_NAME]} ${$formValues[$formFields.REQUESTER_LAST_NAME]}`;
+    // $: paymentTerms = $formValues[$formFields.PAYMENT_TERMS];
+    console.log(`dropdownData`, $dropdownData);
 
-<Card {id} {title}>
+    $: isUS = $formValues[$formFields.COUNTRY].toLowerCase() === 'united states';
+    $: notUS = !isUS;
+    $: isUSCompany = isCompany === true && isUS === true;
+    $: notUSCompany = isCompany === true && isUS === false;
+    $: isUSIndividual = isIndividual === true && isUS === true;
+    $: notUSIndividual = isIndividual === true && isUS === false;
+    console.log(`MOUNT REACTIVE`, `isUS = ${isUS}; isUSCompany = ${isUSCompany}; notUS = ${notUS}; notUSCompany = ${notUSCompany}; isUSIndividual = ${isUSIndividual}; notUSIndividual = ${notUSIndividual}`);
+
+    /*
+    <!-- For removal -->
     <RadioGroup
         id="{$formFields.CATEGORY}"
         label="Type"
@@ -54,36 +94,13 @@
         bind:value={vendorType}
         on:change={onChangeVendorType}
     />
-    <InputText
-        id="{$formFields.FIRST_NAME}"
-        label="First Name"
-        bind:value={$formValues[$formFields.FIRST_NAME]}
-        bind:optional={isCompany}
-        bind:visible={isIndividual}
-    />
-    <InputText
-        id="{$formFields.LAST_NAME}"
-        label="Last Name"
-        bind:value={$formValues[$formFields.LAST_NAME]}
-        bind:optional={isCompany}
-        bind:visible={isIndividual}
-    />
-    <InputText
-        id="{$formFields.COMPANY_NAME}"
-        label="Company Legal Name"
-        bind:value={$formValues[$formFields.COMPANY_NAME]}
-        bind:optional={isIndividual}
-        bind:visible={isCompany}
-    />
-    <InputText
-        id="{$formFields.DBA}"
-        label="DBA"
-        bind:value={$formValues[$formFields.DBA]}
-        optional
-    />
+    */
+</script>
+
+<Card {id} {title}>
     <InputText
         id="{$formFields.PURCHASING_CONTACT}"
-        label="Purchasing Contact"
+        label="Purchasing Contact Name"
         bind:value={$formValues[$formFields.PURCHASING_CONTACT]}
     />
     <InputText
@@ -94,13 +111,11 @@
     <InputText
         id="{$formFields.MAIN_ACCT_CONTACT}"
         label="Main Accounting Contact"
-        optional
         bind:value={$formValues[$formFields.MAIN_ACCT_CONTACT]}
     />
     <InputText
         id="{$formFields.MAIN_ACCT_CONTACT_EMAIL}"
         label="Main Accounting Contact Email"
-        optional
         bind:value={$formValues[$formFields.MAIN_ACCT_CONTACT_EMAIL]}
     />
     <InputTelephone
@@ -111,49 +126,12 @@
     <InputInline
         id="{$formFields.OUTSIDE_REP_CONTACT}"
         label="Name of Outside Rep Contact"
-        bind:value={$formValues[$formFields.OUTSIDE_REP_CONTACT]}
+        bind:value={outsideRepContact}
     />
     <TextArea
         id="{$formFields.VENDOR_COMMENTS}"
         label="Vendor Comments"
         bind:value={$formValues[$formFields.VENDOR_COMMENTS]}
-    />
-    <InputInline
-        id="{$formFields.PAYMENT_TERMS}"
-        label="Reinforcement of Company Payment Terms"
-        bind:value={$formValues[$formFields.PAYMENT_TERMS]}
-    />
-
-    <Row>
-        <InputText
-            id="{$formFields.TAX_ID_US}"
-            label="Tax ID"
-            cls="w160"
-            bind:optional={isCompany}
-            bind:value={$formValues[$formFields.TAX_ID_US]}
-        />
-        <InputText
-            id="{$formFields.SSN}"
-            label="SSN"
-            cls="w160"
-            bind:optional={isCompany}
-            bind:value={$formValues[$formFields.SSN]}
-        />
-        <InputText
-            id="{$formFields.TAX_ID_NON_US}"
-            label="Non-US Tax ID"
-            cls="w160"
-            visible={false}
-            bind:optional={isIndividual}
-            bind:value={$formValues[$formFields.TAX_ID_NON_US]}
-        />
-    </Row>
-
-    <Dropdown
-        id="{$formFields.TAX_CLASSIFICATION}"
-        label="Tax Classification"
-        items={$taxClassifications}
-        bind:value={$formValues[$formFields.TAX_CLASSIFICATION]}
     />
 
 </Card>

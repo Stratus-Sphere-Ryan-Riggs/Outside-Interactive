@@ -19,24 +19,13 @@ define(
 
         const getLegalAddress = (record) => {
             return {
+                addressee: record.getValue({ fieldId: FIELDS.ADDRESSEE }),
                 address_1: record.getValue({ fieldId: FIELDS.ADDRESS_1 }),
                 address_2: record.getValue({ fieldId: FIELDS.ADDRESS_2 }),
                 city: record.getValue({ fieldId: FIELDS.CITY }),
                 state: record.getText({ fieldId: FIELDS.STATE }),
                 zip: record.getValue({ fieldId: FIELDS.ZIP_CODE }),
                 country: record.getText({ fieldId: FIELDS.COUNTRY }),
-            };
-        };
-
-        const getRemittanceAddress = (record) => {
-            return {
-                sameAsLegal: record.getValue({ fieldId: FIELDS.SAME_AS_LEGAL_ADDRESS }),
-                address_1: record.getValue({ fieldId: FIELDS.REMIT_TO_ADDR_1 }),
-                address_2: record.getValue({ fieldId: FIELDS.REMIT_TO_ADDR_2 }),
-                city: record.getValue({ fieldId: FIELDS.REMIT_TO_CITY }),
-                state: record.getText({ fieldId: FIELDS.REMIT_TO_STATE }),
-                zip: record.getValue({ fieldId: FIELDS.REMIT_TO_ZIP }),
-                country: record.getText({ fieldId: FIELDS.REMIT_TO_COUNTRY }),
             };
         };
 
@@ -53,6 +42,10 @@ define(
                 ...sublist,
                 fieldId: 'addressbookaddress'
             });
+            // let companyName = record.getHeaderValue({ fieldId: SS_Constants.Entity.COMPANY_NAME });
+            // log.debug({ title: `${TITLE}`, details: `companyName = ${companyName}` });
+            
+            addr.setValue({ fieldId: 'addressee', value: address.addressee });
             addr.setText({ fieldId: 'country', text: address.country });
             addr.setValue({ fieldId: 'city', value: address.city });
             addr.setText({ fieldId: 'state', text: address.state });
@@ -78,8 +71,7 @@ define(
             });
 
             let legalAddress = getLegalAddress(vendorRequest);
-            let remittanceAddress = getRemittanceAddress(vendorRequest);
-            log.debug({ title: `remittanceAddress`, details: JSON.stringify(remittanceAddress) });
+            log.debug({ title: `legalAddress`, details: JSON.stringify(legalAddress) });
 
             let vendor = SS_Record.load({
                 type: SS_Record.Type.VENDOR,
@@ -89,21 +81,11 @@ define(
 
             createAddressBookLine({
                 address: legalAddress,
-                defaultBilling: remittanceAddress.sameAsLegal,
+                defaultBilling: true,
                 defaultShipping: true,
                 label: legalAddress.address_1,
                 record: vendor
             });
-
-            if (remittanceAddress.sameAsLegal === false) {
-                createAddressBookLine({
-                    address: remittanceAddress,
-                    defaultBilling: true,
-                    defaultShipping: false,
-                    label: remittanceAddress.address_1,
-                    record: vendor
-                });
-            }
             
             let id = vendor.save();
             log.debug({ title: TITLE, details: `Addresses for vendor ${id} were successfully created.` });

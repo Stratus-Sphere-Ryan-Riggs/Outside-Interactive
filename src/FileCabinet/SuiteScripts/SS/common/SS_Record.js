@@ -57,6 +57,10 @@ define(
                 return output;
             }
 
+            getCurrentSublistSubrecord(options) {
+                return this.record.getCurrentSublistSubrecord(options);
+            }
+
             getField(options) {
                 return this.record.getField(options);
             };
@@ -132,6 +136,10 @@ define(
                 return output;
             }
 
+            getSublistSubrecord(options) {
+                return this.record.getSublistSubrecord(options);
+            }
+
             getSublistValue(options) {
                 let { sublistId, fieldId, line = 0 } = options;
                 if (!sublistId) { return ''; }
@@ -162,7 +170,7 @@ define(
             }
 
             getText(options) {
-                return this.record.getValue(options);
+                return this.record.getText(options);
             }
 
             getTexts(options) {
@@ -256,6 +264,36 @@ define(
                 let { sublistId, values } = options;
                 for (const [fieldId, value] of Object.entries(values)) {
                     this.setCurrentSublistValue({ sublistId, fieldId, value });
+                }
+            }
+
+            setHeaderText(options) {
+                if (options.skipEmpty === true && !!options.value?.trim() === false) {
+                    return;
+                }
+
+                log.debug({ title: `Record setHeaderText`, details: JSON.stringify(options) });
+                this.record.setText(options);
+            }
+
+            setHeaderTexts(options) {
+                for (const [fieldId, value] of Object.entries(options)) {
+                    this.setHeaderText({ fieldId, value });
+                }
+            }
+
+            setHeaderValue(options) {
+                if (options.skipEmpty === true && !!options.value?.trim() === false) {
+                    return;
+                }
+
+                log.debug({ title: `Record setHeaderValue`, details: JSON.stringify(options) });
+                this.record.setValue(options);
+            }
+
+            setHeaderValues(options) {
+                for (const [fieldId, value] of Object.entries(options)) {
+                    this.setHeaderValue({ fieldId, value });
                 }
             }
 

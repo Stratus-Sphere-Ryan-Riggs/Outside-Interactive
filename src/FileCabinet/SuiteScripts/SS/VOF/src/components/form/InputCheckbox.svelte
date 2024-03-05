@@ -2,6 +2,7 @@
     export let id = "cb_field";
     export let label = "Checkbox";
     export let checked;
+    export let required = false;
     export let visible = true;
     export let wr = '';
 
@@ -54,8 +55,11 @@
 </script>
 
 <div class="{wrCls.join(' ')}">
-    <input type="checkbox" name="{id}" id="{id}" class="fld" bind:checked={checked} on:change={onChange}>
-    <label for="{id}">{label}</label>
+    <input type="checkbox" name="{id}" id="{id}"
+        class="fld"
+        bind:checked={checked}
+        on:change={onChange}>
+    <label for="{id}" class:required={required === true}>{label}</label>
 </div>
 
 <style>
@@ -69,6 +73,9 @@
         padding: 0 4px;
         cursor: pointer;
         display: flex;
+    }
+    .field-cb label.required {
+        font-weight: bold;
     }
     .field-cb input {
         cursor: pointer;

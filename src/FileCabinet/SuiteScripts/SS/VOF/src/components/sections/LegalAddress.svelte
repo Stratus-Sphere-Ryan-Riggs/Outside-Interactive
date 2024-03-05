@@ -33,7 +33,6 @@
         })
     );
 
-    let stateField;
     const onChangeCountry = (e) => {
         let states = $countryStates.filter(c =>
             c.countryname === e.detail.value &&
@@ -51,10 +50,11 @@
             };
         }));
 
-        dispatch('change-country', {
+        /* dispatch('change-country', {
             value: e.detail.value
-        });
+        }); */
         formValues.update(o => {
+            o[$formFields.COUNTRY] = e.detail.value;
             o[$formFields.ADDRESS_1] = '';
             o[$formFields.ADDRESS_2] = '';
             o[$formFields.CITY] = '';
@@ -62,6 +62,7 @@
             o[$formFields.ZIP] = '';
             return o;
         });
+        console.log(`LegalAddress formValues`, $formValues);
     }
     onChangeCountry({ detail: { value: $formValues[$formFields.COUNTRY] } });
 
@@ -85,14 +86,6 @@
 </script>
 
 <Card {id} {title}>
-    <Dropdown
-        id="{$formFields.COUNTRY}"
-        label="Country"
-        cls="country"
-        items={addressCountries}
-        bind:value={$formValues[$formFields.COUNTRY]}
-        on:change="{onChangeCountry}"
-    />
     <InputText
         id="{$formFields.ADDRESSEE}"
         label="Addressee"

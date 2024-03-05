@@ -1,4 +1,5 @@
 <script>
+    import Blurb from "../form/Blurb.svelte";
     import Card from "../form/Card.svelte";
     import InputFile from "../form/InputFile.svelte";
 
@@ -7,9 +8,12 @@
     export let id = 'documents';
     export let title = 'Documents';
 
-    $: w9Optional = $formValues[$formFields.REMIT_TO_COUNTRY] !== 'United States';
-    $: w9Visible = !w9Optional;
-    $: insuranceOptional = window['isServiceProvider'] === false;
+    // $: w9Optional = $formValues[$formFields.REMIT_TO_COUNTRY] !== 'United States';
+    // $: w9Visible = !w9Optional;
+    // $: insuranceOptional = window['isServiceProvider'] === false;
+
+    const annualSpend = [ '5', '6' ];
+    $: isInsuranceOptional = annualSpend.indexOf($formValues[$formFields.ANTICIPATED_ANNUAL_SPEND].toString()) < 0;
 
     const onFileChange = (e) => {
         let file = e.detail.file;
@@ -40,30 +44,18 @@
 </script>
 
 <Card {id} {title}>
+    <Blurb id="blurb_legal_disclaimer">
+        <span class="blurb">For US-based vendors and International vendors subject to US taxes, please provide a completed W-9.&nbsp;&nbsp;<a href="https://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank">Link to W-9 form</a><br/><br/>For International vendors not subject to taxes in the US, please provide a completed W-8BEN or W-8BEN-E.<br/><a href="https://www.irs.gov/pub/irs-pdf/fw8ben.pdf" target="_blank">Link to W-8BEN form</a> (for individuals)<br/><a href="https://www.irs.gov/pub/irs-pdf/fw8bene.pdf" target="_blank">Link to W-8BEN-E form</a> (for entities/companies)<br/><br/>Please ensure uploaded attachment is completed in its entirety.</span>
+    </Blurb>
     <InputFile
         id="{$formFields.W9}"
-        label="W-9/W-8"
+        label="IRS Tax Form (W-9, W-8 BEN, W-8 BEN-E)"
         on:change={onFileChange}
     />
     <InputFile
         id="{$formFields.CERTIFICATE_OF_INSURANCE}"
         label="Certificate of Insurance"
-        on:change={onFileChange}
-    />
-    <InputFile
-        id="{$formFields.SOC_CERTIFICATE}"
-        label="SOC"
-        on:change={onFileChange}
-    />
-    <InputFile
-        id="{$formFields.DATA_BREACH_REPORT}"
-        label="Data Breach Report"
-        optional
-        on:change={onFileChange}
-    />
-    <InputFile
-        id="{$formFields.OFAC_CHECK}"
-        label="OFAC Check"
+        bind:optional={isInsuranceOptional}
         on:change={onFileChange}
     />
 </Card>

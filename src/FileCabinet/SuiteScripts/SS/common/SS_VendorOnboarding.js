@@ -22,8 +22,20 @@ define(
     ) => {
         const MODULE = `SS|VendorOnboarding`;
 
-        const getListData = () => {
-            let TITLE = `${MODULE}.GetListData`;
+        const getDropdownData = () => {
+            let TITLE = `${MODULE}.GetDropdownData`;
+            let ddData = {};
+            const FIELDS = SS_Constants.CustomRecords.VendorRequest.Fields;
+
+            let taxClassifications = SS_Query.getCustomListValues(SS_Constants.CustomLists.TaxClassification);
+            log.debug({ title: `${TITLE} taxClassifications`, details: JSON.stringify(taxClassifications) });
+            ddData[FIELDS.TAX_CLASSIFICATION] = taxClassifications;
+
+            return ddData;
+        };
+
+        const getRadioGroupData = () => {
+            let TITLE = `${MODULE}.GetRadioGroupData`;
             let listData = {};
             const FIELDS = SS_Constants.CustomRecords.VendorRequest.Fields;
 
@@ -86,8 +98,9 @@ define(
                 map: {
                     BACKEND_URL: backendUrl,
                     CURRENCIES: JSON.stringify(SS_Query.Currencies),
+                    DROPDOWN_DATA: JSON.stringify(getDropdownData()),
                     FIELD_DATA: JSON.stringify(FIELDS),
-                    LIST_DATA: JSON.stringify(getListData()),
+                    RADIO_DATA: JSON.stringify(getRadioGroupData()),
                     REQUEST_DATA: JSON.stringify(headerValues),
                     SERVICE_PROVIDER: headerValues['custrecord_vr_ns5categories'] === SS_Constants.NS5_Categories.ON_BOARD,
                     STATE_COUNTRIES: JSON.stringify(SS_Query.StatesWithCountries),

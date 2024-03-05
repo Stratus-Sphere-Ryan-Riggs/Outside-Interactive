@@ -4,6 +4,7 @@
     export let value = "";
     export let maxlength = 80;
     export let optional = false;
+    export let optionalLabel = true;
     export let visible = true;
     export let wr = '';
     export let cls = '';
@@ -47,6 +48,7 @@
 
 <div class="{wrCls.join(' ')}"
     class:optional={optional === true}
+    class:optional-no-label={optionalLabel === false}
     class:hidden={visible === false}
 >
     <label for="{id}">{label}</label>

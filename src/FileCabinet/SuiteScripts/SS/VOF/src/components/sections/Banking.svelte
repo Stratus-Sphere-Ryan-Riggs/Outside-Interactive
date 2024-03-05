@@ -9,6 +9,7 @@
     import InputText from "../form/InputText.svelte";
     import RadioGroup from "../form/RadioGroup.svelte";
     import Row from "../form/Row.svelte";
+    import TextArea from "../form/TextArea.svelte";
 
     export let id = 'banking';
     export let title = 'Banking';
@@ -41,6 +42,9 @@
 
     let bankCurrencies = [
         { text: '', value: '' },
+        // { text: 'USD', value: 'USD' },
+        // { text: 'CAD', value: 'CAD' },
+        // { text: 'Other', value: 'Other' }
     ];
     bankCurrencies = bankCurrencies.concat(
         $currencies.map(c => {
@@ -55,44 +59,46 @@
     const onChangeCurrency = (e) => {
         console.log(`onChangeCurrency value = ${e.detail.value}`);
         formValues.update(o => {
-            o[$formFields.BANK_CURRENCY] = e.detail.value;
+            o[$formFields.CURRENCY] = e.detail.value;
             return o;
         });
+
+        updateBankPaymentMethod();
+        logVariables();
     };
 
     const onChangeCountry = (e) => {
         console.log(`BANKING onChangeCountry`, e);
         bankCountry = e.detail.value;
-        bankCurrency = bankCountry === 'United States' ? 'USD' : '';
+
+        switch (bankCountry.toLowerCase()) {
+            case 'united states': {
+                bankCurrency = 'USD';
+                break;
+            }
+            case 'canada': {
+                bankCurrency = 'CAD';
+                break;
+            }
+            default: {
+                bankCurrency = '';
+                break;
+            }
+        }
+        // bankCurrency = bankCountry === 'United States' ? 'USD' : '';
         formValues.update(o => {
             o[$formFields.BANK_COUNTRY] = bankCountry;
-            o[$formFields.BANK_CURRENCY] = bankCurrency;
+            o[$formFields.CURRENCY] = bankCurrency;
             return o;
         });
 
-        isDomestic = bankCountry === 'United States';
-        isInternational = !isDomestic;
-
-        if (e.origin !== 'method') {
-            paymentMethod = isDomestic === true ? '1' : '2';
-            formValues.update(o => {
-                o[$formFields.BANK_DETAIL_METHOD] = paymentMethod;
-                return o;
-            });
-        }
-
-        isUK = bankCountry === 'United Kingdom';
+        updateBankPaymentMethod();
+        logVariables();
 
         let states = $countryStates.filter(c =>
             (c.countryid === bankCountry || c.countryname === bankCountry) &&
             !!c.statefullname === true
         );
-        // hasStates = isInternational === true && states.length > 0;
-        hasStates = states.length > 0;
-        noStates = !hasStates;
-        hasInternationalStates = isInternational === true && states.length > 0;
-
-        console.log(`bankCountry = ${bankCountry}; isDomestic = ${isDomestic}; isInternational = ${isInternational}; isUK = ${isUK}; isNotUK = ${isNotUK}; hasStates = ${hasStates}; noStates = ${noStates}`);
 
         bankStates = [
             { text: '', value: '' }
@@ -126,36 +132,125 @@
         });
     };
 
-    const onChangeTypeOfAccount = (e) => {
-        // console.log(`onChangeTypeOfAccount value = ${e.detail.value}`);
+    const updateBankPaymentMethod = () => {
+        if (isUSD === true || isCAD === true) {
+            paymentMethod = '2';
+        }
+        else {
+            paymentMethod = '1';
+        }
+        console.log(`updateBankPaymentMethod`, { isUSD, isCAD, paymentMethod });
+
         formValues.update(o => {
+            o[$formFields.PAYMENT_TYPE] = paymentMethod;
+            return o;
+        });
+    };
+
+    const onChangeFPS = (e) => {
+        // console.log(`onChangeTypeOfAccount value = ${e.detail.value}`);
+        /* formValues.update(o => {
             o[$formFields.TYPE_OF_ACCOUNT] = e.detail.value;
+            return o;
+        }); */
+        console.log(`onChangeFPS e =>>>`, e.detail.value);
+        formValues.update(o => {
+            o[$formFields.FPS_ID] = e.detail.value;
             return o;
         });
     };
 
     $: bankCountry = '';
-    $: bankCurrency = '';
-    $: isDomestic = bankCountry === 'United States';
-    $: isInternational = !isDomestic;
-    $: paymentMethod = isDomestic === true ? '1' : '2';
-    $: isUK = bankCountry === 'United Kingdom';
+    $: bankCurrency = $formValues[$formFields.CURRENCY];
+    
+    $: isUS = bankCountry.toLowerCase() === 'united states';
+    $: isUSD = isUS === true && bankCurrency.toLowerCase() === 'usd';
+    $: notUSD = !isUSD;
+    $: isCA = bankCountry.toLowerCase() === 'canada';
+    $: isCAD = isCA === true && bankCurrency.toLowerCase() === 'cad';
+    $: notCAD = !isCAD;
+    $: isOther = notUSD === true && notCAD === true;
+    $: notOther = !isOther;
+    $: updateBankPaymentMethod();
+
+    $: isNotUS = !isUS;
+    $: isHK = bankCountry.toLowerCase() === 'hong kong';
+    $: notHK = !isHK;
+    $: isInternational = !isUS;
+    $: isUK = bankCountry.toLowerCase() === 'united kingdom';
     $: isNotUK = !isUK;
+    $: isFPS = $formValues[$formFields.FPS_ID] === true;
+    $: usdBankInUS = bankCurrency.toLowerCase() === 'usd' && isUS === true;
+    $: usdBankNotInUS = bankCurrency.toLowerCase() === 'usd' && isUS === false;
+    // $: accountNumberLabel = `${(usdBankInUS === true ? '' : 'IBAN / ')}Account Number`;
+    $: accountNumberLabel = `${(isOther === true ? 'IBAN / ' : '')}Account Number`;
+
+    $: paymentMethod = '';
+    $: hasAccountNumber = (
+        [ 'usd', 'aud', 'cad', 'clp', 'gbp', 'hkd' ].indexOf(bankCurrency.toLowerCase()) >= 0
+    );
+    $: noAccountNumber = !hasAccountNumber;
+    $: hasAccountType = (
+        usdBankInUS === true ||
+        [ 'ars', 'aud', 'cad', 'eur' ].indexOf(bankCurrency.toLowerCase()) >= 0
+    );
+    $: hasIBAN = [ 'eur' ].indexOf(bankCurrency.toLowerCase()) >= 0;
+    $: noIBAN = !hasIBAN;
+    $: noBankName = [ 'cad', 'usd' ].indexOf(bankCurrency.toLowerCase()) >= 0;
+    $: hasBankName = !noBankName;
+    $: noAccountType = !hasAccountType;
+    $: hasCBU = [ 'ars' ].indexOf(bankCurrency.toLowerCase()) >= 0;
+    $: noCBU = !hasCBU;
+    $: hasBSB = [ 'aud' ].indexOf(bankCurrency.toLowerCase()) >= 0;
+    $: noBSB = !hasBSB;
+    $: hasInst = [ 'cad' ].indexOf(bankCurrency.toLowerCase()) >= 0;
+    $: noInst = !hasInst;
+    
     $: hasStates = false;
     $: noStates = !hasStates;
     $: hasInternationalStates = false;
     // $: noInternationalStates = !hasInternationalStates;
     $: typeOfAccount = $formValues[$formFields.TYPE_OF_ACCOUNT] || '1';
+    $: agree = $formValues[$formFields.LEGAL_DISCLAIMER] === false;
+    $: showDetails = $formValues[$formFields.BANK_COUNTRY] !== '' &&
+        $formValues[$formFields.CURRENCY] !== '' &&
+        (
+            isHK === true ? isFPS === true : true
+        );
+
+    const logVariables = () => {
+        console.log({
+            bankCountry,
+            bankCurrency,
+            isCA,
+            isUS,
+            isHK,
+            notHK,
+            isInternational,
+            isUK,
+            isNotUK,
+            usdBankInUS,
+            usdBankNotInUS,
+            // paymentMethod,
+            hasStates,
+            noStates,
+            hasInternationalStates,
+            typeOfAccount,
+            agree,
+            showDetails,
+            hasFPSID: $formValues[$formFields.FPS_ID]
+        });
+    };
 
     onMount(() => {
         bankCountry = $formValues[$formFields.REMIT_TO_COUNTRY] || $formValues[$formFields.BANK_COUNTRY];
-        bankCurrency = $formValues[$formFields.BANK_CURRENCY] ||
-            (bankCountry === 'United States' ? 'USD' : '');
-        isDomestic = bankCountry === 'United States';
-        isInternational = !isDomestic;
-        paymentMethod = isDomestic === true ? '1' : '2';
-        isUK = bankCountry === 'United Kingdom';
-        isNotUK = !isUK;
+        bankCurrency = $formValues[$formFields.CURRENCY] ||
+            (bankCountry.toLowerCase() === 'united states' ? 'USD' : '');
+        isUS = bankCountry.toLowerCase() === 'united states';
+        isInternational = !isUS;
+        // paymentMethod = isUS === true ? '1' : '2';
+        // isUK = bankCountry.toLowerCase() === 'united kingdom';
+        // isNotUK = !isUK;
         hasStates = false;
         noStates = !hasStates;
         hasInternationalStates = false;
@@ -187,12 +282,79 @@
             });
         } */
     });
+    /*
+    <div class:hidden={isHK === false}>
+        <InputCheckbox
+            id="{$formFields.FPS_ID}"
+            label="Do you have an FPS ID?"
+            checked={false}
+            on:change={onChangeFPS}
+        />
+    </div>
+        <InputText
+            id="{$formFields.FPS_ID_IS_YES}"
+            label="Email, FPS ID, or Mobile Number Linked to Recipient's Account"
+            bind:value={$formValues[$formFields.FPS_ID_IS_YES]}
+            bind:visible={isHK}
+        />
+        <div class:hidden={isNotUK}>
+            <InputText
+                id="{$formFields.BANK_SORT_CODE}"
+                label="UK Sort Code"
+                cls="w120"
+                bind:optional={isNotUK}
+                bind:visible={isUK}
+                bind:value={$formValues[$formFields.BANK_SORT_CODE]}
+            />
+        </div>
+                <InputText
+                    id="{$formFields.BSB_CODE}"
+                    label="BSB Code"
+                    wr="bank_intl"
+                    cls="w120"
+                    bind:optional={noBSB}
+                    bind:visible={hasBSB}
+                    bind:value={$formValues[$formFields.BSB_CODE]}
+                />
+        <div class:hidden={true}>
+            <Row>
+                <InputText
+                    id="{$formFields.ACCOUNT_NUMBER_CBU}"
+                    label="Account Number (CBU)"
+                    bind:optional={noCBU}
+                    bind:value={$formValues[$formFields.ACCOUNT_NUMBER_CBU]}
+                />
+                <InputText
+                    id="{$formFields.TAX_ID_CUIL_CUIT}"
+                    label="Tax ID: CUIL / CUIT"
+                    bind:optional={noCBU}
+                    bind:value={$formValues[$formFields.TAX_ID_CUIL_CUIT]}
+                />
+            </Row>
+        </div>
+                <InputText
+                    id="{$formFields.IBAN}"
+                    label="IBAN"
+                    cls="w160"
+                    bind:value={$formValues[$formFields.IBAN]}
+                    bind:visible={hasIBAN}
+                    bind:optional={noIBAN}
+                />
+    */
 </script>
 
 <Card {id} {title}>
     <Dropdown
+        id="{$formFields.BANK_COUNTRY}"
+        label="Bank Country"
+        cls="country w400"
+        bind:items={bankCountries}
+        bind:value={bankCountry}
+        on:change={onChangeCountry}
+    />
+    <Dropdown
         id="{$formFields.CURRENCY}"
-        label="Currency"
+        label="Payment Currency"
         cls="currency w160"
         bind:items={bankCurrencies}
         bind:value={bankCurrency}
@@ -205,174 +367,136 @@
         bind:value={paymentMethod}
         on:change={onChangePaymentMethod}
     />
-    <Dropdown
-        id="{$formFields.BANK_COUNTRY}"
-        label="Bank Country"
-        cls="country w400"
-        bind:items={bankCountries}
-        bind:value={bankCountry}
-        on:change={onChangeCountry}
-    />
-    
-    <Blurb id="blurb_legal_disclaimer">
-        <span class="title">Legal Disclaimer</span>
-        <span class="blurb">I (we) hereby authorize Outside Interactive Inc. or its affiliated entities (THE COMPANY) to initiate entries to my (our) checking/savings accoutns at the financial institution listed below (THE FINANCIAL INSTITUTION), and, if nevessary, initiate adjustments for any transations credited/debited in error. This authority will remain in effect until THE COMPANY is notified by me (us) in writing to cancel it in such time as to afford THE COMPANY and THE FINANCIAL INSTITUTION a reasonable opportunity to act on it.</span>
-    </Blurb>
 
-    <InputCheckbox
-        id="{$formFields.LEGAL_DISCLAIMER}"
-        label="Do you agree?"
-        bind:checked={$formValues[$formFields.LEGAL_DISCLAIMER]}
-    />
 
-    <InputCheckbox
-        id="{$formFields.FPS_ID}"
-        label="Do you have an FPS ID?"
-        checked={false}
-        on:change={onChangeTypeOfAccount}
-    />
+    <div class="agree-section" class:hidden={showDetails === false}>
+        <InputText
+            id="{$formFields.ACCOUNT_HOLDER_FULL_NAME}"
+            label="Full Name of Account Holder"
+            bind:value={$formValues[$formFields.ACCOUNT_HOLDER_FULL_NAME]}
+        />
 
-    <InputText
-        id="{$formFields.FPS_ID_IS_YES}"
-        label="Email, FPS ID, or Mobile Number Linked to Recipient's Account"
-        bind:value={$formValues[$formFields.FPS_ID_IS_YES]}
-    />
+            <InputText
+                id="{$formFields.FINANCIAL_INSTITUTION}"
+                label="Financial Institution Number (3 digits)"
+                wr="bank_intl"
+                cls="w80"
+                bind:optional={notCAD}
+                bind:value={$formValues[$formFields.FINANCIAL_INSTITUTION]}
+                bind:visible={isCAD}
+            />
+            <InputText
+                id="{$formFields.BRANCH_TRANSIT_NUMBER}"
+                label="Transit Number (5 digits)"
+                wr="bank_intl"
+                cls="w80"
+                bind:optional={notCAD}
+                bind:value={$formValues[$formFields.BRANCH_TRANSIT_NUMBER]}
+                bind:visible={isCAD}
+            />
 
-    <InputText
-        id="{$formFields.ACCOUNT_HOLDER_FULL_NAME}"
-        label="Full Name of Account Holder"
-        bind:value={$formValues[$formFields.ACCOUNT_HOLDER_FULL_NAME]}
-    />
-
-    <InputText
-        id="{$formFields.IBAN}"
-        label="IBAN"
-        cls="w80"
-        optional
-        bind:visible={isInternational}
-        bind:value={$formValues[$formFields.IBAN]}
-    />
-
-    <InputText
-        id="{$formFields.SWIFT_BIC_CODE}"
-        label="SWIFT/BIC Code"
-        cls="w160"
-        bind:value={$formValues[$formFields.SWIFT_BIC_CODE]}
-    />
-
-    <InputText
-        id="{$formFields.BANK_SORT_CODE}"
-        label="UK Sort Code"
-        cls="w120"
-        bind:optional={isNotUK}
-        bind:visible={isUK}
-        bind:value={$formValues[$formFields.BANK_SORT_CODE]}
-    />
-    
-    <Row>
         <InputText
             id="{$formFields.BANK_ROUTING_NUMBER}"
             label="ACH Routing Number"
             cls="w160"
             bind:value={$formValues[$formFields.BANK_ROUTING_NUMBER]}
+            bind:visible={isUSD}
+            bind:optional={notUSD}
         />
         <InputText
+            id="{$formFields.SWIFT_BIC_CODE}"
+            label="SWIFT/BIC Code"
+            cls="w160"
+            bind:value={$formValues[$formFields.SWIFT_BIC_CODE]}
+            bind:visible={isOther}
+            bind:optional={notOther}
+        />
+
+        <InputText
             id="{$formFields.ACCOUNT_NUMBER}"
-            label="Account Number"
+            label={accountNumberLabel}
             cls="w160"
             bind:value={$formValues[$formFields.ACCOUNT_NUMBER]}
         />
-    </Row>
 
-        <InputText
-            id="{$formFields.BANK_CITY}"
-            label="City"
-            cls="w240"
-            bind:visible={isInternational}
-            bind:value={$formValues[$formFields.BANK_CITY]}
+
+        <RadioGroup
+            id="{$formFields.ACCOUNT_TYPE}"
+            label="Account Type"
+            bind:items={accountTypes}
+            bind:value={paymentMethod}
+            on:change={onChangePaymentMethod}
         />
+
         <InputText
             id="{$formFields.BANK_STREET}"
             label="Recipient Address"
-            bind:visible={isInternational}
             bind:value={$formValues[$formFields.BANK_STREET]}
         />
+        
+        <Row>
+            <InputText
+                id="{$formFields.BANK_CITY}"
+                label="City"
+                cls="w240"
+                bind:value={$formValues[$formFields.BANK_CITY]}
+            />
+            <InputText
+                id="{$formFields.BANK_ZIP}"
+                label="Post Code"
+                wr="bank_intl"
+                cls="w120"
+                bind:value={$formValues[$formFields.BANK_ZIP]}
+            />
+        </Row>
 
         <InputText
-            id="{$formFields.BANK_ZIP}"
-            label="Postal Code"
-            wr="bank_intl"
-            cls="w80"
-            bind:visible={isInternational}
-            bind:value={$formValues[$formFields.BANK_ZIP]}
+            id="{$formFields.REMITTANCE_EMAIL}"
+            label="Email for Remittance"
+            bind:value={$formValues[$formFields.REMITTANCE_EMAIL]}
         />
-
-    <InputText
-        id="{$formFields.REMITTANCE_EMAIL}"
-        label="Email for Remittance"
-        bind:value={$formValues[$formFields.REMITTANCE_EMAIL]}
-    />
-
-    <InputText
-        id="{$formFields.DIFFERENT_NAME}"
-        label="Name (if different from account holder name)"
-        optional
-        bind:value={$formValues[$formFields.DIFFERENT_NAME]}
-    />
-
-    <Row>
+        
         <InputText
-            id="{$formFields.RECEIVING_ACCT_NUMBER}"
-            label="Receiving Account Number"
-            wr="bank_intl"
-            cls="w120"
-            bind:value={$formValues[$formFields.RECEIVING_ACCT_NUMBER]}
-        />
-        <InputText
-            id="{$formFields.BANK_ROUTING_NUMBER}"
-            label="Bank Routing Number"
-            wr="bank_intl"
-            cls="w120"
-            bind:optional={isInternational}
-            bind:value={$formValues[$formFields.BANK_ROUTING_NUMBER]}
-        />
-    </Row>
-
-    <Row
-        bind:visible={isInternational}
-    >
-        <InputText
-            id="{$formFields.FINANCIAL_INSTITUTION}"
-            label="Financial Institution Number (3 digits)"
-            wr="bank_intl"
-            cls="w80"
+            id="{$formFields.DIFFERENT_NAME}"
+            label="Name (if different from account holder name)"
             optional
-            bind:visible={isInternational}
-            bind:value={$formValues[$formFields.FINANCIAL_INSTITUTION]}
+            bind:value={$formValues[$formFields.DIFFERENT_NAME]}
         />
+        
         <InputText
-            id="{$formFields.BRANCH_TRANSIT_NUMBER}"
-            label="Branch Transit Number (5 digits)"
-            wr="bank_intl"
-            cls="w80"
-            optional
-            bind:visible={isInternational}
-            bind:value={$formValues[$formFields.BRANCH_TRANSIT_NUMBER]}
+            id="{$formFields.RECEIVING_BANK_NAME}"
+            label="Bank Name"
+            bind:optional={noBankName}
+            bind:value={$formValues[$formFields.RECEIVING_BANK_NAME]}
+            bind:visible={hasBankName}
         />
-    </Row>
 
-    <Row
-        bind:visible={isInternational}
-    >
-        <InputText
-            id="{$formFields.BSB_CODE}"
-            label="BSB Code"
-            wr="bank_intl"
-            cls="w80"
-            optional
-            bind:visible={isInternational}
-            bind:value={$formValues[$formFields.BSB_CODE]}
+        <TextArea
+            id="{$formFields.MISC_BANKING_DETAILS}"
+            label="Banking Comments - Please include any additional information."
+            bind:value={$formValues[$formFields.MISC_BANKING_DETAILS]}
+            bind:visible={isNotUS}
         />
-    </Row>
+
+        <Blurb id="blurb_legal_disclaimer">
+            <span class="title">Legal Disclaimer</span>
+            <span class="blurb">I (we) hereby authorize Outside Interactive Inc. or its affiliated entities (THE COMPANY) to initiate entries to my (our) checking/savings accounts at the financial institution listed below (THE FINANCIAL INSTITUTION), and, if necessary, initiate adjustments for any transactions credited/debited in error. This authority will remain in effect until THE COMPANY is notified by me (us) in writing to cancel it in such time as to afford THE COMPANY and THE FINANCIAL INSTITUTION a reasonable opportunity to act on it.</span>
+        </Blurb>
+    
+        <InputCheckbox
+            id="{$formFields.LEGAL_DISCLAIMER}"
+            label="Do you agree?"
+            required={true}
+            bind:checked={$formValues[$formFields.LEGAL_DISCLAIMER]}
+        />
+    </div>
 
 </Card>
+
+<style>
+    .agree-section {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+</style>
