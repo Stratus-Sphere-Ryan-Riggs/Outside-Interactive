@@ -106,8 +106,14 @@ define(
             let dataRowColumns = dataRowSearch.Columns;
             for (let i = 0, count = dataRowColumns.length; i < count; i++) {
                 let label = dataRowColumns[i].label;
+                let labelId = SS_String.normalize(label);
+                if (labelId.indexOf('_text') > 0) {
+                    log.audit({ title: `${TITLE} labelId BEFORE TEXT`, details: `labelId BEFORE TRIM = ${labelId}` });
+                    labelId = labelId.substring(0, labelId.indexOf('_text'));
+                    log.audit({ title: `${TITLE} labelId AFTER TEXT`, details: `labelId AFTER TRIM = ${labelId}` });
+                }
                 data.columns.push({
-                    data: SS_String.normalize(label),
+                    data: labelId,
                     title: label
                 });
             }

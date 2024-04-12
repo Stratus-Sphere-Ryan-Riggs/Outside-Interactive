@@ -130,7 +130,13 @@ define(
                     for (let i = 0, count = this.search.columns.length; i < count; i++) {
                         let column = this.search.columns[i];
                         let label = SS_String.normalize(column.label) || column.name;
-                        rowObject[label] = row.getValue(column);
+                        if (label.indexOf('_text') > 0) {
+                            label = label.substring(0, label.indexOf('_text'));
+                            rowObject[label] = row.getText(column);
+                        }
+                        else {
+                            rowObject[label] = row.getValue(column);
+                        }
                     }
 
                     return rowObject;

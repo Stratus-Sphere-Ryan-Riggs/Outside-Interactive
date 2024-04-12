@@ -26,7 +26,7 @@ define(
             },
             normalize(value) {
                 let output = '';
-                output = value?.toLowerCase().replaceAll(/[^a-zA-Z0-9]/g, '');
+                output = value?.toLowerCase().replaceAll(/[^_a-zA-Z0-9]/g, '');
                 output = output || '';
                 return output;
             }

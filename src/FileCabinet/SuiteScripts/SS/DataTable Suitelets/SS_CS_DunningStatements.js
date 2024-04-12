@@ -10,9 +10,7 @@ define(
         '../common/SS_CurrentRecord',
         '../common/SS_Dialog',
         '../common/SS_Format',
-        '../common/SS_String',
-
-        './SS_Constants_CustomerStatements'
+        '../common/SS_String'
     ],
     (
         SS_Constants,
@@ -152,7 +150,8 @@ define(
                 }],
                 columns: dataColumns,
                 data: displayData.rows,
-                pageLength: 25,
+                lengthMenu: [ 1000 ],
+                pageLength: 1000,
                 pagingType: 'full_numbers',
                 order: [[1, 'asc']],
                 select: { style: 'multi' }

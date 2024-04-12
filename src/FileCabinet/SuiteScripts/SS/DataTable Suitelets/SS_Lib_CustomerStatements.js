@@ -250,8 +250,14 @@ define(
             let statementColumns = statementSearch.Columns;
             for (let i = 0, count = statementColumns.length; i < count; i++) {
                 let label = statementColumns[i].label;
+                let labelId = SS_String.normalize(statementColumns[i].label);
+                if (labelId.indexOf('_text') > 0) {
+                    log.audit({ title: `${title} labelId BEFORE TEXT`, details: `labelId BEFORE TRIM = ${labelId}` });
+                    labelId = labelId.substring(0, labelId.indexOf('_text'));
+                    log.audit({ title: `${title} labelId AFTER TEXT`, details: `labelId AFTER TRIM = ${labelId}` });
+                }
                 data.columns.push({
-                    data: SS_String.normalize(label),
+                    data: labelId,
                     title: label
                 });
             }

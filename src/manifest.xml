@@ -14,8 +14,8 @@
       <feature required="true">SERVERSIDESCRIPTING</feature>
       <feature required="false">CRM</feature>
     </features>
-    <files>
-      <file>/SuiteScripts/SS/vendor_onboarding/SS_SL_VendorOnboardingForm.js</file>
-    </files>
+    <objects>
+      <object>customrecord_ss_dt_task</object>
+    </objects>
   </dependencies>
 </manifest>

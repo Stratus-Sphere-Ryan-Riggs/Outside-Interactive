@@ -1,5 +1,13 @@
 <deploy>
+    <files>
+        <path>~/FileCabinet/SuiteScripts/SS/DataTable Suitelets/SS_MR_DataTableTask.js</path>
+    </files>
     <objects>
-        <path>~/Objects/suitelets/customscript_ss_sl_ven_onboard_form.xml</path>
+        <path>~/Objects/map_reduce/customscript_ss_mr_dt_task.xml</path>
+        <!-- <path>~/Objects/suitelets/customscript_ss_sl_dt_backend.xml</path> -->
+        <!-- <path>~/Objects/suitelets/customscript_ss_sl_dt.xml</path> -->
+        <!-- <path>~/Objects/saved_searches/customsearch_ss_dt_tasks_inprog.xml</path> -->
+        <!-- <path>~/Objects/saved_searches/customsearch_ss_dunning_4_4.xml</path> -->
+        <!-- <path>~/Objects/custom_records/customrecord_ss_dt_task.xml</path> -->
     </objects>
 </deploy>
