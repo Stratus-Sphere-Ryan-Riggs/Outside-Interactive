@@ -31,10 +31,12 @@
         .then(data => {
             console.log(`file upload = ${file.name}; id = ${e.detail.id}`, data);
             if (data.status === true) {
+                console.log(`   >>> id = ${data.data.id}`);
                 formValues.update(o => {
-                    o[e.detail.id] = data.file.id;
+                    o[e.detail.id] = data.data.id;
                     return o;
                 });
+                console.log($formValues);
             }
             else {
                 alert(`An error occured during file upload: ${data.message}`);

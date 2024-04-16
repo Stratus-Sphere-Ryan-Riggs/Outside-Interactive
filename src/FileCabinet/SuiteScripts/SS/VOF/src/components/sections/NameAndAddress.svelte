@@ -171,12 +171,14 @@
         bind:items={addressStates}
         bind:value={$formValues[$formFields.STATE]}
         bind:visible={isUSorCA}
+        bind:optional={notUSorCA}
     />
 
     <InputText
         id="{$formFields.STATE_INTL}"
         label="State/Province"
         bind:value={$formValues[$formFields.STATE_INTL]}
+        bind:optional={isUSorCA}
         bind:visible={notUSorCA}
     />
 

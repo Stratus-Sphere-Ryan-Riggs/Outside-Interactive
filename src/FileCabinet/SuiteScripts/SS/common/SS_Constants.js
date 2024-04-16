@@ -371,6 +371,11 @@ define(
             }
         };
 
+        const SUBSIDIARIES = {
+            OUTSIDE_INC:                        '1',
+            OUTSIDE_INC_CANADA:                '12'
+        };
+
         return {
             CustomLists         : CUSTOM_LISTS,
             CustomRecords       : CUSTOM_RECORDS,
@@ -380,6 +385,7 @@ define(
             RequestParameters   : REQUEST_PARAMETERS,
             ScriptParameters    : SCRIPT_PARAMETERS,
             Scripts             : SCRIPTS,
+            Subsidiaries        : SUBSIDIARIES,
             Templates           : {
                 DataTableSuitelet       : 'DataTable_Template.html'
             },

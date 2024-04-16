@@ -5,6 +5,7 @@
     import Header from './components/header/Header.svelte';
     import PrimaryInformation from './components/sections/PrimaryInformation.svelte';
     import NameAndAddress from './components/sections/NameAndAddress.svelte';
+    import Footer from './components/footer/Footer.svelte';
 
     let isUS = true;
     $: country = '';
@@ -31,7 +32,8 @@
         <Banking title="Banking Information" />
     </div>
 
-    <div class="buttons">
+    <Footer />
+    <!-- <div class="buttons">
         <div class="left">
             <Button id="back" label="Back" />
             <Button id="clear" label="Clear" />
@@ -40,7 +42,7 @@
             <Button id="next" label="Next" />
             <Button id="submit" label="Submit" submit />
         </div>
-    </div>
+    </div> -->
 </main>
 
 <style>

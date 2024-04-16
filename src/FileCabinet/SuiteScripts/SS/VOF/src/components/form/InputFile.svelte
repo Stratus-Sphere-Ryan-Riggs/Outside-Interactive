@@ -45,7 +45,7 @@
         /* if (!!value === true) {
             errorSpan.classList.add('hidden');
         } */
-        console.log(`  ++ InputText id=${id} value=${value}`, $formValues);
+        console.log(`  ++ InputFile id=${id} value=${value}`, $formValues);
     };
 </script>
 

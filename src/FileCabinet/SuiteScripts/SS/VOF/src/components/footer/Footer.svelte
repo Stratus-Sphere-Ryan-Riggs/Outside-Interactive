@@ -1,5 +1,7 @@
 <script>
     import { formFields, formValues } from "../../store/pageData";
+    // import Button from '../components/form/Button.svelte';
+    import Button from "../form/Button.svelte";
 
     const finalizeData = () => {
         let isSameLegal = $formValues[$formFields.SAME_AS_LEGAL_ADDRESS];
@@ -33,7 +35,7 @@
         .then(data => {
             if (data.status === true) {
                 alert('Vendor Request updated successfully.');
-                window.location.href = '//www.osg.com';
+                window.location.href = '//www.outsideinc.com/';
             }
             else {
                 alert(`An error occured while submitting the data: ${data.message}`);
@@ -67,19 +69,21 @@
         console.log('formValues', $formValues);
 
         let errorSection = '';
-        document.querySelectorAll('section').forEach(section => {
-            console.log(`  *** checking section = ${section.id}`);
+        document.querySelectorAll('div.card').forEach(section => {
+            console.log(`  *** checking section = ${section.dataset.id}`);
             section.querySelectorAll('.field:not(.optional) .fld').forEach(el => {
                 let result = validate(el.id);
+                console.log(`   >>> result = ${result}`);
                 if (result === false && errorSection === '') {
-                    errorSection = section.id;
+                    errorSection = section.dataset.id;
+                    console.log(`   >>> errorSection = ${errorSection}`);
                 }
             });
         });
 
         console.log(`errorSection = ${errorSection}`);
-        if (errorSection !== '') {
-            document.getElementById(errorSection).scrollIntoView();
+        if (errorSection) {
+            document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
             alert('Please fill out all required fields.');
             return;
         }
@@ -89,25 +93,26 @@
     };
 </script>
 
-<div id="footer">
-    <button type="button" id="submit" name="submit" on:mouseup={onSubmit}>Submit Form</button>
-    <button type="button" id="reset" name="reset">Reset</button>
+<div id="footer" class="buttons">
+    <Button id="reset" label="Reset" />
+    <Button id="submit" label="Submit Form" submit on:click={onSubmit} />
+    <!-- <button type="button" id="submit" name="submit" on:mouseup={onSubmit}>Submit Form</button> -->
+    <!-- <button type="button" id="reset" name="reset">Reset</button> -->
 </div>
 
 <style>
-    div {
-        border-top: 1px solid var(--blue-interactive);
-        background-color: white;
-        margin-top: 20px;
-        padding-top: 20px;
-        padding-bottom: 40px;
+    div.buttons {
+        /* border-top: 1px solid var(--blue-interactive); */
+        /* background-color: white; */
+        /* margin-top: 20px; */
+        /* padding-top: 20px; */
+        /* padding-bottom: 40px; */
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
-        gap: 40px;
+        justify-content: space-between;
     }
-    button {
+    /* button {
         padding: 12px 24px;
         border-radius: 4px;
         border: 0;
@@ -118,11 +123,11 @@
     button:hover {
         box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
         opacity: 1;
-        /* transform: translateY(-2px); */
+        * transform: translateY(-2px); *
     }
     #submit {
         background-color: var(--blue-interactive);
         color: white;
         font-weight: 500;
-    }
+    } */
 </style>

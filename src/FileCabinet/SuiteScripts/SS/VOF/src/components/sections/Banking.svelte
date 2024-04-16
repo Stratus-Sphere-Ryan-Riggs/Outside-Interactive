@@ -92,6 +92,7 @@
             return o;
         });
 
+        console.log(`bankCountry = ${bankCountry}; bankCurrency = ${bankCurrency}`);
         updateBankPaymentMethod();
         logVariables();
 
@@ -133,6 +134,15 @@
     };
 
     const updateBankPaymentMethod = () => {
+        bankCountry = $formValues[$formFields.BANK_COUNTRY].toLowerCase();
+        bankCurrency = $formValues[$formFields.CURRENCY].toLowerCase();
+        isUS = bankCountry === 'united states';
+        isUSD = isUS === true && bankCurrency === 'usd';
+        isCA = bankCountry === 'canada';
+        isCAD = isCA === true && bankCurrency === 'cad';
+
+        console.log(`isUSD = ${isUSD}; isCAD = ${isCAD}`);
+
         if (isUSD === true || isCAD === true) {
             paymentMethod = '2';
         }
@@ -163,8 +173,8 @@
     $: bankCountry = $formValues[$formFields.BANK_COUNTRY];
     $: bankCurrency = $formValues[$formFields.CURRENCY];
     
-    $: isUS = () => { console.log('isUS', bankCountry); return bankCountry.toLowerCase() === 'united states'; };
-    $: isUSD = isUS() === true && bankCurrency.toLowerCase() === 'usd';
+    $: isUS = bankCountry.toLowerCase() === 'united states';
+    $: isUSD = isUS === true && bankCurrency.toLowerCase() === 'usd';
     $: notUSD = !isUSD;
     $: isCA = $formValues[$formFields.BANK_COUNTRY].toLowerCase() === 'canada';
     $: isCAD = isCA === true && $formValues[$formFields.CURRENCY].toLowerCase() === 'cad';
@@ -173,15 +183,15 @@
     $: notOther = !isOther;
     $: updateBankPaymentMethod();
 
-    $: isNotUS = !isUS();
+    $: isNotUS = !isUS;
     $: isHK = bankCountry.toLowerCase() === 'hong kong';
     $: notHK = !isHK;
-    $: isInternational = !isUS();
+    $: isInternational = !isUS;
     $: isUK = bankCountry.toLowerCase() === 'united kingdom';
     $: isNotUK = !isUK;
     $: isFPS = $formValues[$formFields.FPS_ID] === true;
-    $: usdBankInUS = bankCurrency.toLowerCase() === 'usd' && isUS() === true;
-    $: usdBankNotInUS = bankCurrency.toLowerCase() === 'usd' && isUS() === false;
+    $: usdBankInUS = bankCurrency.toLowerCase() === 'usd' && isUS === true;
+    $: usdBankNotInUS = bankCurrency.toLowerCase() === 'usd' && isUS === false;
     // $: accountNumberLabel = `${(usdBankInUS === true ? '' : 'IBAN / ')}Account Number`;
     $: accountNumberLabel = `${(isOther === true ? 'IBAN / ' : '')}Account Number`;
 
@@ -223,7 +233,7 @@
             bankCountry,
             bankCurrency,
             isCA,
-            isUS: isUS(),
+            isUS,
             isHK,
             notHK,
             isInternational,
@@ -475,8 +485,12 @@
             id="{$formFields.MISC_BANKING_DETAILS}"
             label="Banking Comments - Please include any additional information."
             bind:value={$formValues[$formFields.MISC_BANKING_DETAILS]}
-            bind:visible={isNotUS}
+            optional
         />
+        <!-- 
+            bind:optional={isUS}
+            bind:visible={isNotUS}
+         -->
 
         <Blurb id="blurb_legal_disclaimer">
             <span class="title">Legal Disclaimer</span>

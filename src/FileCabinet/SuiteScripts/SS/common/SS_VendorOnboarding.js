@@ -144,9 +144,7 @@ define(
                 FIELDS.COUNTRY,
                 FIELDS.STATE,
                 FIELDS.BANK_COUNTRY,
-                FIELDS.BANK_CURRENCY,
-                FIELDS.REMIT_TO_COUNTRY,
-                FIELDS.REMIT_TO_STATE
+                FIELDS.CURRENCY
             ];
 
             try {

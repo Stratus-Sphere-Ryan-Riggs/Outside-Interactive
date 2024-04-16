@@ -17,6 +17,22 @@ define(
         const VENDOR_REQUEST = SS_Constants.CustomRecords.VendorRequest;
         const FIELDS = VENDOR_REQUEST.Fields;
 
+        const addSubsidiaries = (record) => {
+            const TITLE = `${MODULE}.AddSubsidiaries`;
+            // addSubsidiaryLine({ record, value: SS_Constants.Subsidiaries.OUTSIDE_INC });
+            addSubsidiaryLine({ record, value: SS_Constants.Subsidiaries.OUTSIDE_INC_CANADA });
+        };
+
+        const addSubsidiaryLine = (options) => {
+            const TITLE = `${MODULE}.AddSubsidiaryLine`;
+            let { record, value } = options;
+
+            let sublist = { sublistId: 'submachine' };
+            record.selectNewLine(sublist);
+            record.setCurrentSublistValue({ ...sublist, fieldId: 'subsidiary', value });
+            record.commitLine(sublist);
+        };
+
         const getLegalAddress = (record) => {
             return {
                 addressee: record.getValue({ fieldId: FIELDS.ADDRESSEE }),
@@ -86,6 +102,8 @@ define(
                 label: legalAddress.address_1,
                 record: vendor
             });
+
+            addSubsidiaries(vendor);
             
             let id = vendor.save();
             log.debug({ title: TITLE, details: `Addresses for vendor ${id} were successfully created.` });
