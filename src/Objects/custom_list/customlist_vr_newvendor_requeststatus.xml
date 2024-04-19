@@ -1,0 +1,28 @@
+<customlist scriptid="customlist_vr_newvendor_requeststatus">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>New Vendor Request Status</name>
+  <customvalues>
+    <customvalue scriptid="val_83569_4860067_841">
+      <isinactive>F</isinactive>
+      <value>Pending Vendor Information Submission</value>
+    </customvalue>
+    <customvalue scriptid="value_5_t1383031_869">
+      <isinactive>F</isinactive>
+      <value>Pending Approval</value>
+    </customvalue>
+    <customvalue scriptid="value_2_t1383031_869">
+      <isinactive>F</isinactive>
+      <value>Approved</value>
+    </customvalue>
+    <customvalue scriptid="value_3_t1383031_869">
+      <isinactive>F</isinactive>
+      <value>Rejected</value>
+    </customvalue>
+    <customvalue scriptid="val_187698_4860067_sb1_573">
+      <isinactive>F</isinactive>
+      <value>Request Closed</value>
+    </customvalue>
+  </customvalues>
+</customlist>

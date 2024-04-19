@@ -1,0 +1,32 @@
+<customlist scriptid="customlist_vr_anticipatedannualspend">
+  <description>Anticipated annual vendor spend for vendor onboarding process.</description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Anticipated Annual Spend</name>
+  <customvalues>
+    <customvalue scriptid="val_1150505_5678674_sb2_982">
+      <isinactive>F</isinactive>
+      <value>$0 - $5,000</value>
+    </customvalue>
+    <customvalue scriptid="val_1150506_5678674_sb2_235">
+      <isinactive>F</isinactive>
+      <value>$5,000 - $25,000</value>
+    </customvalue>
+    <customvalue scriptid="val_1150507_5678674_sb2_489">
+      <isinactive>F</isinactive>
+      <value>$25,000 - $100,000</value>
+    </customvalue>
+    <customvalue scriptid="val_1150508_5678674_sb2_708">
+      <isinactive>F</isinactive>
+      <value>$100,000 - $200,000</value>
+    </customvalue>
+    <customvalue scriptid="val_1150509_5678674_sb2_225">
+      <isinactive>F</isinactive>
+      <value>$200,000 - $1,000,000</value>
+    </customvalue>
+    <customvalue scriptid="val_1150510_5678674_sb2_838">
+      <isinactive>F</isinactive>
+      <value>$1,000,000 +</value>
+    </customvalue>
+  </customvalues>
+</customlist>

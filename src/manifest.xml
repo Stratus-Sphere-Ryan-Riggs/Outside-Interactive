@@ -12,10 +12,11 @@
       <feature required="true">SUBSIDIARIES</feature>
       <feature required="true">MULTICURRENCY</feature>
       <feature required="true">SERVERSIDESCRIPTING</feature>
-      <feature required="false">CRM</feature>
+      <feature required="true">WORKFLOW</feature>
+      <feature required="false">WEBSITE</feature>
+      <feature required="false">JOBS</feature>
+      <feature required="true">CRM</feature>
     </features>
-    <objects>
-      <object>customrecord_ss_dt_task</object>
-    </objects>
+    <objects/>
   </dependencies>
 </manifest>

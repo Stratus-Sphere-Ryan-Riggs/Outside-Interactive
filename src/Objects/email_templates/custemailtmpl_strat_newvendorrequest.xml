@@ -1,0 +1,11 @@
+<emailtemplate scriptid="custemailtmpl_strat_newvendorrequest">
+  <addcompanyaddress>T</addcompanyaddress>
+  <addunsubscribelink>T</addunsubscribelink>
+  <description></description>
+  <isinactive>F</isinactive>
+  <isprivate>F</isprivate>
+  <name>New Vendor Request - Vendor Information Email</name>
+  <recordtype>CUSTOM</recordtype>
+  <subject>New Vendor Request from Outside Inc.</subject>
+  <usesmedia>F</usesmedia>
+</emailtemplate>

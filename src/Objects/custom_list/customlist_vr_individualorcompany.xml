@@ -1,0 +1,16 @@
+<customlist scriptid="customlist_vr_individualorcompany">
+  <description>List for New Vendor Request Record</description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Individual or Company</name>
+  <customvalues>
+    <customvalue scriptid="val_1150139_5678674_sb2_203">
+      <isinactive>F</isinactive>
+      <value>Individual</value>
+    </customvalue>
+    <customvalue scriptid="val_1150140_5678674_sb2_828">
+      <isinactive>F</isinactive>
+      <value>Company</value>
+    </customvalue>
+  </customvalues>
+</customlist>

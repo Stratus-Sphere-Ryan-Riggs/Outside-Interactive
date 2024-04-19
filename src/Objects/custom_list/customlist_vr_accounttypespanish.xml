@@ -1,0 +1,20 @@
+<customlist scriptid="customlist_vr_accounttypespanish">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Bank Account Type Spanish</name>
+  <customvalues>
+    <customvalue scriptid="val_1150739_5678674_sb2_546">
+      <isinactive>F</isinactive>
+      <value>Checking [cuenta corriente]</value>
+    </customvalue>
+    <customvalue scriptid="val_1150740_5678674_sb2_664">
+      <isinactive>F</isinactive>
+      <value>Savings [cuenta de ahorro]</value>
+    </customvalue>
+    <customvalue scriptid="val_1150741_5678674_sb2_983">
+      <isinactive>F</isinactive>
+      <value>Demand [cuenta vista]</value>
+    </customvalue>
+  </customvalues>
+</customlist>

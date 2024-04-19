@@ -1,0 +1,32 @@
+<customlist scriptid="customlist_vr_source">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Vendor Request Source</name>
+  <customvalues>
+    <customvalue scriptid="val_1150104_5678674_sb2_864">
+      <isinactive>F</isinactive>
+      <value>Online Form</value>
+    </customvalue>
+    <customvalue scriptid="val_1150105_5678674_sb2_336">
+      <isinactive>F</isinactive>
+      <value>Finisherpix</value>
+    </customvalue>
+    <customvalue scriptid="val_1150106_5678674_sb2_828">
+      <isinactive>F</isinactive>
+      <value>Talent Desk</value>
+    </customvalue>
+    <customvalue scriptid="val_1150561_5678674_sb2_870">
+      <isinactive>F</isinactive>
+      <value>Taxes/Government</value>
+    </customvalue>
+    <customvalue scriptid="val_1150562_5678674_sb2_463">
+      <isinactive>F</isinactive>
+      <value>Subscription Refunds</value>
+    </customvalue>
+    <customvalue scriptid="val_1150563_5678674_sb2_422">
+      <isinactive>F</isinactive>
+      <value>Utilities</value>
+    </customvalue>
+  </customvalues>
+</customlist>

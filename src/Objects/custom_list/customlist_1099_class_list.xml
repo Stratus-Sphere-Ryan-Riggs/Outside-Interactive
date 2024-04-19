@@ -1,0 +1,52 @@
+<customlist scriptid="customlist_1099_class_list">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>1099 Classification</name>
+  <customvalues>
+    <customvalue scriptid="val_984274_5678674_384">
+      <isinactive>F</isinactive>
+      <value>WAITING ON W-9</value>
+    </customvalue>
+    <customvalue scriptid="val_984055_5678674_346">
+      <isinactive>F</isinactive>
+      <value>Individual/sole proprietor or single-member LLC</value>
+    </customvalue>
+    <customvalue scriptid="val_984056_5678674_888">
+      <isinactive>F</isinactive>
+      <value>C Corporation</value>
+    </customvalue>
+    <customvalue scriptid="val_984057_5678674_535">
+      <isinactive>F</isinactive>
+      <value>S Corporation</value>
+    </customvalue>
+    <customvalue scriptid="val_984058_5678674_905">
+      <isinactive>F</isinactive>
+      <value>Partnership</value>
+    </customvalue>
+    <customvalue scriptid="val_984059_5678674_226">
+      <isinactive>F</isinactive>
+      <value>Trust/estate</value>
+    </customvalue>
+    <customvalue scriptid="val_984060_5678674_305">
+      <isinactive>F</isinactive>
+      <value>LLC, taxed as Corp</value>
+    </customvalue>
+    <customvalue scriptid="val_984061_5678674_744">
+      <isinactive>F</isinactive>
+      <value>LLC, taxed as S Corp</value>
+    </customvalue>
+    <customvalue scriptid="val_984062_5678674_442">
+      <isinactive>F</isinactive>
+      <value>LLC, taxed as Partnership</value>
+    </customvalue>
+    <customvalue scriptid="val_984063_5678674_910">
+      <isinactive>F</isinactive>
+      <value>Other</value>
+    </customvalue>
+    <customvalue scriptid="val_984064_5678674_300">
+      <isinactive>F</isinactive>
+      <value>Non-USA</value>
+    </customvalue>
+  </customvalues>
+</customlist>

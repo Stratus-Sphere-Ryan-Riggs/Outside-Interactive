@@ -69,7 +69,7 @@
       <allpartners>F</allpartners>
       <allroles>T</allroles>
       <audslctrole></audslctrole>
-      <custscript_ss_sl_ven_onboard_form_folder>9520</custscript_ss_sl_ven_onboard_form_folder>
+      <custscript_ss_sl_ven_onboard_form_folder>421265</custscript_ss_sl_ven_onboard_form_folder>
       <custscript_ss_sl_ven_onboard_form_html>vof-index.html</custscript_ss_sl_ven_onboard_form_html>
       <eventtype></eventtype>
       <isdeployed>T</isdeployed>
@@ -78,6 +78,21 @@
       <runasrole>ADMINISTRATOR</runasrole>
       <status>RELEASED</status>
       <title>Start | SL Vendor Onboarding Form</title>
+    </scriptdeployment>
+    <scriptdeployment scriptid="customdeploy_ss_sl_ven_onboard_wif">
+      <allemployees>F</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <custscript_ss_sl_ven_onboard_form_folder></custscript_ss_sl_ven_onboard_form_folder>
+      <custscript_ss_sl_ven_onboard_form_html></custscript_ss_sl_ven_onboard_form_html>
+      <eventtype></eventtype>
+      <isdeployed>T</isdeployed>
+      <isonline>T</isonline>
+      <loglevel>DEBUG</loglevel>
+      <runasrole>ADMINISTRATOR</runasrole>
+      <status>RELEASED</status>
+      <title>Strat | SL Vendor Onboarding Form</title>
     </scriptdeployment>
   </scriptdeployments>
 </suitelet>

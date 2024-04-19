@@ -1,0 +1,20 @@
+<customlist scriptid="customlist_vr_typeofpurchase">
+  <description></description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Type of Purchase</name>
+  <customvalues>
+    <customvalue scriptid="val_1150848_5678674_sb2_710">
+      <isinactive>F</isinactive>
+      <value>Services/Consulting/Contractor</value>
+    </customvalue>
+    <customvalue scriptid="val_1150849_5678674_sb2_436">
+      <isinactive>F</isinactive>
+      <value>Products/Physical Goods</value>
+    </customvalue>
+    <customvalue scriptid="val_1150850_5678674_sb2_244">
+      <isinactive>F</isinactive>
+      <value>Software Subscription/License</value>
+    </customvalue>
+  </customvalues>
+</customlist>
