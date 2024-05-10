@@ -15,7 +15,50 @@ define(
         SS_Search
     ) => {
         const MODULE = 'SS.File';
-        
+
+        const getType = (options) => {
+            const TITLE = 'Get File Type';
+            let extension = parseLast(options.name);
+            let type = NS_File.Type.PLAINTEXT;
+
+            switch (extension) {
+                case 'bmp': { type = NS_File.Type.BPMIMAGE; break; }
+                case 'css': { type = NS_File.Type.STYLESHEET; break; }
+                case 'csv': { type = NS_File.Type.CSV; break; }
+                case 'doc':
+                case 'docx': { type = NS_File.Type.WORD; break; }
+                case 'gif': { type = NS_File.Type.GIFIMAGE; break; }
+                case 'gzip': { type = NS_File.Type.GZIP; break; }
+                case 'html': { type = NS_File.Type.HTMLDOC; break; }
+                case 'jpg':
+                case 'jpeg': { type = NS_File.Type.JPGIMAGE; break; }
+                case 'json': { type = NS_File.Type.JSON; break; }
+                case 'pdf': { type = NS_File.Type.PDF; break; }
+                case 'png': { type = NS_File.Type.PNGIMAGE; break; }
+                case 'svg': { type = NS_File.Type.SVG; break; }
+                case 'xls':
+                case 'xlsx': { type = NS_File.Type.EXCEL; break; }
+                case 'xml': { type = NS_File.Type.XMLDOC; break; }
+                case 'zip': { type = NS_File.Type.ZIP; break; }
+                default: { type = NS_File.Type.PLAINTEXT; break; }
+            }
+
+            return type;
+        };
+
+        const parseLast = (name) => {
+            if (!name) {
+                return '';
+            }
+
+            let arrParts = name.split('.');
+            if (arrParts.length <= 0) {
+                return '';
+            }
+
+            return arrParts[arrParts.length - 1].toLowerCase();
+        };
+
         return {
             create (options) {
                 let title = `${MODULE}.Create`;
@@ -32,9 +75,16 @@ define(
                 if (!options.fileType) {
                     options.fileType = NS_File.Type.PLAINTEXT;
                 }
+
+                let fileOptions = {
+                    fileType: options.name ? getType({ name: options.name }) : NS_File.Type.PLAINTEXT,
+                    folder: options.folder,
+                    name: options.name || `file_${(new Date()).getTime()}.txt`,
+                };
+                fileOptions.contents = options.getContents();
     
                 try {
-                    let fileObject = NS_File.create(options);
+                    let fileObject = NS_File.create(fileOptions);
                     let fileId = fileObject.save();
         
                     return {

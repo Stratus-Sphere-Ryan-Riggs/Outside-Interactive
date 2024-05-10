@@ -23,9 +23,9 @@
         justify-content: space-between;
     }
     header > .logo {
-        max-height: 22.5vw;
+        max-height: 22.5vw; 
         height: 10rem;
-        background-image: url('https://5678674-sb2.app.netsuite.com/core/media/media.nl?id=572853&c=5678674_SB2&h=VGhlv_OM7LHY-wDSO-cgxBQXpU70vUKXxfd9JyTgNWX2TztS&_xt=.svg');
+        background-image: url('https://5678674-sb2.app.netsuite.com/core/media/media.nl?id=724182&c=5678674_SB2&h=ojxlRbsRGTdMghyEc7UmNbcqD9HL7HNgzWAg2dBI7MXT908A&_xt=.svg');
         background-position: center;
         background-repeat: no-repeat;
         margin: 1.75rem 0 0;

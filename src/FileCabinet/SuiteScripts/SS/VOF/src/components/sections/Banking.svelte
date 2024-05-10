@@ -55,11 +55,19 @@
         })
     );
 
+    const onChangeAccountType = (e) => {
+        console.log(`onChangeAccountType value = ${e.detail.value}`);
+        formValues.update(o => {
+            o[$formFields.CURRENCY] = e.detail.value;
+            return o;
+        });
+    };
+
     // console.log(`BANKING START`, $formValues);
     const onChangeCurrency = (e) => {
         console.log(`onChangeCurrency value = ${e.detail.value}`);
         formValues.update(o => {
-            o[$formFields.CURRENCY] = e.detail.value;
+            o[$formFields.ACCOUNT_TYPE] = e.detail.value;
             return o;
         });
 
@@ -170,6 +178,7 @@
         });
     };
 
+    $: accountType = $formValues[$formFields.ACCOUNT_TYPE];
     $: bankCountry = $formValues[$formFields.BANK_COUNTRY];
     $: bankCurrency = $formValues[$formFields.CURRENCY];
     
@@ -269,6 +278,12 @@
         onChangeCountry({
             detail: {
                 value: bankCountry
+            }
+        });
+
+        onChangeAccountType({
+            detail: {
+                value: '1'
             }
         });
         /* onChangeBankingMethod({
@@ -434,8 +449,8 @@
             id="{$formFields.ACCOUNT_TYPE}"
             label="Account Type"
             bind:items={accountTypes}
-            bind:value={paymentMethod}
-            on:change={onChangePaymentMethod}
+            bind:value={$formValues[$formFields.ACCOUNT_TYPE]}
+            on:change={onChangeAccountType}
         />
 
         <InputText

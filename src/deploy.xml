@@ -1,8 +1,5 @@
 <deploy>
-    <files>
-        <path>~/FileCabinet/SuiteScripts/SS/vendor_onboarding/SS_SL_VendorOnboardingForm.js</path>
-    </files>
     <objects>
-        <path>~/Objects/suitelets/customscript_ss_sl_ven_onboard_form.xml</path>
+        <path>~/Objects/custom_list/customlist_vr_bankdetailmethod.xml</path>
     </objects>
 </deploy>

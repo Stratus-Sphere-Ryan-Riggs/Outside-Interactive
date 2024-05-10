@@ -1,0 +1,48 @@
+<customlist scriptid="customlist_vr_taxclassificationlist">
+  <description>Tax Classification List for Vendor Onboarding process.</description>
+  <isinactive>F</isinactive>
+  <isordered>T</isordered>
+  <name>Tax Classification List</name>
+  <customvalues>
+    <customvalue scriptid="val_1150531_5678674_sb2_419">
+      <isinactive>F</isinactive>
+      <value>Partnership</value>
+    </customvalue>
+    <customvalue scriptid="val_1150532_5678674_sb2_481">
+      <isinactive>F</isinactive>
+      <value>C-Corporation</value>
+    </customvalue>
+    <customvalue scriptid="val_1150533_5678674_sb2_147">
+      <isinactive>F</isinactive>
+      <value>S-Corporation</value>
+    </customvalue>
+    <customvalue scriptid="val_1150534_5678674_sb2_835">
+      <isinactive>F</isinactive>
+      <value>Partnership</value>
+    </customvalue>
+    <customvalue scriptid="val_1150535_5678674_sb2_347">
+      <isinactive>F</isinactive>
+      <value>Trust/Estate</value>
+    </customvalue>
+    <customvalue scriptid="val_1150536_5678674_sb2_830">
+      <isinactive>F</isinactive>
+      <value>LLC, taxed as Corp</value>
+    </customvalue>
+    <customvalue scriptid="val_1150537_5678674_sb2_388">
+      <isinactive>F</isinactive>
+      <value>LLC, taxed as S-Corp</value>
+    </customvalue>
+    <customvalue scriptid="val_1150538_5678674_sb2_505">
+      <isinactive>F</isinactive>
+      <value>LLC, taxed as partnership</value>
+    </customvalue>
+    <customvalue scriptid="val_1150539_5678674_sb2_531">
+      <isinactive>F</isinactive>
+      <value>Other</value>
+    </customvalue>
+    <customvalue scriptid="val_1150540_5678674_sb2_972">
+      <isinactive>F</isinactive>
+      <value>Non-USA</value>
+    </customvalue>
+  </customvalues>
+</customlist>

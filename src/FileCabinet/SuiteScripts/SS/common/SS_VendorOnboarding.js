@@ -137,8 +137,8 @@ define(
 
             const FIELDS = SS_Constants.CustomRecords.VendorRequest.Fields;
             const FIELDS_EXCLUDE = [
-                FIELDS.W9,
-                FIELDS.CERTIFICATE_OF_INSURANCE
+                // FIELDS.W9,
+                // FIELDS.CERTIFICATE_OF_INSURANCE
             ];
             const FIELDS_SETBYTEXT = [
                 FIELDS.COUNTRY,
@@ -183,10 +183,11 @@ define(
                 log.error({ title: TITLE, details: message });
                 return { status: false, message };
             }
+            log.debug({ title: TITLE, details: JSON.stringify(file) });
 
             try {
                 log.debug({ title: TITLE, details: 'here' });
-                return SS_File.create({ file, folder });
+                return SS_File.create({ ...file, folder });
             }
             catch (ex) {
                 let message = ex.message || ex.toString();

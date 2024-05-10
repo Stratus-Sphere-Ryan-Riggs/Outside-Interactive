@@ -185,7 +185,7 @@
     <InputText
         id="{$formFields.TAX_ID_US}"
         label={taxIdLabel}
-        cls="w160"
+        cls="w160 tax"
         optional
         optionalLabel={false}
         bind:value={$formValues[$formFields.TAX_ID_US]}
@@ -194,7 +194,7 @@
     <InputText
         id="{$formFields.SSN}"
         label="SSN (XXX-XX-XXXX)"
-        cls="w160"
+        cls="w160 tax"
         optional
         optionalLabel={false}
         bind:value={$formValues[$formFields.SSN]}

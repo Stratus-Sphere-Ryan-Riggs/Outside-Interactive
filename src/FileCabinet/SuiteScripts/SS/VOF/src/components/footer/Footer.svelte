@@ -33,6 +33,7 @@
             }
         ).then(data => data.json())
         .then(data => {
+            // return;
             if (data.status === true) {
                 alert('Vendor Request updated successfully.');
                 window.location.href = '//www.outsideinc.com/';
@@ -67,16 +68,44 @@
         console.log(`  *** SUBMIT ***`);
         console.log('formFields', $formFields);
         console.log('formValues', $formValues);
+        window['alertedTax'] = false;
 
         let errorSection = '';
         document.querySelectorAll('div.card').forEach(section => {
-            console.log(`  *** checking section = ${section.dataset.id}`);
-            section.querySelectorAll('.field:not(.optional) .fld').forEach(el => {
+            console.log(`  *** checking section = ${section['dataset'].id}`);
+            section.querySelectorAll('.field:not(.optional) .fld, .fld.tax').forEach(el => {
                 let result = validate(el.id);
                 console.log(`   >>> result = ${result}`);
                 if (result === false && errorSection === '') {
-                    errorSection = section.dataset.id;
+                    errorSection = section['dataset'].id;
                     console.log(`   >>> errorSection = ${errorSection}`);
+                }
+
+                if (
+                    [
+                        $formFields.TAX_ID_US,
+                        $formFields.SSN
+                    ].indexOf(el.id) >= 0
+                ) {
+                    console.log(`*** el.id = ${el.id}`, `country = ${$formValues[$formFields.COUNTRY].toLowerCase() === 'united states'}`);
+                }
+
+                if (
+                    [
+                        $formFields.TAX_ID_US,
+                        $formFields.SSN
+                    ].indexOf(el.id) >= 0 &&
+                    (
+                        $formValues[$formFields.COUNTRY].toLowerCase() === 'united states' &&
+                        !!$formValues[$formFields.TAX_ID_US] === false &&
+                        !!$formValues[$formFields.SSN] === false
+                    ) &&
+                    window['alertedTax'] === false
+                ) {
+                    window['alertedTax'] = true;
+                    errorSection = section['dataset'].id;
+                    console.log(`   >>> errorSection = ${errorSection}`);
+                    alert('Please enter either a business Tax ID or Social Security Number in the Name and Address section above.');
                 }
             });
         });
@@ -87,6 +116,7 @@
             alert('Please fill out all required fields.');
             return;
         }
+        // return;
 
         finalizeData();
         submitData();
