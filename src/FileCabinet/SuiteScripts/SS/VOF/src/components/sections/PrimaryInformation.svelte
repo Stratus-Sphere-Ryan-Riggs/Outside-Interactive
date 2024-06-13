@@ -132,6 +132,7 @@
         id="{$formFields.VENDOR_COMMENTS}"
         label="Vendor Comments"
         bind:value={$formValues[$formFields.VENDOR_COMMENTS]}
+        optional
     />
 
 </Card>
