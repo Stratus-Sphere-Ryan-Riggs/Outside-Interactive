@@ -107,6 +107,10 @@
                     console.log(`   >>> errorSection = ${errorSection}`);
                     alert('Please enter either a business Tax ID or Social Security Number in the Name and Address section above.');
                 }
+
+                if ($formValues[$formFields.LEGAL_DISCLAIMER] === false) {
+                    errorSection = 'banking';
+                }
             });
         });
 

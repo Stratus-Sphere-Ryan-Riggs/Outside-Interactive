@@ -58,7 +58,7 @@
     const onChangeAccountType = (e) => {
         console.log(`onChangeAccountType value = ${e.detail.value}`);
         formValues.update(o => {
-            o[$formFields.CURRENCY] = e.detail.value;
+            o[$formFields.ACCOUNT_TYPE] = e.detail.value;
             return o;
         });
     };
@@ -67,7 +67,7 @@
     const onChangeCurrency = (e) => {
         console.log(`onChangeCurrency value = ${e.detail.value}`);
         formValues.update(o => {
-            o[$formFields.ACCOUNT_TYPE] = e.detail.value;
+            o[$formFields.CURRENCY] = e.detail.value;
             return o;
         });
 
