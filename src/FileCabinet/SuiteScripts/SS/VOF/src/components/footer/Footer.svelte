@@ -71,6 +71,7 @@
         window['alertedTax'] = false;
 
         let errorSection = '';
+        let customAlert = false;
         document.querySelectorAll('div.card').forEach(section => {
             console.log(`  *** checking section = ${section['dataset'].id}`);
             section.querySelectorAll('.field:not(.optional) .fld, .fld.tax').forEach(el => {
@@ -80,47 +81,39 @@
                     errorSection = section['dataset'].id;
                     console.log(`   >>> errorSection = ${errorSection}`);
                 }
-
-                if (
-                    [
-                        $formFields.TAX_ID_US,
-                        $formFields.SSN
-                    ].indexOf(el.id) >= 0
-                ) {
-                    console.log(`*** el.id = ${el.id}`, `country = ${$formValues[$formFields.COUNTRY].toLowerCase() === 'united states'}`);
-                }
-
-                if (
-                    [
-                        $formFields.TAX_ID_US,
-                        $formFields.SSN
-                    ].indexOf(el.id) >= 0 &&
-                    (
-                        $formValues[$formFields.COUNTRY].toLowerCase() === 'united states' &&
-                        !!$formValues[$formFields.TAX_ID_US] === false &&
-                        !!$formValues[$formFields.SSN] === false
-                    ) &&
-                    window['alertedTax'] === false
-                ) {
-                    window['alertedTax'] = true;
-                    errorSection = section['dataset'].id;
-                    console.log(`   >>> errorSection = ${errorSection}`);
-                    alert('Please enter either a business Tax ID or Social Security Number in the Name and Address section above.');
-                }
-
-                if ($formValues[$formFields.LEGAL_DISCLAIMER] === false) {
-                    errorSection = 'banking';
-                }
             });
         });
 
-        console.log(`errorSection = ${errorSection}`);
-        if (errorSection) {
-            document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
-            alert('Please fill out all required fields.');
+        console.log(`isUS???`, $formValues[$formFields.COUNTRY].toLowerCase() === 'united states');
+        if ((
+                $formValues[$formFields.COUNTRY].toLowerCase() === 'united states' &&
+                    !!$formValues[$formFields.TAX_ID_US] === false &&
+                    !!$formValues[$formFields.SSN] === false
+            ) &&
+            window['alertedTax'] === false
+        ) {
+            window['alertedTax'] = true;
+            errorSection = 'tax_info';
+            console.log(`   >>> errorSection = ${errorSection}`);
+            customAlert = true;
+            alert('Please enter either a business Tax ID or Social Security Number in the Name and Address section.');
             return;
         }
-        // return;
+        else if ($formValues[$formFields.LEGAL_DISCLAIMER] === false) {
+            errorSection = 'disclaimer';
+            customAlert = true;
+            alert('Agreement to legal disclaimer is required to submit form.');
+        }
+
+        if (customAlert === false && !!errorSection === false) {
+            alert('Please fill out all required fields.');
+        }
+
+        if (errorSection) {
+            console.log(`errorSection = ${errorSection}`);
+            document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
+            return;
+        }
 
         finalizeData();
         submitData();

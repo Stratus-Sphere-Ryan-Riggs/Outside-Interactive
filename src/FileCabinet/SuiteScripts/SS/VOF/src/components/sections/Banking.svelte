@@ -2,10 +2,8 @@
     import { countryStates, currencies, formFields, formValues } from "../../store/pageData";
     import { onMount } from "svelte";
 
-    import Blurb from "../form/Blurb.svelte";
     import Card from "../form/Card.svelte";
     import Dropdown from "../form/Dropdown.svelte";
-    import InputCheckbox from "../form/InputCheckbox.svelte";
     import InputText from "../form/InputText.svelte";
     import RadioGroup from "../form/RadioGroup.svelte";
     import Row from "../form/Row.svelte";
@@ -93,6 +91,7 @@
                 break;
             }
         }
+        
         // bankCurrency = bankCountry === 'United States' ? 'USD' : '';
         formValues.update(o => {
             o[$formFields.BANK_COUNTRY] = bankCountry;
@@ -128,7 +127,7 @@
         });
         console.log(`onChangePaymentMethod updated BANK_DETAIL_METHOD = ${$formValues[$formFields.BANK_DETAIL_METHOD]}`);
 
-        onChangeCountry({
+        /* onChangeCountry({
             origin: 'method',
             detail: {
                 value: e.detail.value === '1' ? "United States" : ""
@@ -138,7 +137,7 @@
             detail: {
                 value: e.detail.value === '1' ? "USD" : ""
             }
-        });
+        }); */
     };
 
     const updateBankPaymentMethod = () => {
@@ -393,7 +392,6 @@
         on:change={onChangePaymentMethod}
     />
 
-
     <div class="agree-section" class:hidden={showDetails === false}>
         <InputText
             id="{$formFields.ACCOUNT_HOLDER_FULL_NAME}"
@@ -507,17 +505,6 @@
             bind:visible={isNotUS}
          -->
 
-        <Blurb id="blurb_legal_disclaimer">
-            <span class="title">Legal Disclaimer</span>
-            <span class="blurb">I (we) hereby authorize Outside Interactive Inc. or its affiliated entities (THE COMPANY) to initiate entries to my (our) checking/savings accounts at the financial institution listed below (THE FINANCIAL INSTITUTION), and, if necessary, initiate adjustments for any transactions credited/debited in error. This authority will remain in effect until THE COMPANY is notified by me (us) in writing to cancel it in such time as to afford THE COMPANY and THE FINANCIAL INSTITUTION a reasonable opportunity to act on it.</span>
-        </Blurb>
-    
-        <InputCheckbox
-            id="{$formFields.LEGAL_DISCLAIMER}"
-            label="Do you agree?"
-            required={true}
-            bind:checked={$formValues[$formFields.LEGAL_DISCLAIMER]}
-        />
     </div>
 
 </Card>

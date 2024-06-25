@@ -6,6 +6,7 @@
     import PrimaryInformation from './components/sections/PrimaryInformation.svelte';
     import NameAndAddress from './components/sections/NameAndAddress.svelte';
     import Footer from './components/footer/Footer.svelte';
+    import LegalDisclaimer from './components/sections/LegalDisclaimer.svelte';
 
     let isUS = true;
     $: country = '';
@@ -30,6 +31,7 @@
         <NameAndAddress title="Name and Address" />
         <Documents title="Documents" />
         <Banking title="Banking Information" />
+        <LegalDisclaimer title="Legal Disclaimer" />
     </div>
 
     <Footer />
