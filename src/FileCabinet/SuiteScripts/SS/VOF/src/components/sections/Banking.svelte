@@ -486,12 +486,18 @@
             bind:value={$formValues[$formFields.DIFFERENT_NAME]}
         />
         
-        <InputText
+        <!-- <InputText
             id="{$formFields.RECEIVING_BANK_NAME}"
             label="Bank Name"
             bind:optional={noBankName}
             bind:value={$formValues[$formFields.RECEIVING_BANK_NAME]}
             bind:visible={hasBankName}
+        /> -->
+        
+        <InputText
+            id="{$formFields.RECEIVING_BANK_NAME}"
+            label="Bank Name"
+            bind:value={$formValues[$formFields.RECEIVING_BANK_NAME]}
         />
 
         <TextArea

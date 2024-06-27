@@ -18,6 +18,9 @@
                 return o;
             });
         }
+
+        console.clear();
+        console.log($formValues);
     };
 
     const submitData = () => {
@@ -76,13 +79,20 @@
             console.log(`  *** checking section = ${section['dataset'].id}`);
             section.querySelectorAll('.field:not(.optional) .fld, .fld.tax').forEach(el => {
                 let result = validate(el.id);
-                console.log(`   >>> result = ${result}`);
+                // console.log(`   >>> result = ${result}`);
                 if (result === false && errorSection === '') {
                     errorSection = section['dataset'].id;
-                    console.log(`   >>> errorSection = ${errorSection}`);
+                    // console.log(`   >>> errorSection = ${errorSection}`);
                 }
             });
         });
+
+        if (errorSection) {
+            console.log(`errorSection = ${errorSection}`);
+            alert('Please fill out all required fields.');
+            document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
+            return;
+        }
 
         console.log(`isUS???`, $formValues[$formFields.COUNTRY].toLowerCase() === 'united states');
         if ((
@@ -97,15 +107,21 @@
             console.log(`   >>> errorSection = ${errorSection}`);
             customAlert = true;
             alert('Please enter either a business Tax ID or Social Security Number in the Name and Address section.');
+            document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
             return;
         }
-        else if ($formValues[$formFields.LEGAL_DISCLAIMER] === false) {
+
+        if ($formValues[$formFields.LEGAL_DISCLAIMER] === false) {
             errorSection = 'disclaimer';
             customAlert = true;
             alert('Agreement to legal disclaimer is required to submit form.');
+            document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
+            return;
         }
 
-        if (customAlert === false && !!errorSection === false) {
+        /* console.log(`customAlert = ${customAlert}; errorSection = ${errorSection}`);
+
+        if (customAlert === false && !!errorSection === true) {
             alert('Please fill out all required fields.');
         }
 
@@ -113,7 +129,7 @@
             console.log(`errorSection = ${errorSection}`);
             document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
             return;
-        }
+        } */
 
         finalizeData();
         submitData();

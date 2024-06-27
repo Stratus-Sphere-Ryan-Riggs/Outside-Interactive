@@ -178,7 +178,7 @@
         id="{$formFields.STATE_INTL}"
         label="State/Province"
         bind:value={$formValues[$formFields.STATE_INTL]}
-        bind:optional={isUSorCA}
+        optional
         bind:visible={notUSorCA}
     />
 
