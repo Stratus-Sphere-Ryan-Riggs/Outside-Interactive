@@ -12,7 +12,7 @@
     // $: w9Visible = !w9Optional;
     // $: insuranceOptional = window['isServiceProvider'] === false;
 
-    const annualSpend = [ '5', '6' ];
+    const annualSpend = [ '6' ];
     $: isInsuranceOptional = annualSpend.indexOf($formValues[$formFields.ANTICIPATED_ANNUAL_SPEND].toString()) < 0;
 
     const onFileChange = (e) => {
