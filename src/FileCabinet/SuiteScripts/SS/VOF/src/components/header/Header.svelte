@@ -7,6 +7,7 @@
     <Card notitle compress>
         <span class="form-title">Vendor Onboarding Form</span>
         <span class="form-subtitle">Please fill out all required fields.</span>
+        <span class="form-subtitle">If you have any questions or issues completing this form, please contact us at <a href="mailto:vendors@outsideinc.com">vendors@outsideinc.com</a>.</span>
     </Card>
 </header>
 
