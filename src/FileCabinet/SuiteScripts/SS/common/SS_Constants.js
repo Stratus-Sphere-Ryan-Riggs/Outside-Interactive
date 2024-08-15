@@ -342,6 +342,7 @@ define(
                 StatementSearchId       : 'custscript_ss_cs_search',
                 TaskSearchId            : 'custscript_ss_cs_tasks_search'
             }, */
+            CreateVendorRequest         : 'custscript_ss_sl_ven_onboard_form_create',
             CustomerStatementTaskSearch : '',
             FileUploadFolder            : 'custscript_ss_sl_ven_onboard_form_folder',
             HtmlTemplateFile            : 'custscript_ss_sl_ven_onboard_form_html',

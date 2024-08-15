@@ -97,7 +97,7 @@ define(
                 }
                 catch (ex) {
                     let errorMessage = ex.message || ex.toString();
-                    nsLog.error({ title, details: errorMessage });
+                    log.error({ title, details: errorMessage });
                     return { status: false, error: errorMessage };
                 }
             },
@@ -107,7 +107,7 @@ define(
                 let fileId = 0;
     
                 if (!name) {
-                    nsLog.debug({ title: title, details: 'Missing required value: File Name.' });
+                    log.debug({ title: title, details: 'Missing required value: File Name.' });
                     return fileId;
                 }
                 let fileSearch = SS_Search.create({
@@ -119,7 +119,7 @@ define(
                 
                 let fileResults = fileSearch.getFirst();
                 if (fileResults.length <= 0) {
-                    nsLog.debug({ title: title, details: `No file record found with Name = ${name}.` });
+                    log.debug({ title: title, details: `No file record found with Name = ${name}.` });
                     return fileId;
                 }
     
@@ -134,7 +134,7 @@ define(
                 }
     
                 if (!options.name) {
-                    nsLog.error({ title: title, details: `Missing required value: File ID or Name.` });
+                    log.error({ title: title, details: `Missing required value: File ID or Name.` });
                     return fileObject;
                 }
     
@@ -156,7 +156,7 @@ define(
                 }
     
                 if (!options.name) {
-                    nsLog.error({ title: title, details: `Missing required value: File ID or Name.` });
+                    log.error({ title: title, details: `Missing required value: File ID or Name.` });
                     return fileContents;
                 }
     

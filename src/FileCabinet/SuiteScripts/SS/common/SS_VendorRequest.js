@@ -20,28 +20,7 @@ define(
         SS_Script,
         SS_Url
     ) => {
-        const MODULE = `SS|VendorOnboarding`;
-
-        const buildBackendUrl = (options) => {
-            const TITLE = `${MODULE}.BuildBackendUrl`;
-            let { id } = options;
-
-            let urlParams = {
-                scriptId: SS_Script.Id,
-                deploymentId: SS_Script.DeploymentId,
-                returnExternalUrl: true
-            };
-            if (id) {
-                urlParams.params = {
-                    request_id: id
-                };
-            }
-
-            let backendUrl = SS_Url.resolveScript(urlParams);
-            log.debug({ title: TITLE, details: backendUrl });
-
-            return backendUrl;
-        };
+        const MODULE = `SS|VendorRequest`;
 
         const getDropdownData = () => {
             let TITLE = `${MODULE}.GetDropdownData`;
@@ -71,10 +50,19 @@ define(
             return listData;
         };
 
-        const readVendorRequestValues = (options) => {
-            const TITLE = `${MODULE}.ReadVendorRequestValues`;
-            let VENDOR_REQUEST = SS_Constants.CustomRecords.VendorRequest;
+        const render = (options) => {
+            const TITLE = `${MODULE}.Render`;
             let { id } = options;
+            let templateParam = SS_Script.getParameter(SS_Constants.ScriptParameters.HtmlTemplateFile);
+            if (!templateParam) {
+                let message = `Missing required value: HTML Template File`
+                log.error({ title: TITLE, details: message });
+                return { status: false, message };
+            }
+
+            let renderValue = SS_File.read({ name: templateParam });
+            let VENDOR_REQUEST = SS_Constants.CustomRecords.VendorRequest;
+            log.debug({ title: `${TITLE} VENDOR_REQUEST`, details: JSON.stringify(VENDOR_REQUEST) });
 
             let vendorRequest = SS_Record.load({ id, type: VENDOR_REQUEST.Id });
             let isSubmitted = vendorRequest.getHeaderValue({ fieldId: 'custrecord_vr_vendorformsubmitted' });
@@ -83,7 +71,7 @@ define(
                 return 'This vendor request has already been submitted...';
             }
             
-            const FIELDS = VENDOR_REQUEST.Fields;
+            let FIELDS = VENDOR_REQUEST.Fields;
             let headerValues = vendorRequest.getHeaderValues({ fields: Object.values(FIELDS) });
             headerValues['custrecord_vr_ns5categories'] = vendorRequest.getHeaderValue({ fieldId: 'custrecord_vr_ns5categories' });
             log.debug({ title: `${TITLE} headerValues`, details: JSON.stringify(headerValues) });
@@ -97,44 +85,27 @@ define(
             ].forEach(fieldId => headerValues[fieldId] = vendorRequest.getHeaderText({ fieldId }) );
             log.debug({ title: `${TITLE} headerValues`, details: JSON.stringify(headerValues) });
 
-            return headerValues;
-        };
-
-        const render = (options) => {
-            const TITLE = `${MODULE}.Render`;
-            let { id } = options;
-            let templateParam = SS_Script.getParameter(SS_Constants.ScriptParameters.HtmlTemplateFile);
-            if (!templateParam) {
-                let message = `Missing required value: HTML Template File`
-                log.error({ title: TITLE, details: message });
-                return message;
-            }
-
-            const VENDOR_REQUEST = SS_Constants.CustomRecords.VendorRequest;
-            const FIELDS = VENDOR_REQUEST.Fields;
-            let renderValue = SS_File.read({ name: templateParam });
-            let backendUrl = buildBackendUrl(options);
-            let headerValues = id ? readVendorRequestValues(options) : null;
-            let mapValues = {
-                BACKEND_URL: backendUrl,
-                CURRENCIES: JSON.stringify(SS_Query.Currencies),
-                DROPDOWN_DATA: JSON.stringify(getDropdownData()),
-                FIELD_DATA: JSON.stringify(FIELDS),
-                RADIO_DATA: JSON.stringify(getRadioGroupData()),
-                STATE_COUNTRIES: JSON.stringify(SS_Query.StatesWithCountries),
-                TIME_STAMP: new Date().getTime().toString()
-            };
-            if (id) {
-                mapValues = {
-                    ...mapValues,
-                    REQUEST_DATA: JSON.stringify(headerValues),
-                    SERVICE_PROVIDER: headerValues['custrecord_vr_ns5categories'] === SS_Constants.NS5_Categories.ON_BOARD,
-                };
-            }
-
+            let backendUrl = SS_Url.resolveScript({
+                scriptId: SS_Script.Id,
+                deploymentId: SS_Script.DeploymentId,
+                returnExternalUrl: true,
+                params: {
+                    request_id: id
+                }
+            });
             return replaceValues({
                 input: renderValue,
-                map: mapValues
+                map: {
+                    BACKEND_URL: backendUrl,
+                    CURRENCIES: JSON.stringify(SS_Query.Currencies),
+                    DROPDOWN_DATA: JSON.stringify(getDropdownData()),
+                    FIELD_DATA: JSON.stringify(FIELDS),
+                    RADIO_DATA: JSON.stringify(getRadioGroupData()),
+                    REQUEST_DATA: JSON.stringify(headerValues),
+                    SERVICE_PROVIDER: headerValues['custrecord_vr_ns5categories'] === SS_Constants.NS5_Categories.ON_BOARD,
+                    STATE_COUNTRIES: JSON.stringify(SS_Query.StatesWithCountries),
+                    TIME_STAMP: new Date().getTime().toString()
+                }
             });
             /* renderValue = renderValue.replace('{BACKEND_URL}', backendUrl);
 
@@ -203,32 +174,9 @@ define(
             }
         };
 
-        const upload = (options) => {
-            const TITLE = `${MODULE}.Upload`;
-            let { file } = options;
-            let folder = SS_Script.getParameter(SS_Constants.ScriptParameters.FileUploadFolder);
-            if (!folder) {
-                let message = `Missing required parameter: Folder.`;
-                log.error({ title: TITLE, details: message });
-                return { status: false, message };
-            }
-            log.debug({ title: TITLE, details: JSON.stringify(file) });
-
-            try {
-                log.debug({ title: TITLE, details: 'here' });
-                return SS_File.create({ ...file, folder });
-            }
-            catch (ex) {
-                let message = ex.message || ex.toString();
-                log.error({ title: TITLE, details: ex.toString() });
-                return { status: false, message };
-            }
-        };
-
         return {
             render,
-            save,
-            upload
+            save
         };
     }
 );

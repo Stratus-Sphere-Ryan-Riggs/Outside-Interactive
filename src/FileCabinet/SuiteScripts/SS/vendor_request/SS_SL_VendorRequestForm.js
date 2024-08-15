@@ -6,13 +6,9 @@
 
 define(
     [
-        '../common/SS_Constants',
-        '../common/SS_Script',
         '../common/SS_VendorOnboarding'
     ],
     (
-        SS_Constants,
-        SS_Script,
         SS_VendorOnboarding
     ) => {
         const MODULE = `SS.SL|VendorOnboarding`;
@@ -71,9 +67,7 @@ define(
             let { request, response } = context;
             let vendorRequestId = request.parameters.request_id;
 
-            let createParam = SS_Script.getParameter(SS_Constants.ScriptParameters.CreateVendorRequest);
-            log.debug({ title: TITLE, details: `createParam = ${createParam}` });
-            if (!createParam && !vendorRequestId) {
+            if (!vendorRequestId) {
                 let msg = `Missing required parameter: Vendor Request ID.`;
                 log.error({ title: TITLE, details: msg });
                 response.write({ output: msg });
