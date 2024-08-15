@@ -1,39 +1,31 @@
 <script>
-    export let id = "dd_field";
-    export let label = "Dropdown";
+    export let id = "textarea_field";
+    export let label = "Text Area Field";
+    export let value = "";
     export let optional = false;
     export let visible = true;
-    export let value = "";
     export let wr = '';
     export let cls = '';
-    export let items = [];
-
-    import { createEventDispatcher } from "svelte";
-    // import { formFields, formValues } from "../../store/pageData";
-    const dispatch = createEventDispatcher();
+    
+    import { formFields, formValues } from "../../store/pageData";
 
     let wrCls = [ 'field' ];
     if (wr) {
         wrCls = wrCls.concat(wr.split(' '));
     }
-    
+    /* if (required === false) {
+        wrCls.push('optional');
+    } */
+
     let fldCls = [ 'fld' ];
     if (cls) {
         fldCls = fldCls.concat(cls.split(' '));
     }
 
     $: isChanged = false;
-    const onChange = () => {
-        let el = document.getElementById(id);
-        console.log(`onChange id = ${id}, optional = ${optional}`, el['value']);
-
+    const onBlur = () => {
+        console.log(`  ++ TextArea id=${id} value=${value}`, $formValues[$formFields[id]]);
         isChanged = true;
-        dispatch('change', {
-            id,
-            value: el['value']
-        });
-
-        // validate();
     };
 </script>
 
@@ -42,21 +34,18 @@
     class:hidden={visible === false}
 >
     <label for="{id}">{label}</label>
-    <select id="{id}" class="{fldCls.join(' ')}" on:change={onChange} bind:value={value}>
-        {#each items as item}
-            <option value="{item.value}">{item.text}</option>
-        {/each}
-    </select>
+    <textarea id="{id}" class="{fldCls.join(' ')}" on:blur={onBlur} bind:value={value}></textarea>
     <span id="{id}_error" class="field-error"
         class:hidden={isChanged === false || !!value === true || optional === true}>{label} is required.</span>
 </div>
 
 <style>
-    select {
+    textarea {
         background-color: white;
         border-radius: 4px;
-        padding: 12px 16px;
+        padding: 0.75rem 1rem;
         border: 1px solid #DEDEDE;
         font-size: 0.875rem;
+        height: 5rem;
     }
 </style>

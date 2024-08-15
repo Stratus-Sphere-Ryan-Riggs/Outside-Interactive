@@ -2,46 +2,51 @@
     export let id = "text_field";
     export let label = "Text Field";
     export let value = "";
-    export let maxlength = 80;
     export let optional = false;
     export let visible = true;
-    export let wr = '';
     export let cls = '';
 
     import { createEventDispatcher } from "svelte";
+    import { formValues } from "../../store/pageData";
     const dispatch = createEventDispatcher();
 
     let wrCls = [ 'field' ];
-    if (wr) {
-        wrCls = wrCls.concat(wr.split(' '));
+    if (optional === true) {
+        wrCls.push('optional');
     }
 
-    let fldCls = [ 'fld' ];
+    let fldCls = [ 'fld', 'file' ];
     if (cls) {
         fldCls = fldCls.concat(cls.split(' '));
     }
 
     $: isChanged = false;
-    const onBlur = () => {
-        console.log(`onChange id = ${id}, required = ${optional}`, value);
-        isChanged = true;
-        dispatch('change', { value });
-
-        let errorSpan = document.getElementById(`${id}_error`);
+    const onChange = (e) => {
+        /* let errorSpan = document.getElementById(`${id}_error`);
         if (errorSpan.classList.contains('hidden') === false) {
             errorSpan.classList.add('hidden');
         }
 
         if (optional === true) {
-            console.log(`${id} is optional...`);
             return;
         }
 
-        if (!!value === false) {
+        if(e.target.files.length <= 0) {
             errorSpan.classList.remove('hidden');
-        }
-        // console.log(`  ++ InputText id=${id} value=${value}`, $formValues);
-    }
+            return;
+        } */
+
+        isChanged = true;
+        dispatch('change', {
+            id,
+            file: e.target.files[0]
+        });
+
+        /* if (!!value === true) {
+            errorSpan.classList.add('hidden');
+        } */
+        console.log(`  ++ InputFile id=${id} value=${value}`, $formValues);
+    };
 </script>
 
 <div class="{wrCls.join(' ')}"
@@ -49,23 +54,23 @@
     class:hidden={visible === false}
 >
     <label for="{id}">{label}</label>
-    <input type="text"
+    <input type="file"
         id="{id}"
         name="{id}"
         class="{fldCls.join(' ')}"
-        bind:value="{value}"
-        maxlength="{maxlength}"
-        on:blur="{onBlur}"
+        value="{value}"
+        on:change={onChange}
     />
     <span id="{id}_error" class="field-error"
         class:hidden={isChanged === false || !!value === true || optional === true}>{label} is required.</span>
 </div>
 
 <style>
-    input[type=text] {
+    input[type=file] {
+        /* width: 400px; */
         background-color: white;
         border-radius: 4px;
-        padding: 12px 16px;
+        padding: 0.75rem 1rem;
         border: 1px solid #DEDEDE;
         font-size: 0.875rem;
     }

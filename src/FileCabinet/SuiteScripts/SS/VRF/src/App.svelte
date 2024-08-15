@@ -1,107 +1,21 @@
 <script>
-    import Account from "./components/sections/Account.svelte";
-    import Address from "./components/sections/Address.svelte";
-    import Button from "./components/shared/Button.svelte";
-    import Currency from "./components/sections/Currency.svelte";
-    import Disclaimer from "./components/sections/Disclaimer.svelte";
-    import { wifStore } from "./store/store";
+    import Banking from './components/sections/Banking.svelte';
+    import Button from './components/form/Button.svelte';
+    import Documents from './components/sections/Documents.svelte';
+    import Header from './components/header/Header.svelte';
+    import PrimaryInformation from './components/sections/PrimaryInformation.svelte';
+    import NameAndAddress from './components/sections/NameAndAddress.svelte';
+    import Footer from './components/footer/Footer.svelte';
+    import LegalDisclaimer from './components/sections/LegalDisclaimer.svelte';
 
-    const components = [
-        { step: 0, component: Currency },
-        { step: 1, component: Account },
-        { step: 2, component: Address },
-        { step: 3, component: Disclaimer }
-    ];
-    let step = 0;
-    let max = components.length;
-
-    const query = (selector) => {
-        console.log(`query: ${selector}`);
-        if (!selector) { return null; }
-        return document.querySelector(selector);
+    let isUS = true;
+    $: country = '';
+    const onChangeCountry = (e) => {
+        console.log(`App onChangeCountry`, e.detail);
+        country = e.detail.value.toLowerCase();
+        console.log('country', country);
+        // isUS = country === 'united states';
     };
-
-    const onButtonClick = (e) => {
-        console.log('App button click', e.detail.id);
-        let action = e.detail.id ? e.detail.id.toLowerCase() : '';
-        switch (action) {
-            case 'back': {
-                step = step - 1;
-                if (step < 0) { step = 0; }
-                break;
-            }
-            case 'clear': {
-                if (confirm('Are you sure you want to clear the form and start over?') === false) {
-                    return;
-                }
-                wifStore.update(o => {
-                    return {};
-                });
-
-                break;
-            }
-            case 'next': {
-                if (validateStep(step) === false) {
-                    alert('Please fill out all required fields.');
-                    return;
-                }
-                /* if (step === 0 && !!$wifStore['currency'] === false) {
-                    alert('Please select a Currency to continue.');
-                    return;
-                } */
-
-                step = step + 1;
-                if (step >= components.length) { step = components.length - 1; }
-                break;
-            }
-            case 'submit': {
-                if (!!$wifStore['agree'] !== true) {
-                    alert('You must agree to the Legal Disclaimer to submit this form.');
-                    return;
-                }
-                break;
-            }
-        }
-    };
-
-    const validateStep = (stepId) => {
-        console.log(`validateStep`, `stepId=${stepId}`);
-        let isValid = true;
-
-        let container = query(`div.card[data-id="${stepId}"]`);
-        console.log(`validateStep container`, container);
-        if (!container) { return true; }
-
-        let requiredFields = container.querySelectorAll('.field:not(.optional)');
-        console.log(`validateStep requiredFields`, requiredFields);
-
-        requiredFields.forEach(fld => {
-            let fldInput = fld.querySelector('.fld');
-            if (!fldInput) { return; }
-
-            let errorField = fld.querySelector('.field-error');
-            console.log(`validateStep errorField`, errorField);
-            console.log(`fldInput`, `value = ${fldInput.value}; fldInput.classList = ${fldInput.classList}`);
-
-            if (!!fldInput.value === false && fldInput.classList.contains('hidden') == false) {
-                isValid = false;
-                errorField.classList.remove('hidden');
-            }
-            else if (!!fldInput.value === true && errorField.classList.contains('hidden') == true) {
-                errorField.classList.add('hidden');
-            }
-        });
-
-        return isValid;
-    };
-
-    $: visibleCurrency = step === 0;
-    $: visibleAccount = step === 1;
-    $: visibleAddress = step === 2;
-    $: visibleDisclaimer = step === 3;
-    $: isNotFirst = step > 0 && max > 1;
-    $: isLast = step === (max - 1);
-    $: isNotLast = isLast === false && max > 1;
 </script>
 
 <div id="overlay" class="hidden">
@@ -111,24 +25,16 @@
 </div>
 
 <main>
-    <span class="reminder">Please ensure all required details are fully completed.</span>
     <div class="sections">
-        <Currency visible={visibleCurrency} id='0' />
-        <Account visible={visibleAccount} id='1' />
-        <Address visible={visibleAddress} id='2' />
-        <Disclaimer visible={visibleDisclaimer} id='3' />
+        <Header />
+        <PrimaryInformation title="Vendor Information" />
+        <!-- <NameAndAddress title="Name and Address" /> -->
+        <!-- <Documents title="Documents" /> -->
+        <!-- <Banking title="Banking Information" /> -->
+        <!-- <LegalDisclaimer title="Legal Disclaimer" /> -->
     </div>
 
-    <div class="buttons">
-        <div class="left">
-            <Button id="back" label="Back" bind:visible={isNotFirst} on:click={onButtonClick}/>
-            <Button id="clear" label="Clear" visible on:click={onButtonClick} />
-        </div>
-        <div class="right">
-            <Button id="next" label="Next" bind:visible={isNotLast} on:click={onButtonClick} />
-            <Button id="submit" label="Submit" bind:visible={isLast} submit on:click={onButtonClick} />
-        </div>
-    </div>
+    <Footer />
 </main>
 
 <style>
@@ -139,19 +45,41 @@
         /* flex: 1; */
         /* display: grid;
         grid-template-columns: 300px 1fr; */
-        max-width: 1080px;
+        max-width: 720px;
         min-width: 480px;
         width: 50%;
         margin: 0 auto;
+        padding-bottom: 4rem;
         /* padding-top: 100px; */
         /* border-left: 1px solid white; */
         /* border-right: 1px solid white; */
+
+        /* flex: 1;
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        max-width: 1080px;
+        width: 70%;
+        margin: 0 auto;
+        padding-top: 100px;
+        background-color: white;
+        border-left: 20px solid white;
+        border-right: 20px solid white; */
     }
     .sections {
         display: flex;
         flex-direction: column;
-        gap: 32px;
+        gap: 1rem;
     }
+    /* .content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .sections {
+        display: flex;
+        flex-direction: column;
+        gap: 60px;
+    } */
     #overlay{	
         position: fixed;
         top: 0;

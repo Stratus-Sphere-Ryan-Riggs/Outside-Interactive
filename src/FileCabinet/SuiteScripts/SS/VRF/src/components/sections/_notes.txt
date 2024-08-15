@@ -1,0 +1,17 @@
+- Move Country to top of Primary Info
+- New section for Tax Information (after Primary Info)
+    > Tax Classification
+        - If Country!=US, only show Non-US
+        - If Country=US, show all other options
+    > Tax ID (XX-XXXXXXX) - US only && company=TRUE
+    > SSN (XXX-XX-XXXX) - US only && company=FALSE
+    > Non-US Tax ID - company=TRUE
+- Addressee should default to:
+    > First Name + Last Name, if Individual
+    > Company Name, if Company
+- Banking Information
+    > Initially only show up to "Do you agree?"
+    > On check of "Do you agree?", show all other field below it
+- Small Business
+    > Only show for US
+    

@@ -5,7 +5,7 @@
     export let items = [];
 
     import { createEventDispatcher } from "svelte";
-    // import { formFields, formValues } from "../../store/pageData";
+    import { formFields, formValues } from "../../store/pageData";
     const dispatch = createEventDispatcher();
 
     const onChange = (e) => {
@@ -14,7 +14,7 @@
             value: e.target.value
         });
         
-        // console.log(`  ++ RadioGroup id=${id} value=${value}`, $formValues);
+        console.log(`  ++ RadioGroup id=${id} value=${value}`, $formValues);
     };
 </script>
 

@@ -4,16 +4,16 @@
 
     export let label = "Button";
     export let id = "button_id";
-    export let visible = false;
+    // export let visible = false;
     export let submit = false;
 
     let btnClassList = [];
-    if (visible === false && btnClassList.indexOf('hidden') < 0) {
+    /* if (visible === false && btnClassList.indexOf('hidden') < 0) {
         btnClassList.push('hidden');
     }
     if (visible === true && btnClassList.indexOf('hidden') >= 0) {
         btnClassList = btnClassList.filter(c => c !== 'hidden');
-    }
+    } */
 
     if (submit === true && btnClassList.indexOf('submit') < 0) {
         btnClassList.push('submit');
@@ -27,7 +27,7 @@
     };
 </script>
 
-<button type="button" data-id="btn_{id}" class={btnClass} class:hidden={visible === false} on:click={onButtonClick}>{label}</button>
+<button type="button" data-id="btn_{id}" class={btnClass} on:click={onButtonClick}>{label}</button>
 
 <style>
     button {

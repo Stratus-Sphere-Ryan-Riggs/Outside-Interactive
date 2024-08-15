@@ -1,16 +1,17 @@
 <script>
     export let title = '[Title]';
     export let subtitle = '';
-    export let visible = false;
     export let id = (new Date()).getTime().toString();
+    export let notitle = false;
+    export let compress = false;
 </script>
 
-<div class="card" class:hidden={visible===false} data-id={id}>
-    <div class="title">
+<div class="card" data-id={id}>
+    <div class="title" class:hidden={notitle === true}>
         <span>{title}</span>
         <span>{subtitle}</span>
     </div>
-    <div class="content">
+    <div class="content" class:compress={compress === true}>
         <slot />
     </div>
 </div>
@@ -29,9 +30,9 @@
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
         color: white;
-        font-size: 1rem;
-        font-weight: bold;
-        padding: 16px 24px;
+        font-size: 1.125rem;
+        font-weight: 500;
+        padding: 1rem 2.5rem;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -40,9 +41,17 @@
     .card > .content {
         font-size: 0.875rem;
         color: #333;
-        padding: 24px 24px 40px;
+        padding: 2rem 3rem 3.5rem;
         display: flex;
         flex-direction: column;
-        gap: 24px;
+        gap: 2rem;
+    }
+    .card > .content.compress {
+        font-size: 0.875rem;
+        color: #333;
+        padding: 1rem 3rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
     }
 </style>

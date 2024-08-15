@@ -3,11 +3,14 @@
     line-height: 1.5;
     font-weight: 400;
     font-size: 16px;
-    
+    /* font-size: 12px; */
+    /* line-height: 1.5; */
+    /* font-weight: 400; */
+
+    /* background-color: #242424; */
     color-scheme: light dark;
     color: #666;
-    /* color: rgba(255, 255, 255, 0.87); */
-    /* background-color: #242424; */
+
     background-color: rgb(219, 206, 180);
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -21,187 +24,185 @@
     --gray-text-1: #666;
     --gray-lite-1: #CCC;
     --gray-lite-2: #DEDEDE;
+
+    /* --blue-pantone: #002D72;
+    --blue-process: #0041C4;
+    --blue-bg: #004B8D;
+    --blue-interactive: #204C8A;
+    --gray-pantone: #676C73;
+    --gray-process: #5A6666;
+    --gray-interactive: #3C444B;
+    --gray-text-1: #666;
+    --gray-lite-1: #CCC;
+    --gray-lite-2: #DEDEDE; */
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+}
+  
+html, body {
+    height: 100%;
 }
 
 html {
-  scroll-behavior: smooth;
+    scroll-behavior: smooth;
 }
 
-/* body {
-  background-color: var(--blue-bg);
-  color: var(--gray-interactive);
-  margin: 0;
-  min-height: 100vh;
-} */
-
 body {
-  margin: 0;
-  margin: 0;
-  min-height: 100vh;
-  font-size: 1rem;
-  /* display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh; */
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-size: 1rem;
+    /* background-color: var(--blue-bg);
+    color: var(--gray-interactive);
+    margin: 0;
+    min-height: 100vh; */
 }
 
 .container {
-  width: 70%;
-  max-width: 1080px;
-  min-width: 800px;
-  margin: auto;
-  position: relative;
+    width: 70%;
+    max-width: 720px;
+    min-width: 480px;
+    margin: auto;
+    position: relative;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
 }
 
 .hidden {
-  display: none !important;
+    display: none !important;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+.reminder {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--gray-interactive);
 }
-a:hover {
-  color: #535bf2;
-}
-
-/* h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-} */
-
-/* .card {
-  padding: 2em;
-} */
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  /* text-align: center; */
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6rem 1.5rem;
-  font-size: 16px;
-  font-weight: 500;
-  font-family: inherit;
-  /* background-color: #1a1a1a; */
-  cursor: pointer;
-  transition: all 0.25s;
-}
-button:hover {
-  /* border-color: var(--brown-interactive); */
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-  transform: translateY(-2);
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
 .fields {
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 .field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 .field > label {
-  font-size: 0.875rem;
-  padding: 0 2px;
-  font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0 4px;
+    font-weight: 600;
 }
 .field.optional > label {
-  font-weight: 400;
+    font-weight: 300;
 }
-.field.optional > label::after {
-  content: ' - Optional';
-  font-weight: 400;
-  font-style: italic;
+.field.optional:not(.optional-no-label) > label::after {
+    content: ' - Optional';
+    font-weight: 300;
+    font-style: italic;
+}
+.field.optional.optional-no-label > label::after {
+    content: '';
+    font-weight: 300;
+    font-style: italic;
 }
 .field-error {
-  color: red;
-  font-size: 0.8725rem;
-  padding: 0 2px;
+    color: red;
+    font-size: 0.8125rem;
+    padding: 0 4px;
+}
+.field.inline > .content {
+    padding: 0.75rem 0.25rem;
 }
 .fld {
-  border: 1px solid var(--gray-lite-1);
-  outline: 0;
-  border-radius: 2px;
-  color: var(--gray-interactive);
-  padding: 8px 12px;
+    border: 1px solid var(--gray-lite-1);
+    outline: 0;
+    border-radius: 2px;
+    color: var(--gray-interactive);
+    padding: 8px 12px;
 }
 .field-rb-grp {
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
 }
 .field-rb {
-  padding: 12px 0;
+    padding: 0.75rem 0;
 }
 .field-rb input[type=radio] {
-  display: none;
-  outline: 0;
+    display: none;
+    outline: 0;
 }
 .field-rb label {
-  position: relative;
-  cursor: pointer;
-  padding: 8px 16px;
-  border: 2px solid var(--gray-lite-2);
-  border-radius: 8px;
-  /* transition: all 100ms ease-in-out; */
+    position: relative;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--gray-lite-2);
+    border-radius: 0.25rem;
+    /* transition: all 100ms ease-in-out; */
 }
 .field-rb input[type=radio]:checked + label {
-  background-color: var(--blue-interactive);
-  border: 2px solid var(--blue-interactive);
-  opacity: 0.9;
-  color: white;
-  font-weight: 600;
+    background-color: var(--brown-interactive);
+    border: 2px solid var(--brown-interactive);
+    opacity: 0.9;
+    color: white;
+    font-weight: 600;
 }
 .field-rb input[type=radio]:checked + label::before {
-  content: '\002714';
-  margin-right: 12px;
+    content: '\002714';
+    margin-right: 0.75rem;
+}
+.blurb {
+    line-height: 1.8;;
+}
+.blurb .title {
+    font-weight: bold;
+    font-size: 1.125rem;
 }
 .w400 {
-  width: 400px !important;
+    width: 400px !important;
 }
 .w240 {
-  width: 240px !important;
+    width: 240px !important;
 }
 .w200 {
-  width: 200px !important;
+    width: 200px !important;
 }
 .w160 {
-  width: 160px !important;
+    width: 160px !important;
 }
 .w120 {
-  width: 120px !important;
+    width: 120px !important;
 }
 .w80 {
-  width: 80px !important;
+    width: 80px !important;
+}
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #FF3D00;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+input[type=text],
+input[type=tel] {
+    background-color: white;
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #DEDEDE;
+    font-size: 0.875rem;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  /* button {
-    background-color: #f9f9f9;
-  } */
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
