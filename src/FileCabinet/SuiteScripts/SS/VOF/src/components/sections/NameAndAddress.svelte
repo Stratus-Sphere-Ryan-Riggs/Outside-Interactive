@@ -41,12 +41,14 @@
         let selectedCountry = $countryStates.find(s =>
             s.countryname === document.getElementById('custrecord_vr_country')['value']
         );
+
         callZipAPI({
             zip,
             country: selectedCountry.countryid,
             targets: {
                 city: $formFields.CITY,
-                state: $formFields.STATE
+                state: [ 'ca', 'us' ].indexOf(selectedCountry.countryid.toLowerCase()) >= 0 ?
+                    $formFields.STATE : $formFields.STATE_INTL
             }
         });
         // document.getElementById('custrecord_vr_city')
@@ -79,6 +81,7 @@
             // o[$formFields.ADDRESS_2] = '';
             o[$formFields.CITY] = '';
             o[$formFields.STATE] = '';
+            o[$formFields.STATE_INTL] = '';
             o[$formFields.ZIP] = '';
             return o;
         });
