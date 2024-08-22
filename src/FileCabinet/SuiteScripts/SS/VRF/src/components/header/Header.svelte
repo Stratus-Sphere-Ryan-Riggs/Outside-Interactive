@@ -5,7 +5,7 @@
 <header>
     <div class="logo"></div>
     <Card notitle compress>
-        <span class="form-title">Vendor Request Form</span>
+        <span class="form-title">Subscription Refund Request Form</span>
         <span class="form-subtitle">Please fill out all required fields.</span>
     </Card>
 </header>
@@ -25,7 +25,8 @@
     header > .logo {
         max-height: 22.5vw; 
         height: 10rem;
-        background-image: url('https://5678674-sb2.app.netsuite.com/core/media/media.nl?id=724182&c=5678674_SB2&h=ojxlRbsRGTdMghyEc7UmNbcqD9HL7HNgzWAg2dBI7MXT908A&_xt=.svg');
+        /* background-image: url('https://5678674-sb2.app.netsuite.com/core/media/media.nl?id=724182&c=5678674_SB2&h=ojxlRbsRGTdMghyEc7UmNbcqD9HL7HNgzWAg2dBI7MXT908A&_xt=.svg'); */
+        background-image: url('https://5678674.app.netsuite.com/core/media/media.nl?id=724182&c=5678674&h=ojxlRbsRGTdMghyEc7UmNbcqD9HL7HNgzWAg2dBI7MXT908A&_xt=.svg');
         background-position: center;
         background-repeat: no-repeat;
         margin: 1.75rem 0 0;

@@ -1,12 +1,9 @@
 <script>
-    import Banking from './components/sections/Banking.svelte';
-    import Button from './components/form/Button.svelte';
-    import Documents from './components/sections/Documents.svelte';
     import Header from './components/header/Header.svelte';
     import PrimaryInformation from './components/sections/PrimaryInformation.svelte';
-    import NameAndAddress from './components/sections/NameAndAddress.svelte';
+    import RefundDetails from './components/sections/RefundDetails.svelte';
+    import PaymentInformation from './components/sections/PaymentInformation.svelte';
     import Footer from './components/footer/Footer.svelte';
-    import LegalDisclaimer from './components/sections/LegalDisclaimer.svelte';
 
     let isUS = true;
     $: country = '';
@@ -27,11 +24,9 @@
 <main>
     <div class="sections">
         <Header />
-        <PrimaryInformation title="Vendor Information" />
-        <!-- <NameAndAddress title="Name and Address" /> -->
-        <!-- <Documents title="Documents" /> -->
-        <!-- <Banking title="Banking Information" /> -->
-        <!-- <LegalDisclaimer title="Legal Disclaimer" /> -->
+        <PrimaryInformation title="Refund Customer Information" />
+        <RefundDetails title="Refund Details" />
+        <!-- <PaymentInformation title="Payment Information" /> -->
     </div>
 
     <Footer />
