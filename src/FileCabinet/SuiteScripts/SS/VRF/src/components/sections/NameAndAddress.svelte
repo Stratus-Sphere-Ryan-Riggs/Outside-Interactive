@@ -137,50 +137,52 @@
     <InputText
         id="{$formFields.ADDRESSEE}"
         label="Addressee"
-        bind:value={$formValues[$formFields.ADDRESSEE]}
     />
+    <!-- bind:value={$formValues[$formFields.ADDRESSEE]} -->
+
     <InputText
         id="{$formFields.ADDRESS_1}"
         label="Address - Line 1"
-        bind:value={$formValues[$formFields.ADDRESS_1]}
     />
+    <!-- bind:value={$formValues[$formFields.ADDRESS_1]} -->
+
     <InputText
         id="{$formFields.ADDRESS_2}"
         label="Address - Line 2"
         optional
-        bind:value={$formValues[$formFields.ADDRESS_2]}
     />
+    <!-- bind:value={$formValues[$formFields.ADDRESS_2]} -->
 
     <InputText
         id="{$formFields.ZIP_CODE}"
         label="Zip Code"
         cls="zip w120"
-        bind:value={$formValues[$formFields.ZIP_CODE]}
         on:change={onChangeZip}
     />
+    <!-- bind:value={$formValues[$formFields.ZIP_CODE]} -->
 
     <InputText
         id="{$formFields.CITY}"
         label="City"
-        bind:value={$formValues[$formFields.CITY]}
     />
+    <!-- bind:value={$formValues[$formFields.CITY]} -->
 
     <Dropdown
         id="{$formFields.STATE}"
         label="State/Province"
         bind:items={addressStates}
-        bind:value={$formValues[$formFields.STATE]}
-        bind:visible={isUSorCA}
-        bind:optional={notUSorCA}
     />
+    <!-- bind:value={$formValues[$formFields.STATE]}
+    bind:visible={isUSorCA}
+    bind:optional={notUSorCA} -->
 
     <InputText
         id="{$formFields.STATE_INTL}"
         label="State/Province"
         bind:value={$formValues[$formFields.STATE_INTL]}
         optional
-        bind:visible={notUSorCA}
     />
+    <!-- bind:visible={notUSorCA} -->
 
     <InputText
         id="{$formFields.TAX_ID_US}"

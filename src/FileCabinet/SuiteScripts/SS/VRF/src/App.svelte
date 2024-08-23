@@ -26,7 +26,7 @@
         <Header />
         <PrimaryInformation title="Refund Customer Information" />
         <RefundDetails title="Refund Details" />
-        <!-- <PaymentInformation title="Payment Information" /> -->
+        <PaymentInformation title="Payment Information" />
     </div>
 
     <Footer />
