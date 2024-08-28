@@ -46,6 +46,7 @@ define(
                     { id: '5', from: 90, to: 0 }
                 ]
             },
+            RefundReasons: 'customlist_vr_reasonforrefund',
             TaxClassification: 'customlist_vr_taxclassificationlist',
             TypeOfAccount: 'customlist_vr_typeofaccount'
         };
