@@ -132,7 +132,7 @@
         } */
 
         finalizeData();
-        submitData();
+        // submitData();
     };
 </script>
 

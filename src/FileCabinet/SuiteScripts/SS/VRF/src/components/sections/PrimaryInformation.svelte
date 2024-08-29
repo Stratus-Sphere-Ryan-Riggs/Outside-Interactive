@@ -3,7 +3,7 @@
     import InputText from "../form/InputText.svelte";
     import TextArea from "../form/TextArea.svelte";
     
-    import { formFields } from "../../store/pageData";
+    import { formFields, formValues } from "../../store/pageData";
 
     export let id = 'primary_information';
     export let title = 'Primary Information';
@@ -13,23 +13,28 @@
     <InputText
         id="{$formFields.REQUESTER_EMAIL}"
         label="Requester's Outsideinc email address"
+        bind:value={$formValues[$formFields.REQUESTER_EMAIL]}
     />
     <InputText
         id="{$formFields.REQUESTER_FIRST_NAME}"
         label="Customer first name"
+        bind:value={$formValues[$formFields.REQUESTER_FIRST_NAME]}
     />
     <InputText
         id="{$formFields.REQUESTER_LAST_NAME}"
         label="Customer last name"
+        bind:value={$formValues[$formFields.REQUESTER_LAST_NAME]}
     />
     <InputText
         id="{$formFields.PURCHASING_CONTACT_EMAIL}"
         label="Customer email"
+        bind:value={$formValues[$formFields.PURCHASING_CONTACT_EMAIL]}
     />
     <TextArea
         id="{$formFields.VENDOR_COMMENTS}"
         label="Additional membership info"
         optional
+        bind:value={$formValues[$formFields.VENDOR_COMMENTS]}
     />
 
 </Card>

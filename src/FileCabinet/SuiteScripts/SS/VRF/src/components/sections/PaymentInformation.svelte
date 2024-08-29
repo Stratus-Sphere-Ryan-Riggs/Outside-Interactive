@@ -1,11 +1,10 @@
 <script>
-    import { countryStates, currencies, formFields, formValues } from "../../store/pageData";
+    import { countryStates, formFields, formValues } from "../../store/pageData";
     import { callZipAPI } from "../../store/zip";
 
     import Card from "../form/Card.svelte";
     import Dropdown from "../form/Dropdown.svelte";
     import InputText from "../form/InputText.svelte";
-    import RadioGroup from "../form/RadioGroup.svelte";
     import Row from "../form/Row.svelte";
     import TextArea from "../form/TextArea.svelte";
 
@@ -39,15 +38,15 @@
         id="{$formFields.ACCOUNT_NUMBER}"
         label="Account Number"
         cls="w160"
+        bind:value={$formValues[$formFields.ACCOUNT_NUMBER]}
     />
-    <!-- bind:value={$formValues[$formFields.ACCOUNT_NUMBER]} -->
 
     <InputText
         id="{$formFields.BANK_ROUTING_NUMBER}"
         label="ACH Routing Number"
         cls="w160"
+        bind:value={$formValues[$formFields.BANK_ROUTING_NUMBER]}
     />
-    <!-- bind:value={$formValues[$formFields.BANK_ROUTING_NUMBER]} -->
     <!-- bind:visible={isUSD}
     bind:optional={notUSD} -->
 
@@ -58,9 +57,9 @@
             label="Financial Institution Number (3 digits)"
             wr="bank_intl"
             cls="w80"
+            bind:value={$formValues[$formFields.FINANCIAL_INSTITUTION]}
         />
         <!-- bind:optional={notCAD}
-        bind:value={$formValues[$formFields.FINANCIAL_INSTITUTION]}
         bind:visible={isCAD} -->
 
         <InputText
@@ -68,9 +67,9 @@
             label="Transit Number (5 digits)"
             wr="bank_intl"
             cls="w80"
+            bind:value={$formValues[$formFields.BRANCH_TRANSIT_NUMBER]}
         />
         <!-- bind:optional={notCAD}
-        bind:value={$formValues[$formFields.BRANCH_TRANSIT_NUMBER]}
         bind:visible={isCAD} -->
         
     </Row>
@@ -78,42 +77,43 @@
     <InputText
         id="{$formFields.ADDRESSEE}"
         label="Addressee"
+        bind:value={$formValues[$formFields.ADDRESSEE]}
     />
-    <!-- bind:value={$formValues[$formFields.ADDRESSEE]} -->
 
     <InputText
         id="{$formFields.ADDRESS_1}"
         label="Address - Line 1"
+        bind:value={$formValues[$formFields.ADDRESS_1]}
     />
-    <!-- bind:value={$formValues[$formFields.ADDRESS_1]} -->
 
     <InputText
         id="{$formFields.ADDRESS_2}"
         label="Address - Line 2"
         optional
+        bind:value={$formValues[$formFields.ADDRESS_2]}
     />
-    <!-- bind:value={$formValues[$formFields.ADDRESS_2]} -->
 
     <InputText
         id="{$formFields.ZIP_CODE}"
         label="Zip Code"
         cls="zip w120"
         on:change={onChangeZip}
+        bind:value={$formValues[$formFields.ZIP_CODE]}
     />
-    <!-- bind:value={$formValues[$formFields.ZIP_CODE]} -->
 
     <Row>
         
         <InputText
             id="{$formFields.CITY}"
             label="City"
+            bind:value={$formValues[$formFields.CITY]}
         />
-        <!-- bind:value={$formValues[$formFields.CITY]} -->
 
         <Dropdown
             id="{$formFields.STATE}"
             label="State/Province"
             bind:items={addressStates}
+            bind:value={$formValues[$formFields.STATE]}
         />
 
     </Row>
@@ -122,8 +122,8 @@
         id="{$formFields.MISC_BANKING_DETAILS}"
         label="Banking Comments"
         optional
+        bind:value={$formValues[$formFields.MISC_BANKING_DETAILS]}
     />
-    <!-- bind:value={$formValues[$formFields.MISC_BANKING_DETAILS]} -->
 
 </Card>
 

@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 
-let vendorRequestData = writable({});
+let requestData = writable({});
 
 function createStore() {
     let initialValue = {};
@@ -10,7 +10,7 @@ function createStore() {
         subscribe,
 
         init() {
-            vendorRequestData.set(window['vendorRequestData']);
+            requestData.set(window['requestData']);
         }
     }
 }

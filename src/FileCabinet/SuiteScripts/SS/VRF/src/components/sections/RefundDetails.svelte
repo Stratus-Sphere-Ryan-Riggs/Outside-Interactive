@@ -1,5 +1,5 @@
 <script>
-    import { countryStates, currencies, formFields, formValues } from "../../store/pageData";
+    import { countryStates, currencies, formFields, formValues, refundReasons } from "../../store/pageData";
     import { onMount } from "svelte";
 
     import Card from "../form/Card.svelte";
@@ -13,7 +13,7 @@
     export let id = 'refund_details';
     export let title = 'Refund Details';
 
-
+    console.log('formValues', $formValues);
     let bankCurrencies = [
         { text: '', value: '' },
         // { text: 'USD', value: 'USD' },
@@ -42,6 +42,14 @@
 
     // $: bankCurrency = $formValues[$formFields.CURRENCY];
     let bankCurrency = '';
+
+    console.log('refundReasons', $refundReasons);
+    let reasonsForRefund = $refundReasons.map(r => {
+        return {
+            text: r.name,
+            value: r.id
+        };
+    });
 
     const onFileChange = (e) => {
         let file = e.detail.file;
@@ -89,7 +97,7 @@
         console.log(`PaymentInformation onChangeCountry "${e.detail.value.toLowerCase()}"`, e);
         bankCountry = e.detail.value;
 
-        switch (bankCountry.toLowerCase()) {
+        /* switch (bankCountry.toLowerCase()) {
             case 'united states': {
                 // bankCurrency = 'USD';
                 break;
@@ -102,7 +110,13 @@
                 // bankCurrency = '';
                 break;
             }
-        }
+        } */
+
+        formValues.update(o => {
+            o[$formFields.COUNTRY] = e.detail.value;
+            return o;
+        });
+        console.log(`RefundDetails formValues`, $formValues);
     }
 
     $: bankCountry = '';
@@ -111,6 +125,12 @@
 <Card {id} {title}>
 
     <Row>
+        <InputText
+            id="{$formFields.REFUND_AMOUNT}"
+            label="Amount being refunded"
+            cls="w160"
+            bind:value={$formValues[$formFields.REFUND_AMOUNT]}
+        />
         <Dropdown
             id="{$formFields.CURRENCY}"
             label="Currency"
@@ -119,29 +139,26 @@
             bind:value={bankCurrency}
             on:change={onChangeCurrency}
         />
-        <InputText
-            id="{$formFields.REFUND_AMOUNT}"
-            label="Amount being refunded"
-            cls="w160"
-        />
     </Row>
 
     <Row>
         <InputDate
             id="{$formFields.REFUND_PERIOD_START_DATE}"
             label="Refund period start date"
+            bind:value={$formValues[$formFields.REFUND_PERIOD_START_DATE]}
         />
-        <!-- bind:value={$formValues[$formFields.REFUND_PERIOD_START_DATE]} -->
         <InputDate
             id="{$formFields.REFUND_PERIOD_END_DATE}"
             label="Refund period start date"
+            bind:value={$formValues[$formFields.REFUND_PERIOD_END_DATE]}
         />
-        <!-- bind:value={$formValues[$formFields.REFUND_PERIOD_END_DATE]} -->
     </Row>
 
-    <TextArea
+    <Dropdown
         id="{$formFields.REFUND_REASON}"
-        label="Reason for refund"   
+        label="Reason for refund"
+        bind:items={reasonsForRefund}
+        bind:value={$formValues[$formFields.REFUND_REASON]}
     />
     <InputFile
         id="{$formFields.ORIGINAL_RECEIPT_DOCUMENT}"
