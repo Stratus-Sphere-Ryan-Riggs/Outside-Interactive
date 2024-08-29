@@ -16,14 +16,14 @@
         bind:value={$formValues[$formFields.REQUESTER_EMAIL]}
     />
     <InputText
-        id="{$formFields.REQUESTER_FIRST_NAME}"
+        id="{$formFields.FIRST_NAME}"
         label="Customer first name"
-        bind:value={$formValues[$formFields.REQUESTER_FIRST_NAME]}
+        bind:value={$formValues[$formFields.FIRST_NAME]}
     />
     <InputText
-        id="{$formFields.REQUESTER_LAST_NAME}"
+        id="{$formFields.LAST_NAME}"
         label="Customer last name"
-        bind:value={$formValues[$formFields.REQUESTER_LAST_NAME]}
+        bind:value={$formValues[$formFields.LAST_NAME]}
     />
     <InputText
         id="{$formFields.PURCHASING_CONTACT_EMAIL}"

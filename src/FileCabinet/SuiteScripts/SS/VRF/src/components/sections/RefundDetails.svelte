@@ -1,5 +1,5 @@
 <script>
-    import { countryStates, currencies, formFields, formValues, refundReasons } from "../../store/pageData";
+    import { countryStates, currencies, formFields, formValues, refundReasons, stateList } from "../../store/pageData";
     import { onMount } from "svelte";
 
     import Card from "../form/Card.svelte";
@@ -97,26 +97,27 @@
         console.log(`PaymentInformation onChangeCountry "${e.detail.value.toLowerCase()}"`, e);
         bankCountry = e.detail.value;
 
-        /* switch (bankCountry.toLowerCase()) {
-            case 'united states': {
-                // bankCurrency = 'USD';
-                break;
-            }
-            case 'canada': {
-                // bankCurrency = 'CAD';
-                break;
-            }
-            default: {
-                // bankCurrency = '';
-                break;
-            }
-        } */
-
         formValues.update(o => {
             o[$formFields.COUNTRY] = e.detail.value;
             return o;
         });
         console.log(`RefundDetails formValues`, $formValues);
+
+        let states = $countryStates.filter(c =>
+            c.countryname === e.detail.value &&
+            !!c.statefullname === true
+        );
+        console.log('states', states);
+
+        let addressStates = [
+            { text: '', value: '' }
+        ].concat(states.map(s => {
+            return {
+                text: s.statefullname,
+                value: s.stateshortname
+            };
+        }));
+        stateList.update(d => { d = addressStates; return d; });
     }
 
     $: bankCountry = '';
@@ -136,9 +137,9 @@
             label="Currency"
             cls="currency w160"
             bind:items={bankCurrencies}
-            bind:value={bankCurrency}
             on:change={onChangeCurrency}
         />
+        <!-- bind:value={bankCurrency} -->
     </Row>
 
     <Row>
@@ -165,15 +166,14 @@
         label="Attach original receipt, including tax"
         on:change={onFileChange}
     />
-
     <Dropdown
         id="{$formFields.COUNTRY}"
-        label=" xCountry"
+        label="Country"
         cls="country w400"
         bind:items={bankCountries}
-        bind:value={bankCountry}
         on:change={onChangeCountry}
     />
+    <!-- bind:value={bankCountry} -->
 
 </Card>
 
