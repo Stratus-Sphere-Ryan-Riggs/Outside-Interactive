@@ -151,7 +151,7 @@
 
     <Dropdown
         id="{$formFields.COUNTRY}"
-        label="Bank Country"
+        label=" xCountry"
         cls="country w400"
         bind:items={bankCountries}
         bind:value={bankCountry}
