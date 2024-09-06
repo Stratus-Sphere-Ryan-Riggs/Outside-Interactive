@@ -39,7 +39,8 @@ define(
                 address_1: record.getValue({ fieldId: FIELDS.ADDRESS_1 }),
                 address_2: record.getValue({ fieldId: FIELDS.ADDRESS_2 }),
                 city: record.getValue({ fieldId: FIELDS.CITY }),
-                state: record.getText({ fieldId: FIELDS.STATE }),
+                state: (record.getText({ fieldId: FIELDS.COUNTRY }) || '').toLowerCase() === 'united states' ?
+                    record.getText({ fieldId: FIELDS.STATE }) : record.getValue({ fieldId: FIELDS.STATE_INTL }),
                 zip: record.getValue({ fieldId: FIELDS.ZIP_CODE }),
                 country: record.getText({ fieldId: FIELDS.COUNTRY }),
             };
