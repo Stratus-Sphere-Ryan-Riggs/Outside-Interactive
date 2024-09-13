@@ -4,22 +4,36 @@
     import Button from "../form/Button.svelte";
 
     const finalizeData = () => {
-        let isSameLegal = $formValues[$formFields.SAME_AS_LEGAL_ADDRESS];
-        console.log(`isSameLegal = ${isSameLegal}`);
-        if (isSameLegal === true) {
-            formValues.update(o => {
-                o[$formFields.REMIT_TO_ADDR_1] = o[$formFields.ADDRESS_1];
-                o[$formFields.REMIT_TO_ADDR_2] = o[$formFields.ADDRESS_2];
-                o[$formFields.REMIT_TO_CITY] = o[$formFields.CITY];
-                o[$formFields.REMIT_TO_STATE] = o[$formFields.STATE];
-                o[$formFields.REMIT_TO_ZIP] = o[$formFields.ZIP_CODE];
-                o[$formFields.REMIT_TO_COUNTRY] = o[$formFields.COUNTRY];
+        let isUSD = $formValues[$formFields.COUNTRY]?.toLowerCase() === 'united states' &&
+            $formValues[$formFields.CURRENCY]?.toLowerCase() === 'usd';
+        let isCAD = $formValues[$formFields.COUNTRY]?.toLowerCase() === 'canada' &&
+            $formValues[$formFields.CURRENCY]?.toLowerCase() === 'cad';
+        let isACH = $formValues[$formFields.PAYMENT_TYPE] === '2';
+        console.log(`isUSD = ${isUSD}; isACH = ${isACH}`);
 
+        if (isACH === true) {
+            formValues.update(o => {
+                o[$formFields.PREFERRED_PAYMENT_METHOD_2] = '1';
                 return o;
             });
         }
+        
+        formValues.update(o => {
+            o[$formFields.ACCOUNT_NUMBER] = isACH === true ? o[$formFields.ACCOUNT_NUMBER] : '';
+            o[$formFields.BANK_ROUTING_NUMBER] = isUSD === true && isACH === true ?
+                o[$formFields.BANK_ROUTING_NUMBER] : '';
+            o[$formFields.ADDRESSEE] = isUSD === true && isACH === false ? o[$formFields.ADDRESSEE] : '';
+            o[$formFields.ADDRESS_1] = isUSD === true && isACH === false ? o[$formFields.ADDRESS_1] : '';
+            o[$formFields.CITY] = isUSD === true && isACH === false ? o[$formFields.CITY] : '';
+            o[$formFields.STATE] = isUSD === true && isACH === false ? o[$formFields.STATE] : '';
+            o[$formFields.ZIP_CODE] = isUSD === true && isACH === false ? o[$formFields.ZIP_CODE] : '';
+            o[$formFields.FINANCIAL_INSTITUTION] = isCAD === true ? o[$formFields.FINANCIAL_INSTITUTION] : '';
+            o[$formFields.BRANCH_TRANSIT_NUMBER] = isCAD === true ? o[$formFields.BRANCH_TRANSIT_NUMBER] : '';
+            
+            return o;
+        });
 
-        console.clear();
+        // console.clear();
         console.log($formValues);
     };
 
@@ -74,7 +88,6 @@
         window['alertedTax'] = false;
 
         let errorSection = '';
-        let customAlert = false;
         document.querySelectorAll('div.card').forEach(section => {
             console.log(`  *** checking section = ${section['dataset'].id}`);
             section.querySelectorAll('.field:not(.optional) .fld, .fld.tax').forEach(el => {
@@ -94,7 +107,7 @@
             return;
         }
 
-        console.log(`isUS???`, $formValues[$formFields.COUNTRY].toLowerCase() === 'united states');
+        /* console.log(`isUS???`, $formValues[$formFields.COUNTRY].toLowerCase() === 'united states');
         if ((
                 $formValues[$formFields.COUNTRY].toLowerCase() === 'united states' &&
                     !!$formValues[$formFields.TAX_ID_US] === false &&
@@ -109,15 +122,15 @@
             alert('Please enter either a business Tax ID or Social Security Number in the Name and Address section.');
             document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
             return;
-        }
+        } */
 
-        if ($formValues[$formFields.LEGAL_DISCLAIMER] === false) {
+        /* if ($formValues[$formFields.LEGAL_DISCLAIMER] === false) {
             errorSection = 'disclaimer';
             customAlert = true;
             alert('Agreement to legal disclaimer is required to submit form.');
             document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
             return;
-        }
+        } */
 
         /* console.log(`customAlert = ${customAlert}; errorSection = ${errorSection}`);
 
@@ -132,13 +145,13 @@
         } */
 
         finalizeData();
-        // submitData();
+        submitData();
     };
 </script>
 
 <div id="footer" class="buttons">
     <Button id="reset" label="Reset" />
-    <Button id="submit" label="Submit Form" submit on:click={onSubmit} />
+    <Button id="submit" label="Submit Formzzz" submit on:click={onSubmit} />
     <!-- <button type="button" id="submit" name="submit" on:mouseup={onSubmit}>Submit Form</button> -->
     <!-- <button type="button" id="reset" name="reset">Reset</button> -->
 </div>

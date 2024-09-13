@@ -147,6 +147,7 @@ define(
                     PAYMENT_TYPE                : 'custrecord_vr_paymenttype',
                     PHONE                       : 'custrecord_vr_phone',
                     PREFERRED_PAYMENT_METHOD    : 'custrecord_vr_pref_pymt_method',
+                    PREFERRED_PAYMENT_METHOD_2  : 'custrecord_vr_pref_payment_method',
                     PURCHASING_CONTACT          : 'custrecord_vr_primary_contact',
                     PURCHASING_CONTACT_EMAIL    : 'custrecord_vr_email',
                     PURPOSE_OF_PAYMENT          : 'custrecord_vr_intl_purposeofpayment',

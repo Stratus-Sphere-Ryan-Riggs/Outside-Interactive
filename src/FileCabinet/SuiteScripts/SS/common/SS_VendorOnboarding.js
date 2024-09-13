@@ -7,6 +7,7 @@ define(
     [
         './SS_Constants',
         './SS_File',
+        './SS_Format',
         './SS_Query',
         './SS_Record',
         './SS_Script',
@@ -15,6 +16,7 @@ define(
     (
         SS_Constants,
         SS_File,
+        SS_Format,
         SS_Query,
         SS_Record,
         SS_Script,
@@ -183,11 +185,19 @@ define(
                 FIELDS.COUNTRY,
                 FIELDS.STATE,
                 FIELDS.BANK_COUNTRY,
-                FIELDS.CURRENCY
+                FIELDS.CURRENCY,
+                FIELDS.REFUND_REASON
+            ];
+            const FIELDS_DATE = [
+                FIELDS.REFUND_PERIOD_START_DATE,
+                FIELDS.REFUND_PERIOD_END_DATE
             ];
 
             try {
-                let vendorRequest = SS_Record.load({ id, type: SS_Constants.CustomRecords.VendorRequest.Id });
+                log.debug({ title: `${TITLE} id = ${id}`, details: JSON.stringify(options) });
+                let vendorRequest = isNaN(parseInt(id)) === true ?
+                    SS_Record.create({ type: SS_Constants.CustomRecords.VendorRequest.Id }) :
+                    SS_Record.load({ id, type: SS_Constants.CustomRecords.VendorRequest.Id });
                 let fields = Object.values(FIELDS);
                 for (let i = 0, count = fields.length; i < count; i++) {
                     let fieldId = fields[i];
@@ -200,8 +210,19 @@ define(
                         continue;
                     }
     
-                    vendorRequest.setHeaderValue({ fieldId, value: data[fieldId] });
+                    if (FIELDS_DATE.includes(fieldId)) {
+                        let dateValue = SS_Format.format({ type: 'Date', value: new Date(data[fieldId]) });
+                        log.debug({ title: `${TITLE} fieldId = ${fieldId}; value = ${data[fieldId]}`, details: dateValue });
+                        vendorRequest.setHeaderText({ fieldId, text: dateValue });
+                        continue;
+                    }
+    
+                    if (!!data[fieldId] === true) {
+                        log.debug({ title: `${TITLE} fieldId = ${fieldId}`, details: data[fieldId] });
+                        vendorRequest.setHeaderValue({ fieldId, value: data[fieldId] });
+                    }
                 }
+
                 vendorRequest.setHeaderValue({ fieldId: 'custrecord_vr_vendorformsubmitted', value: true });
                 let requestId = vendorRequest.save();
                 log.debug({ title: TITLE, detail: `Successfully updated Vendor Request ID = ${requestId}` });

@@ -2,6 +2,7 @@
     export let id = "rb_field";
     export let label = "Radio";
     export let value = "";
+    export let visible = true;
     export let items = [];
 
     import { createEventDispatcher } from "svelte";
@@ -18,7 +19,9 @@
     };
 </script>
 
-<div class="field">
+<div class="field"
+    class:hidden={visible === false}
+>
     <label for="{id}_grp">{label}</label>
     <div class="field-rb-grp" id="{id}_grp">
         {#each items as item}

@@ -5,13 +5,19 @@
     import Card from "../form/Card.svelte";
     import Dropdown from "../form/Dropdown.svelte";
     import InputText from "../form/InputText.svelte";
+    import RadioGroup from "../form/RadioGroup.svelte";
     import Row from "../form/Row.svelte";
     import TextArea from "../form/TextArea.svelte";
 
-    export let id = 'banking';
-    export let title = 'Banking';
+    export let id = 'payment_info';
+    export let title = 'Payment Information';
 
-    let addressStates = [];
+    let paymentMethods = [
+        { text: 'Wire', value: '1' },
+        { text: 'ACH/EFT', value: '2' }
+    ];
+    let bankCountry = '';
+    let bankCurrency = '';
 
     const onChangeZip = (e) => {
         let zip = e.detail.value;
@@ -31,9 +37,63 @@
         // document.getElementById('custrecord_vr_state')
     };
 
-    $: bankCountry = $formValues[$formFields.COUNTRY];
-    $: bankCurrency = $formValues[$formFields.CURRENCY];
+    const onChangePaymentMethod = (e) => {
+        console.log(`onChangePaymentMethod value = ${e.detail.value}`);
+        paymentMethod = e.detail.value;
+        formValues.update(o => {
+            o[$formFields.PAYMENT_TYPE] = e.detail.value;
+            return o;
+        });
+        console.log(`onChangePaymentMethod updated PAYMENT_TYPE = ${$formValues[$formFields.PAYMENT_TYPE]}`);
+    };
+
+    const updateBankPaymentMethod = () => {
+        bankCountry = $formValues[$formFields.COUNTRY]?.toLowerCase();
+        bankCurrency = $formValues[$formFields.CURRENCY]?.toLowerCase();
+        isUS = bankCountry === 'united states';
+        isUSD = isUS === true && bankCurrency === 'usd';
+        isCA = bankCountry === 'canada';
+        isCAD = isCA === true && bankCurrency === 'cad';
+        isUSDWire = isUSD === true && paymentMethod === '1';
+        notUSDWire = !isUSDWire;
+        isUSDACH = isUSD === true && paymentMethod === '2';
+        isUSDACHOrCAD = isUSDACH === true || isCAD === true;
+        notUSDACHOrCAD = !isUSDACHOrCAD;
+
+        console.log(`isUSD = ${isUSD}; isCAD = ${isCAD}; paymentMethod = ${paymentMethod}`);
+
+        if (isUSDACH === true) {
+            paymentMethod = '2';
+        }
+        else {
+            paymentMethod = '1';
+        }
+        console.log(`updateBankPaymentMethod`, { bankCountry, bankCurrency, paymentMethod });
+
+        formValues.update(o => {
+            o[$formFields.PAYMENT_TYPE] = paymentMethod;
+            return o;
+        });
+    };
+
+    const updateCountry = () => {
+        bankCountry = $formValues[$formFields.COUNTRY];
+        console.log(`PaymentInformation updateCountry bankCountry = ${bankCurrency}`);
+
+        updateBankPaymentMethod();
+    };
+
+    const updateCurrency = () => {
+        bankCurrency = $formValues[$formFields.CURRENCY];
+        console.log(`PaymentInformation updateCurrency bankCurrency = ${bankCurrency}`);
+
+        updateBankPaymentMethod();
+    };
+
+    $: $formValues[$formFields.COUNTRY], updateCountry();
+    $: $formValues[$formFields.CURRENCY], updateCurrency();
     
+    $: paymentMethod = '';
     $: isUS = bankCountry?.toLowerCase() === 'united states';
     $: notUS = !isUS;
     $: isUSD = isUS === true && bankCurrency?.toLowerCase() === 'usd';
@@ -42,117 +102,104 @@
     $: isCAD = isCA === true && $formValues[$formFields.CURRENCY].toLowerCase() === 'cad';
     $: notCAD = !isCAD;
     $: isOther = notUSD === true && notCAD === true;
-    // $: notOther = !isOther;
+    $: isUSDWire = isUSD === true && paymentMethod === '1';
+    $: notUSDWire = !isUSDWire;
+    $: isUSDACH = isUSD === true && paymentMethod === '2';
+    $: isUSDACHOrCAD = isUSDACH === true || isCAD === true;
+    $: notUSDACHOrCAD = !isUSDACHOrCAD;
     $: bankingDetailLabel = isOther === true ? "International Wire Payment Information" : "Banking Comments";
-
-    /* const onChangeCountry = (e) => {
-        let states = $countryStates.filter(c =>
-            c.countryname === e.detail.value &&
-            !!c.statefullname === true
-        );
-        // statesOptional = states.length <= 0;
-        // statesVisible = states.length > 0;
-
-        addressStates = [
-            { text: '', value: '' }
-        ].concat(states.map(s => {
-            return {
-                text: s.statefullname,
-                value: s.stateshortname
-            };
-        }));
-
-        /* dispatch('change-country', {
-            value: e.detail.value
-        }); ****
-        formValues.update(o => {
-            o[$formFields.COUNTRY] = e.detail.value;
-            o[$formFields.CITY] = '';
-            o[$formFields.STATE] = '';
-            o[$formFields.ZIP] = '';
-            return o;
-        });
-        console.log(`PrimaryInformation formValues`, $formValues);
-
-        isUS = e.detail.value.toLowerCase() === 'united states';
-        notUS = !isUS;
-    }
-    onChangeCountry({ detail: { value: $formValues[$formFields.COUNTRY] } }); */
 </script>
 
 <Card {id} {title}>
 
-    <InputText
-        id="{$formFields.ACCOUNT_NUMBER}"
-        label="Account Number"
-        cls="w160"
-        bind:value={$formValues[$formFields.ACCOUNT_NUMBER]}
-    />
-    <InputText
-        id="{$formFields.BANK_ROUTING_NUMBER}"
-        label="ACH Routing Number"
-        cls="w160"
-        bind:value={$formValues[$formFields.BANK_ROUTING_NUMBER]}
+    <RadioGroup
+        id="{$formFields.PAYMENT_TYPE}"
+        label="Payment Method"
+        bind:items={paymentMethods}
+        bind:value={paymentMethod}
+        bind:visible={isUSD}
+        on:change={onChangePaymentMethod}
     />
 
-    <Row>
+    <Row
+        bind:visible={isUSDACHOrCAD}
+    >
+        <InputText
+            id="{$formFields.ACCOUNT_NUMBER}"
+            label="Account Number"
+            cls="w160"
+            bind:optional={notUSDACHOrCAD}
+            bind:value={$formValues[$formFields.ACCOUNT_NUMBER]}
+        />
+        <InputText
+            id="{$formFields.BANK_ROUTING_NUMBER}"
+            label="ACH Routing Number"
+            cls="w160"
+            bind:value={$formValues[$formFields.BANK_ROUTING_NUMBER]}
+            bind:optional={notUSDACHOrCAD}
+        />
+    </Row>
+
+    <Row
+        bind:visible={isCAD}
+    >
         <InputText
             id="{$formFields.FINANCIAL_INSTITUTION}"
             label="Financial Institution Number (3 digits)"
             wr="bank_intl"
             cls="w80"
+            bind:optional={notCAD}
             bind:value={$formValues[$formFields.FINANCIAL_INSTITUTION]}
-            bind:visible={isCAD}
         />
         <InputText
             id="{$formFields.BRANCH_TRANSIT_NUMBER}"
             label="Transit Number (5 digits)"
             wr="bank_intl"
             cls="w80"
+            bind:optional={notCAD}
             bind:value={$formValues[$formFields.BRANCH_TRANSIT_NUMBER]}
-            bind:visible={isCAD}
         />
     </Row>
 
-    <InputText
-        id="{$formFields.ADDRESSEE}"
-        label="Addressee"
-        bind:value={$formValues[$formFields.ADDRESSEE]}
-        bind:visible={isUSD}
-        bind:optional={notUSD}
-    />
-    <InputText
-        id="{$formFields.ADDRESS_1}"
-        label="Address - Line 1"
-        bind:value={$formValues[$formFields.ADDRESS_1]}
-        bind:visible={isUSD}
-        bind:optional={notUSD}
-    />
-    <InputText
-        id="{$formFields.ZIP_CODE}"
-        label="Zip Code"
-        cls="zip w120"
-        on:change={onChangeZip}
-        bind:value={$formValues[$formFields.ZIP_CODE]}
-        bind:visible={isUSD}
-        bind:optional={notUSD}
-    />
+    <div
+        style="display: flex; flex-direction: column; gap: 2rem;"
+        class:hidden={notUSDWire}
+    >
+        <InputText
+            id="{$formFields.ADDRESSEE}"
+            label="Addressee"
+            bind:value={$formValues[$formFields.ADDRESSEE]}
+            bind:optional={notUSDWire}
+        />
+        <InputText
+            id="{$formFields.ADDRESS_1}"
+            label="Address - Line 1"
+            bind:value={$formValues[$formFields.ADDRESS_1]}
+            bind:optional={notUSDWire}
+        />
+        <InputText
+            id="{$formFields.ZIP_CODE}"
+            label="Zip Code"
+            cls="zip w120"
+            on:change={onChangeZip}
+            bind:value={$formValues[$formFields.ZIP_CODE]}
+            bind:optional={notUSDWire}
+        />
+    </div>
 
-    <Row bind:visible={isUSD}>
+    <Row bind:visible={isUSDWire}>
         <InputText
             id="{$formFields.CITY}"
             label="City"
             bind:value={$formValues[$formFields.CITY]}
-            bind:visible={isUSD}
-            bind:optional={notUSD}
+            bind:optional={notUSDWire}
         />
         <Dropdown
             id="{$formFields.STATE}"
             label="State/Province"
             bind:items={$stateList}
             bind:value={$formValues[$formFields.STATE]}
-            bind:visible={isUSD}
-            bind:optional={notUSD}
+            bind:optional={notUSDWire}
         />
     </Row>
 
