@@ -204,6 +204,10 @@ define(
                     if (FIELDS_EXCLUDE.includes(fieldId)) {
                         continue;
                     }
+
+                    if (data.hasOwnProperty(fieldId) === false) {
+                        continue;
+                    }
     
                     if (FIELDS_SETBYTEXT.includes(fieldId)) {
                         vendorRequest.setHeaderText({ fieldId, text: data[fieldId] });
@@ -224,7 +228,7 @@ define(
                 }
 
                 vendorRequest.setHeaderValue({ fieldId: 'custrecord_vr_vendorformsubmitted', value: true });
-                let requestId = vendorRequest.save();
+                let requestId = vendorRequest.save({ ignoreMandatoryFields: true });
                 log.debug({ title: TITLE, detail: `Successfully updated Vendor Request ID = ${requestId}` });
                 return { status: true };
             }
