@@ -1,5 +1,5 @@
 <script>
-    import { countryStates, formFields, formValues, stateList } from "../../store/pageData";
+    import { countryStates, formFields, formValues, refundMethod, stateList } from "../../store/pageData";
     import { callZipAPI } from "../../store/zip";
 
     import Card from "../form/Card.svelte";
@@ -12,10 +12,14 @@
     export let id = 'payment_info';
     export let title = 'Payment Information';
 
-    let paymentMethods = [
+    let refundMethods = [
+        { text: 'Refund by ACH', value: '1' },
+        { text: 'Refund by check', value: '2' }
+    ];
+    /* let paymentMethods = [
         { text: 'Wire', value: '1' },
         { text: 'ACH/EFT', value: '2' }
-    ];
+    ]; */
     let bankCountry = '';
     let bankCurrency = '';
 
@@ -37,7 +41,17 @@
         // document.getElementById('custrecord_vr_state')
     };
 
-    const onChangePaymentMethod = (e) => {
+    const onChangeRefundMethod = (e) => {
+        console.log(`onChangeRefundMethod value = ${e.detail.value}`);
+        $refundMethod = e.detail.value;
+        /* formValues.update(o => {
+            o[$formFields.PAYMENT_TYPE] = e.detail.value;
+            return o;
+        }); */
+        console.log(`onChangeRefundMethod updated refundMethod = ${$refundMethod}`);
+    };
+
+    /* const onChangePaymentMethod = (e) => {
         console.log(`onChangePaymentMethod value = ${e.detail.value}`);
         paymentMethod = e.detail.value;
         formValues.update(o => {
@@ -45,9 +59,38 @@
             return o;
         });
         console.log(`onChangePaymentMethod updated PAYMENT_TYPE = ${$formValues[$formFields.PAYMENT_TYPE]}`);
+    }; */
+
+    const updateRefundMethod = () => {
+        bankCountry = $formValues[$formFields.COUNTRY]?.toLowerCase();
+        bankCurrency = $formValues[$formFields.CURRENCY]?.toLowerCase();
+        isUS = bankCountry === 'united states';
+        isUSD = isUS === true && bankCurrency === 'usd';
+        isCA = bankCountry === 'canada';
+        isCAD = isCA === true && bankCurrency === 'cad';
+        isUSDWire = isUSD === true && $refundMethod === '2';
+        notUSDWire = !isUSDWire;
+        isUSDACH = isUSD === true && $refundMethod === '1';
+        isUSDACHOrCAD = isUSDACH === true || isCAD === true;
+        notUSDACHOrCAD = !isUSDACHOrCAD;
+
+        console.log(`isUSD = ${isUSD}; isCAD = ${isCAD}; refundMethod = ${$refundMethod}`);
+
+        if (isUSDACH === true) {
+            $refundMethod = '1';
+        }
+        else {
+            $refundMethod = '2';
+        }
+        console.log(`updateRefundMethod`, { bankCountry, bankCurrency, refundMethod });
+
+        /* formValues.update(o => {
+            o[$formFields.PAYMENT_TYPE] = paymentMethod;
+            return o;
+        }); */
     };
 
-    const updateBankPaymentMethod = () => {
+    /* const updateBankPaymentMethod = () => {
         bankCountry = $formValues[$formFields.COUNTRY]?.toLowerCase();
         bankCurrency = $formValues[$formFields.CURRENCY]?.toLowerCase();
         isUS = bankCountry === 'united states';
@@ -74,37 +117,44 @@
             o[$formFields.PAYMENT_TYPE] = paymentMethod;
             return o;
         });
-    };
+    }; */
 
     const updateCountry = () => {
         bankCountry = $formValues[$formFields.COUNTRY];
         console.log(`PaymentInformation updateCountry bankCountry = ${bankCurrency}`);
 
-        updateBankPaymentMethod();
+        // updateBankPaymentMethod();
+        updateRefundMethod();
     };
 
     const updateCurrency = () => {
         bankCurrency = $formValues[$formFields.CURRENCY];
         console.log(`PaymentInformation updateCurrency bankCurrency = ${bankCurrency}`);
 
-        updateBankPaymentMethod();
+        // updateBankPaymentMethod();
+        updateRefundMethod();
     };
 
     $: $formValues[$formFields.COUNTRY], updateCountry();
     $: $formValues[$formFields.CURRENCY], updateCurrency();
     
-    $: paymentMethod = '';
+    // $: paymentMethod = '';
+    // $: refundMethod = '';
     $: isUS = bankCountry?.toLowerCase() === 'united states';
     $: notUS = !isUS;
     $: isUSD = isUS === true && bankCurrency?.toLowerCase() === 'usd';
     $: notUSD = !isUSD;
     $: isCA = $formValues[$formFields.COUNTRY]?.toLowerCase() === 'canada';
-    $: isCAD = isCA === true && $formValues[$formFields.CURRENCY].toLowerCase() === 'cad';
+    $: isCAD = isCA === true && $formValues[$formFields.CURRENCY]?.toLowerCase() === 'cad';
     $: notCAD = !isCAD;
     $: isOther = notUSD === true && notCAD === true;
-    $: isUSDWire = isUSD === true && paymentMethod === '1';
+    $: notOther = !isOther;
+    // $: isUSDWire = isUSD === true && paymentMethod === '1';
+    $: isUSDWire = isUSD === true && $refundMethod === '2';
     $: notUSDWire = !isUSDWire;
-    $: isUSDACH = isUSD === true && paymentMethod === '2';
+    // $: isUSDACH = isUSD === true && paymentMethod === '2';
+    $: isUSDACH = isUSD === true && $refundMethod === '1';
+    $: notUSDACH = !isUSDACH;
     $: isUSDACHOrCAD = isUSDACH === true || isCAD === true;
     $: notUSDACHOrCAD = !isUSDACHOrCAD;
     $: bankingDetailLabel = isOther === true ? "International Wire Payment Information" : "Banking Comments";
@@ -112,13 +162,22 @@
 
 <Card {id} {title}>
 
-    <RadioGroup
+    <!-- <RadioGroup
         id="{$formFields.PAYMENT_TYPE}"
         label="Payment Method"
         bind:items={paymentMethods}
         bind:value={paymentMethod}
         bind:visible={isUSD}
         on:change={onChangePaymentMethod}
+    /> -->
+
+    <RadioGroup
+        id="refund_method"
+        label="Refund Method"
+        bind:items={refundMethods}
+        bind:value={$refundMethod}
+        bind:visible={isUSD}
+        on:change={onChangeRefundMethod}
     />
 
     <Row
@@ -136,7 +195,8 @@
             label="ACH Routing Number"
             cls="w160"
             bind:value={$formValues[$formFields.BANK_ROUTING_NUMBER]}
-            bind:optional={notUSDACHOrCAD}
+            bind:visible={isUSDACH}
+            bind:optional={notUSDACH}
         />
     </Row>
 
@@ -206,7 +266,7 @@
     <TextArea
         id="{$formFields.MISC_BANKING_DETAILS}"
         label={bankingDetailLabel}
-        optional
+        bind:optional={notOther}
         bind:value={$formValues[$formFields.MISC_BANKING_DETAILS]}
     />
 

@@ -1,27 +1,46 @@
 <script>
-    import { formFields, formValues } from "../../store/pageData";
+    import { formFields, formValues, refundMethod } from "../../store/pageData";
     // import Button from '../components/form/Button.svelte';
     import Button from "../form/Button.svelte";
 
     const finalizeData = () => {
+        let isACH = $refundMethod === '1';
+        let isCheck = $refundMethod === '2';
         let isUSD = $formValues[$formFields.COUNTRY]?.toLowerCase() === 'united states' &&
             $formValues[$formFields.CURRENCY]?.toLowerCase() === 'usd';
+        let isUSDACH = isUSD === true && isACH === true;
+        let isUSDCheck = isUSD === true && isCheck === true;
         let isCAD = $formValues[$formFields.COUNTRY]?.toLowerCase() === 'canada' &&
             $formValues[$formFields.CURRENCY]?.toLowerCase() === 'cad';
-        let isACH = $formValues[$formFields.PAYMENT_TYPE] === '2';
-        console.log(`isUSD = ${isUSD}; isACH = ${isACH}`);
+        let isCADACH = isCAD === true && isACH === true;
+        
+            // let isACH = $formValues[$formFields.PAYMENT_TYPE] === '2';
+        console.log(`isUSD = ${isUSD}; isUSDACH = ${isUSDACH}; isUSDCheck = ${isUSDCheck}`);
 
-        if (isACH === true) {
+        if (isUSDACH === true || isCAD === true) {
             formValues.update(o => {
-                o[$formFields.PREFERRED_PAYMENT_METHOD_2] = '1';
+                o[$formFields.PREFERRED_PAYMENT_METHOD_2] = '1'; // ACH
+                o[$formFields.PAYMENT_TYPE] = '2'; // ACH/EFT
+                return o;
+            });
+        }
+        else if (isUSDCheck === true) {
+            formValues.update(o => {
+                o[$formFields.PREFERRED_PAYMENT_METHOD_2] = '4'; // Check
+                return o;
+            });
+        }
+        else {
+            formValues.update(o => {
+                o[$formFields.PREFERRED_PAYMENT_METHOD_2] = '6'; // Transferwise
+                o[$formFields.PAYMENT_TYPE] = '2'; // ACH/EFT
                 return o;
             });
         }
         
         formValues.update(o => {
             o[$formFields.ACCOUNT_NUMBER] = isACH === true ? o[$formFields.ACCOUNT_NUMBER] : '';
-            o[$formFields.BANK_ROUTING_NUMBER] = isUSD === true && isACH === true ?
-                o[$formFields.BANK_ROUTING_NUMBER] : '';
+            o[$formFields.BANK_ROUTING_NUMBER] = isUSDACH === true ? o[$formFields.BANK_ROUTING_NUMBER] : '';
             o[$formFields.ADDRESSEE] = isUSD === true && isACH === false ? o[$formFields.ADDRESSEE] : '';
             o[$formFields.ADDRESS_1] = isUSD === true && isACH === false ? o[$formFields.ADDRESS_1] : '';
             o[$formFields.CITY] = isUSD === true && isACH === false ? o[$formFields.CITY] : '';
@@ -30,6 +49,14 @@
             o[$formFields.FINANCIAL_INSTITUTION] = isCAD === true ? o[$formFields.FINANCIAL_INSTITUTION] : '';
             o[$formFields.BRANCH_TRANSIT_NUMBER] = isCAD === true ? o[$formFields.BRANCH_TRANSIT_NUMBER] : '';
             
+            // Default values
+            o[$formFields.SOURCE] = '5'; // _Refunds
+            o[$formFields.VENDOR_CATEGORY] = '8'; // _Refund
+            o[$formFields.ANTICIPATED_ANNUAL_SPEND] = '1'; // $0 - $5,000
+            o[$formFields.CATEGORY] = '1'; // Individual
+            o[$formFields.TAX_CLASSIFICATION] = '9'; // Other
+            o[$formFields._1099_DETAILS] = 'refund only'; // Other
+
             return o;
         });
 
@@ -151,7 +178,7 @@
 
 <div id="footer" class="buttons">
     <Button id="reset" label="Reset" />
-    <Button id="submit" label="Submit Formzzz" submit on:click={onSubmit} />
+    <Button id="submit" label="Submit Form" submit on:click={onSubmit} />
     <!-- <button type="button" id="submit" name="submit" on:mouseup={onSubmit}>Submit Form</button> -->
     <!-- <button type="button" id="reset" name="reset">Reset</button> -->
 </div>
