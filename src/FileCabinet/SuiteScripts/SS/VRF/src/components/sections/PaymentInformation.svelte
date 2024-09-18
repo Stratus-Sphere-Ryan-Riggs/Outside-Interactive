@@ -54,9 +54,12 @@
         isUSD = isUS === true && bankCurrency === 'usd';
         isCA = bankCountry === 'canada';
         isCAD = isCA === true && bankCurrency === 'cad';
+        isUSDOrCAD = isUSD === true || isCAD === true;
+        notUSDAndCAD = !isUSDOrCAD;
         isUSDWire = isUSD === true && paymentMethod === '1';
         notUSDWire = !isUSDWire;
         isUSDACH = isUSD === true && paymentMethod === '2';
+        notUSDACH = !isUSDACH;
         isUSDACHOrCAD = isUSDACH === true || isCAD === true;
         notUSDACHOrCAD = !isUSDACHOrCAD;
 
@@ -101,10 +104,13 @@
     $: isCA = $formValues[$formFields.COUNTRY]?.toLowerCase() === 'canada';
     $: isCAD = isCA === true && $formValues[$formFields.CURRENCY].toLowerCase() === 'cad';
     $: notCAD = !isCAD;
+    $: isUSDOrCAD = isUSD === true || isCAD === true;
+    $: notUSDAndCAD = !isUSDOrCAD;
     $: isOther = notUSD === true && notCAD === true;
     $: isUSDWire = isUSD === true && paymentMethod === '1';
     $: notUSDWire = !isUSDWire;
     $: isUSDACH = isUSD === true && paymentMethod === '2';
+    $: notUSDACH = !isUSDACH;
     $: isUSDACHOrCAD = isUSDACH === true || isCAD === true;
     $: notUSDACHOrCAD = !isUSDACHOrCAD;
     $: bankingDetailLabel = isOther === true ? "International Wire Payment Information" : "Banking Comments";
@@ -136,7 +142,8 @@
             label="ACH Routing Number"
             cls="w160"
             bind:value={$formValues[$formFields.BANK_ROUTING_NUMBER]}
-            bind:optional={notUSDACHOrCAD}
+            bind:visible={isUSDACH}
+            bind:optional={notUSDACH}
         />
     </Row>
 
@@ -206,7 +213,7 @@
     <TextArea
         id="{$formFields.MISC_BANKING_DETAILS}"
         label={bankingDetailLabel}
-        optional
+        bind:optional={notUSDAndCAD}
         bind:value={$formValues[$formFields.MISC_BANKING_DETAILS]}
     />
 

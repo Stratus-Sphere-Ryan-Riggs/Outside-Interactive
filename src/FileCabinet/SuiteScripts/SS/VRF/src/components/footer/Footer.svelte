@@ -151,7 +151,7 @@
 
 <div id="footer" class="buttons">
     <Button id="reset" label="Reset" />
-    <Button id="submit" label="Submit Formzzz" submit on:click={onSubmit} />
+    <Button id="submit" label="Submit Form" submit on:click={onSubmit} />
     <!-- <button type="button" id="submit" name="submit" on:mouseup={onSubmit}>Submit Form</button> -->
     <!-- <button type="button" id="reset" name="reset">Reset</button> -->
 </div>

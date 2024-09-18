@@ -128,7 +128,7 @@
     <Row>
         <InputText
             id="{$formFields.REFUND_AMOUNT}"
-            label="Amount being refunded"
+            label="Amount Being Refunded"
             cls="w160"
             bind:value={$formValues[$formFields.REFUND_AMOUNT]}
         />
@@ -145,25 +145,25 @@
     <Row>
         <InputDate
             id="{$formFields.REFUND_PERIOD_START_DATE}"
-            label="Refund period start date"
+            label="Refund Period Start Date"
             bind:value={$formValues[$formFields.REFUND_PERIOD_START_DATE]}
         />
         <InputDate
             id="{$formFields.REFUND_PERIOD_END_DATE}"
-            label="Refund period start date"
+            label="Refund Period Start Date"
             bind:value={$formValues[$formFields.REFUND_PERIOD_END_DATE]}
         />
     </Row>
 
     <Dropdown
         id="{$formFields.REFUND_REASON}"
-        label="Reason for refund"
+        label="Reason For Refund"
         bind:items={reasonsForRefund}
         bind:value={$formValues[$formFields.REFUND_REASON]}
     />
     <InputFile
         id="{$formFields.ORIGINAL_RECEIPT_DOCUMENT}"
-        label="Attach original receipt, including tax"
+        label="Attach Original Receipt, Including Tax"
         on:change={onFileChange}
     />
     <Dropdown

@@ -12,27 +12,27 @@
 <Card {id} {title}>
     <InputText
         id="{$formFields.REQUESTER_EMAIL}"
-        label="Requester's Outsideinc email address"
+        label="Requester's Outside Inc. Email Address"
         bind:value={$formValues[$formFields.REQUESTER_EMAIL]}
     />
     <InputText
         id="{$formFields.FIRST_NAME}"
-        label="Customer first name"
+        label="Customer First Name"
         bind:value={$formValues[$formFields.FIRST_NAME]}
     />
     <InputText
         id="{$formFields.LAST_NAME}"
-        label="Customer last name"
+        label="Customer Last Name"
         bind:value={$formValues[$formFields.LAST_NAME]}
     />
     <InputText
         id="{$formFields.PURCHASING_CONTACT_EMAIL}"
-        label="Customer email"
+        label="Customer Email"
         bind:value={$formValues[$formFields.PURCHASING_CONTACT_EMAIL]}
     />
     <TextArea
         id="{$formFields.VENDOR_COMMENTS}"
-        label="Additional membership info"
+        label="Additional Membership Info"
         optional
         bind:value={$formValues[$formFields.VENDOR_COMMENTS]}
     />
