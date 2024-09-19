@@ -67,6 +67,7 @@ define(
                 Id: 'customrecord_vendor_request',
                 Fields: {
                     // _1099_ELIGIBLE              : 'custrecord_vr_1099',
+                    _1099_DETAILS                : 'custrecordvr_1099_dtails',
                     // ACH                         : 'custrecord_ach',
                     ACCOUNT_HOLDER_FULL_NAME    : 'custrecord_vr_fullnameaccountholder',
                     ACCOUNT_NUMBER              : 'custrecord_vr_accountnumber',
@@ -170,6 +171,7 @@ define(
                     RUT_NUMBER                  : 'custrecord_vr_rut',
                     SAME_AS_LEGAL_ADDRESS       : 'custrecord_vr_sameaslegal',
                     SOC_CERTIFICATE             : 'custrecord_vr_soccertificate',
+                    SOURCE                      : 'custrecord_vr_source',
                     SSN                         : 'custrecord_vr_ssn',
                     STATE                       : 'custrecord_vr_state',
                     STATE_INTL                  : 'custrecord_vr_stateprovince_nonusacad',
@@ -182,6 +184,7 @@ define(
                     TAX_ID_US                   : 'custrecord_vr_tax_id',
                     TYPICAL_PRODUCTS_SERVICES   : 'custrecord_vr_typicalprodserv',
                     TYPE_OF_ACCOUNT             : 'custrecord_vendor_request_eft_bill_pay',
+                    VENDOR_CATEGORY             : 'custrecord_vr_vendorcategory',
                     VENDOR_COMMENTS             : 'custrecord_vr_addtlveninfo',
                     W9                          : 'custrecord_vr_w9',
                     ZIP_CODE                    : 'custrecord_vr_zip'

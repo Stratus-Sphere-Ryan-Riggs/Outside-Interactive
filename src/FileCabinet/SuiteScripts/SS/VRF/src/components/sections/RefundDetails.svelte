@@ -44,12 +44,15 @@
     let bankCurrency = '';
 
     console.log('refundReasons', $refundReasons);
-    let reasonsForRefund = $refundReasons.map(r => {
-        return {
-            text: r.name,
-            value: r.id
-        };
-    });
+    let reasonsForRefund = [
+        { text: '', value: '' },
+        ...$refundReasons.map(r => {
+            return {
+                text: r.name,
+                value: r.id
+            };
+        })
+    ];
 
     const onFileChange = (e) => {
         let file = e.detail.file;
@@ -132,13 +135,6 @@
             cls="w160"
             bind:value={$formValues[$formFields.REFUND_AMOUNT]}
         />
-        <Dropdown
-            id="{$formFields.CURRENCY}"
-            label="Currency"
-            cls="currency w160"
-            bind:items={bankCurrencies}
-            on:change={onChangeCurrency}
-        />
         <!-- bind:value={bankCurrency} -->
     </Row>
 
@@ -174,6 +170,13 @@
         on:change={onChangeCountry}
     />
     <!-- bind:value={bankCountry} -->
+    <Dropdown
+        id="{$formFields.CURRENCY}"
+        label="Currency"
+        cls="currency w160"
+        bind:items={bankCurrencies}
+        on:change={onChangeCurrency}
+    />
 
 </Card>
 
