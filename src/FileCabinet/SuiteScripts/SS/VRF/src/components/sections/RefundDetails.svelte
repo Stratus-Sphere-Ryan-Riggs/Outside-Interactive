@@ -157,6 +157,12 @@
         bind:items={reasonsForRefund}
         bind:value={$formValues[$formFields.REFUND_REASON]}
     />
+    <Dropdown
+        id="{$formFields.REFUND_REASON}"
+        label="Reason For Refund"
+        bind:items={reasonsForRefund}
+        bind:value={$formValues[$formFields.REFUND_REASON]}
+    />
     <InputFile
         id="{$formFields.ORIGINAL_RECEIPT_DOCUMENT}"
         label="Attach Original Receipt, Including Tax"

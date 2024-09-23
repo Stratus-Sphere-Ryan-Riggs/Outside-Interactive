@@ -14,7 +14,8 @@
 
     let refundMethods = [
         { text: 'Refund by ACH', value: '1' },
-        { text: 'Refund by check', value: '2' }
+        { text: 'Refund by check', value: '2' },
+        { text: 'Refund by E-Transfer', value: '3' }
     ];
     /* let paymentMethods = [
         { text: 'Wire', value: '1' },

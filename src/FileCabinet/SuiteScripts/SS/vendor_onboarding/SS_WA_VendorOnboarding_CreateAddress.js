@@ -96,13 +96,15 @@ define(
                 isDynamic: true
             });
 
-            createAddressBookLine({
-                address: legalAddress,
-                defaultBilling: true,
-                defaultShipping: true,
-                label: legalAddress.address_1,
-                record: vendor
-            });
+            if (vendorRequest.getValue({ fieldId: 'custrecord_vr_source' }) !== '5') {
+                createAddressBookLine({
+                    address: legalAddress,
+                    defaultBilling: true,
+                    defaultShipping: true,
+                    label: legalAddress.address_1,
+                    record: vendor
+                });
+            }
 
             addSubsidiaries(vendor);
             
