@@ -6,6 +6,7 @@
     const finalizeData = () => {
         let isACH = $refundMethod === '1';
         let isCheck = $refundMethod === '2';
+        let isTransfer = $refundMethod === '3';
         let isUSD = $formValues[$formFields.COUNTRY]?.toLowerCase() === 'united states' &&
             $formValues[$formFields.CURRENCY]?.toLowerCase() === 'usd';
         let isUSDACH = isUSD === true && isACH === true;
@@ -13,11 +14,19 @@
         let isCAD = $formValues[$formFields.COUNTRY]?.toLowerCase() === 'canada' &&
             $formValues[$formFields.CURRENCY]?.toLowerCase() === 'cad';
         let isCADACH = isCAD === true && isACH === true;
+        let isCADTransfer = isCAD === true && isTransfer === true;
         
             // let isACH = $formValues[$formFields.PAYMENT_TYPE] === '2';
-        console.log(`isUSD = ${isUSD}; isUSDACH = ${isUSDACH}; isUSDCheck = ${isUSDCheck}`);
+        console.log({
+            isUSD,
+            isUSDACH,
+            isUSDCheck,
+            isCAD,
+            isCADACH,
+            isCADTransfer
+        });
 
-        if (isUSDACH === true || isCAD === true) {
+        if (isUSDACH === true || isCADACH === true) {
             formValues.update(o => {
                 o[$formFields.PREFERRED_PAYMENT_METHOD_2] = '1'; // ACH
                 o[$formFields.PAYMENT_TYPE] = '2'; // ACH/EFT
@@ -30,10 +39,16 @@
                 return o;
             });
         }
+        else if (isCADTransfer === true) {
+            formValues.update(o => {
+                o[$formFields.PREFERRED_PAYMENT_METHOD_2] = '6'; // Check
+                return o;
+            });
+        }
         else {
             formValues.update(o => {
                 o[$formFields.PREFERRED_PAYMENT_METHOD_2] = '6'; // Transferwise
-                o[$formFields.PAYMENT_TYPE] = '2'; // ACH/EFT
+                o[$formFields.PAYMENT_TYPE] = '1'; // ACH/EFT
                 return o;
             });
         }
@@ -115,6 +130,7 @@
         window['alertedTax'] = false;
 
         let errorSection = '';
+        let customAlert = false;
         document.querySelectorAll('div.card').forEach(section => {
             console.log(`  *** checking section = ${section['dataset'].id}`);
             section.querySelectorAll('.field:not(.optional) .fld, .fld.tax').forEach(el => {
@@ -130,6 +146,14 @@
         if (errorSection) {
             console.log(`errorSection = ${errorSection}`);
             alert('Please fill out all required fields.');
+            document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
+            return;
+        }
+
+        if ($formValues[$formFields.REQUESTER_EMAIL].endsWith('@outsideinc.com') === false) {
+            errorSection = 'primary_information';
+            customAlert = true;
+            alert("Requester's Email Address must be an Outside Inc. email address (@outsideinc.com).");
             document.querySelector(`div.card[data-id=${errorSection}]`).scrollIntoView();
             return;
         }
@@ -172,6 +196,7 @@
         } */
 
         finalizeData();
+        debugger;
         submitData();
     };
 </script>

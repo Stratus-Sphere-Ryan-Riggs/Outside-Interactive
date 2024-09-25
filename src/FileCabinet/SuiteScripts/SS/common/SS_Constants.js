@@ -45,7 +45,9 @@ define(
                     { id: '4', from: 61, to: 90 },
                     { id: '5', from: 90, to: 0 }
                 ]
+            
             },
+            ProductsRefunded: 'customlist_vr_productrefunded',
             RefundReasons: 'customlist_vr_reasonforrefund',
             TaxClassification: 'customlist_vr_taxclassificationlist',
             TypeOfAccount: 'customlist_vr_typeofaccount'
@@ -125,6 +127,7 @@ define(
                     GHG_EMISSIONS_CALC          : 'custrecord_vr_ghgemission',
                     HAS_SUSTAINABILITY_REPORT   : 'custrecord_vr_sustreport',
                     IBAN                        : 'custrecord_vr_intl_iban',
+                    INTERAC_EMAIL               : 'custrecord_vr_canerefundemail',
                     IS_BIZ_SMALL                : 'custrecord_vr_smallbiz',
                     IS_BIZ_SMALL_HUBZONE        : 'custrecord_vr_hubzone',
                     IS_BIZ_SMALL_MINORITY       : 'custrecord_vr_minorityosb',
@@ -149,6 +152,7 @@ define(
                     PHONE                       : 'custrecord_vr_phone',
                     PREFERRED_PAYMENT_METHOD    : 'custrecord_vr_pref_pymt_method',
                     PREFERRED_PAYMENT_METHOD_2  : 'custrecord_vr_pref_payment_method',
+                    PRODUCT_REFUNDED            : 'custrecord_vr_productrefunded',
                     PURCHASING_CONTACT          : 'custrecord_vr_primary_contact',
                     PURCHASING_CONTACT_EMAIL    : 'custrecord_vr_email',
                     PURPOSE_OF_PAYMENT          : 'custrecord_vr_intl_purposeofpayment',

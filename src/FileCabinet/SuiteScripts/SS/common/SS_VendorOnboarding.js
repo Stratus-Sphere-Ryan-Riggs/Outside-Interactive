@@ -73,6 +73,15 @@ define(
             return listData;
         };
 
+        const getProductsRefunded = () => {
+            const TITLE = `${MODULE}.GetProductsRefunded`;
+
+            let refundReasons = SS_Query.getCustomListValues(SS_Constants.CustomLists.ProductsRefunded);
+            log.debug({ title: `${TITLE} refundReasons`, details: JSON.stringify(refundReasons) });
+
+            return refundReasons;
+        };
+
         const getRefundReasons = () => {
             const TITLE = `${MODULE}.GetRefundReasons`;
 
@@ -131,6 +140,7 @@ define(
                 CURRENCIES: JSON.stringify(SS_Query.Currencies),
                 DROPDOWN_DATA: JSON.stringify(getDropdownData()),
                 FIELD_DATA: JSON.stringify(FIELDS),
+                PRODUCT_REFUNDED: JSON.stringify(getProductsRefunded()),
                 RADIO_DATA: JSON.stringify(getRadioGroupData()),
                 REFUND_REASON: JSON.stringify(getRefundReasons()),
                 STATE_COUNTRIES: JSON.stringify(SS_Query.StatesWithCountries),
@@ -186,6 +196,7 @@ define(
                 FIELDS.STATE,
                 FIELDS.BANK_COUNTRY,
                 FIELDS.CURRENCY,
+                FIELDS.PRODUCT_REFUNDED,
                 FIELDS.REFUND_REASON
             ];
             const FIELDS_DATE = [

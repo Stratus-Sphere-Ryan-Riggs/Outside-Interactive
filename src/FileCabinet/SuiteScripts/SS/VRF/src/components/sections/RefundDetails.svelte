@@ -1,5 +1,5 @@
 <script>
-    import { countryStates, currencies, formFields, formValues, refundReasons, stateList } from "../../store/pageData";
+    import { countryStates, currencies, formFields, formValues, productsRefunded, refundReasons, selectedCountry, selectedCurrency, stateList } from "../../store/pageData";
     import { onMount } from "svelte";
 
     import Card from "../form/Card.svelte";
@@ -35,6 +35,7 @@
             o[$formFields.CURRENCY] = e.detail.value;
             return o;
         });
+        $selectedCurrency = e.detail.value?.toLowerCase();
 
         // updateBankPaymentMethod();
         // logVariables();
@@ -51,6 +52,16 @@
                 text: r.name,
                 value: r.id
             };
+        })
+    ];
+
+    let productsToBeRefunded = [
+        { text: '', value: '' },
+        ...$productsRefunded.map(r => {
+            return {
+                text: r.name,
+                value: r.id
+            }
         })
     ];
 
@@ -105,6 +116,7 @@
             return o;
         });
         console.log(`RefundDetails formValues`, $formValues);
+        $selectedCountry = e.detail.value?.toLowerCase();
 
         let states = $countryStates.filter(c =>
             c.countryname === e.detail.value &&
@@ -152,10 +164,10 @@
     </Row>
 
     <Dropdown
-        id="{$formFields.REFUND_REASON}"
-        label="Reason For Refund"
-        bind:items={reasonsForRefund}
-        bind:value={$formValues[$formFields.REFUND_REASON]}
+        id="{$formFields.PRODUCT_REFUNDED}"
+        label="Product Refunded"
+        bind:items={productsToBeRefunded}
+        bind:value={$formValues[$formFields.PRODUCT_REFUNDED]}
     />
     <Dropdown
         id="{$formFields.REFUND_REASON}"
@@ -168,21 +180,24 @@
         label="Attach Original Receipt, Including Tax"
         on:change={onFileChange}
     />
-    <Dropdown
-        id="{$formFields.COUNTRY}"
-        label="Country"
-        cls="country w400"
-        bind:items={bankCountries}
-        on:change={onChangeCountry}
-    />
-    <!-- bind:value={bankCountry} -->
-    <Dropdown
-        id="{$formFields.CURRENCY}"
-        label="Currency"
-        cls="currency w160"
-        bind:items={bankCurrencies}
-        on:change={onChangeCurrency}
-    />
+
+    <Row>
+        <Dropdown
+            id="{$formFields.COUNTRY}"
+            label="Country"
+            cls="country w400"
+            bind:items={bankCountries}
+            on:change={onChangeCountry}
+        />
+        <!-- bind:value={bankCountry} -->
+        <Dropdown
+            id="{$formFields.CURRENCY}"
+            label="Currency"
+            cls="currency w160"
+            bind:items={bankCurrencies}
+            on:change={onChangeCurrency}
+        />
+    </Row>
 
 </Card>
 

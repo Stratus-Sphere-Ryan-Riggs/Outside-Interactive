@@ -1,5 +1,5 @@
 <script>
-    import { countryStates, formFields, formValues, refundMethod, stateList } from "../../store/pageData";
+    import { countryStates, formFields, formValues, refundMethod, selectedCountry, selectedCurrency, stateList } from "../../store/pageData";
     import { callZipAPI } from "../../store/zip";
 
     import Card from "../form/Card.svelte";
@@ -12,17 +12,13 @@
     export let id = 'payment_info';
     export let title = 'Payment Information';
 
-    let refundMethods = [
-        { text: 'Refund by ACH', value: '1' },
-        { text: 'Refund by check', value: '2' },
-        { text: 'Refund by E-Transfer', value: '3' }
-    ];
+    let refundMethods = [];
     /* let paymentMethods = [
         { text: 'Wire', value: '1' },
         { text: 'ACH/EFT', value: '2' }
     ]; */
-    let bankCountry = '';
-    let bankCurrency = '';
+    // let bankCountry = '';
+    // let bankCurrency = '';
 
     const onChangeZip = (e) => {
         let zip = e.detail.value;
@@ -63,27 +59,40 @@
     }; */
 
     const updateRefundMethod = () => {
-        bankCountry = $formValues[$formFields.COUNTRY]?.toLowerCase();
-        bankCurrency = $formValues[$formFields.CURRENCY]?.toLowerCase();
-        isUS = bankCountry === 'united states';
-        isUSD = isUS === true && bankCurrency === 'usd';
-        isCA = bankCountry === 'canada';
-        isCAD = isCA === true && bankCurrency === 'cad';
+        // bankCountry = $selectedCountry?.toLowerCase();
+        // bankCurrency = $selectedCurrency?.toLowerCase();
+        console.log(`updateRefundMethod`, `selectedCountry = ${selectedCountry}; selectedCurrency = ${selectedCurrency}`);
+        isUS = $selectedCountry === 'united states';
+        isUSD = isUS === true && $selectedCurrency === 'usd';
+        isCA = $selectedCountry === 'canada';
+        isCAD = isCA === true && $selectedCurrency === 'cad';
         isUSDWire = isUSD === true && $refundMethod === '2';
         notUSDWire = !isUSDWire;
         isUSDACH = isUSD === true && $refundMethod === '1';
+        isCADACH = isCAD === true && $refundMethod === '1';
+        notCADACH = !isCADACH;
+        isCADTransfer = isCAD === true && $refundMethod === '3';
+        notCADTransfer = !isCADTransfer;
         isUSDACHOrCAD = isUSDACH === true || isCAD === true;
         notUSDACHOrCAD = !isUSDACHOrCAD;
 
+        refundMethods = [ { text: 'Refund by ACH', value: '1' } ];
+        if (isUSD === true) {
+            refundMethods.push({ text: 'Refund by check', value: '2' });
+        }
+        else if (isCAD === true) {
+            refundMethods.push({ text: 'Refund by E-Transfer', value: '3' });
+        }
+        $refundMethod = '1';
         console.log(`isUSD = ${isUSD}; isCAD = ${isCAD}; refundMethod = ${$refundMethod}`);
 
-        if (isUSDACH === true) {
+        /* if (isUSDACH === true) {
             $refundMethod = '1';
         }
         else {
             $refundMethod = '2';
-        }
-        console.log(`updateRefundMethod`, { bankCountry, bankCurrency, refundMethod });
+        } */
+        console.log(`updateRefundMethod`, { $selectedCountry, $selectedCurrency, refundMethod });
 
         /* formValues.update(o => {
             o[$formFields.PAYMENT_TYPE] = paymentMethod;
@@ -124,32 +133,32 @@
     }; */
 
     const updateCountry = () => {
-        bankCountry = $formValues[$formFields.COUNTRY];
-        console.log(`PaymentInformation updateCountry bankCountry = ${bankCurrency}`);
+        // $selectedCountry = $formValues[$formFields.COUNTRY];
+        console.log(`PaymentInformation updateCountry bankCountry = ${$selectedCurrency}`);
 
         // updateBankPaymentMethod();
         updateRefundMethod();
     };
 
     const updateCurrency = () => {
-        bankCurrency = $formValues[$formFields.CURRENCY];
-        console.log(`PaymentInformation updateCurrency bankCurrency = ${bankCurrency}`);
+        $selectedCurrency = $formValues[$formFields.CURRENCY];
+        console.log(`PaymentInformation updateCurrency bankCurrency = ${$selectedCurrency}`);
 
         // updateBankPaymentMethod();
         updateRefundMethod();
     };
 
-    $: $formValues[$formFields.COUNTRY], updateCountry();
-    $: $formValues[$formFields.CURRENCY], updateCurrency();
+    $: $selectedCountry, updateRefundMethod();
+    $: $selectedCurrency, updateRefundMethod();
     
     // $: paymentMethod = '';
     // $: refundMethod = '';
-    $: isUS = bankCountry?.toLowerCase() === 'united states';
+    $: isUS = $selectedCountry?.toLowerCase() === 'united states';
     $: notUS = !isUS;
-    $: isUSD = isUS === true && bankCurrency?.toLowerCase() === 'usd';
+    $: isUSD = isUS === true && $selectedCurrency?.toLowerCase() === 'usd';
     $: notUSD = !isUSD;
-    $: isCA = $formValues[$formFields.COUNTRY]?.toLowerCase() === 'canada';
-    $: isCAD = isCA === true && $formValues[$formFields.CURRENCY]?.toLowerCase() === 'cad';
+    $: isCA = $selectedCountry?.toLowerCase() === 'canada';
+    $: isCAD = isCA === true && $selectedCurrency?.toLowerCase() === 'cad';
     $: notCAD = !isCAD;
     $: isUSDOrCAD = isUSD === true || isCAD === true;
     $: notUSDAndCAD = !isUSDOrCAD;
@@ -161,8 +170,14 @@
     // $: isUSDACH = isUSD === true && paymentMethod === '2';
     $: isUSDACH = isUSD === true && $refundMethod === '1';
     $: notUSDACH = !isUSDACH;
+    $: isCADACH = isCAD === true && $refundMethod === '1';
+    $: notCADACH = !isCADACH;
+    $: isCADTransfer = isCAD === true && $refundMethod === '3';
+    $: notCADTransfer = !isCADTransfer;
     $: isUSDACHOrCAD = isUSDACH === true || isCAD === true;
     $: notUSDACHOrCAD = !isUSDACHOrCAD;
+    $: isUSDACHOrCADACH = isUSDACH === true || isCADACH === true;
+    $: notUSDACHOrCADACH = !isUSDACHOrCADACH;
     $: bankingDetailLabel = isOther === true ? "International Wire Payment Information" : "Banking Comments";
 </script>
 
@@ -182,18 +197,18 @@
         label="Refund Method"
         bind:items={refundMethods}
         bind:value={$refundMethod}
-        bind:visible={isUSD}
+        bind:visible={isUSDOrCAD}
         on:change={onChangeRefundMethod}
     />
 
     <Row
-        bind:visible={isUSDACHOrCAD}
+        bind:visible={isUSDACHOrCADACH}
     >
         <InputText
             id="{$formFields.ACCOUNT_NUMBER}"
             label="Account Number"
             cls="w160"
-            bind:optional={notUSDACHOrCAD}
+            bind:optional={notUSDACHOrCADACH}
             bind:value={$formValues[$formFields.ACCOUNT_NUMBER]}
         />
         <InputText
@@ -207,14 +222,14 @@
     </Row>
 
     <Row
-        bind:visible={isCAD}
+        bind:visible={isCADACH}
     >
         <InputText
             id="{$formFields.FINANCIAL_INSTITUTION}"
             label="Financial Institution Number (3 digits)"
             wr="bank_intl"
             cls="w80"
-            bind:optional={notCAD}
+            bind:optional={notCADACH}
             bind:value={$formValues[$formFields.FINANCIAL_INSTITUTION]}
         />
         <InputText
@@ -222,7 +237,7 @@
             label="Transit Number (5 digits)"
             wr="bank_intl"
             cls="w80"
-            bind:optional={notCAD}
+            bind:optional={notCADACH}
             bind:value={$formValues[$formFields.BRANCH_TRANSIT_NUMBER]}
         />
     </Row>
@@ -268,6 +283,14 @@
             bind:optional={notUSDWire}
         />
     </Row>
+
+    <InputText
+        id="{$formFields.INTERAC_EMAIL}"
+        label="Interac (e-Transfer) Registered Email"
+        bind:optional={notCADTransfer}
+        bind:value={$formValues[$formFields.INTERAC_EMAIL]}
+        bind:visible={isCADTransfer}
+    />
 
     <TextArea
         id="{$formFields.MISC_BANKING_DETAILS}"
