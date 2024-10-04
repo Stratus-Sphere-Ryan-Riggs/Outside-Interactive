@@ -175,6 +175,12 @@
         bind:items={reasonsForRefund}
         bind:value={$formValues[$formFields.REFUND_REASON]}
     />
+    <InputText
+        id="{$formFields.NAME_OF_EVENT}"
+        label="Name of Event"
+        optional
+        bind:value={$formValues[$formFields.NAME_OF_EVENT]}
+    />
     <InputFile
         id="{$formFields.ORIGINAL_RECEIPT_DOCUMENT}"
         label="Attach Original Receipt, Including Tax"

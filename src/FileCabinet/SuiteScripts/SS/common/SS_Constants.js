@@ -141,6 +141,7 @@ define(
                     MAIN_ACCT_CONTACT_EMAIL     : 'custrecord_vr_mainacctcontactemail',
                     MISC_BANKING_DETAILS        : 'custrecord_vr_intl_bankingdetails',
                     NAICS_CODE                  : 'custrecord_vr_naicscode',
+                    NAME_OF_EVENT               : 'custrecord_vr_event_name',
                     NOTES                       : 'custrecord_vr_notes',
                     NUMBER_OF_EMPLOYEES         : 'custrecord_vr_numemployee',
                     OFAC_CHECK                  : 'custrecord_vr_ofaccheck',
