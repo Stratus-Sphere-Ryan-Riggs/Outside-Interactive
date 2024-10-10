@@ -96,7 +96,14 @@ define(
                 isDynamic: true
             });
 
-            if (vendorRequest.getValue({ fieldId: 'custrecord_vr_source' }) !== '5') {
+            let createAddress = (
+                (vendorRequest.getValue({ fieldId: 'custrecord_vr_source' }) !== '5') ||
+                (
+                    vendorRequest.getValue({ fieldId: 'custrecord_vr_source' }) === '5' &&
+                    vendorRequest.getValue({ fieldId: 'custrecord_vr_pref_payment_method' }) === '4'
+                )
+            );
+            if (createAddress === true) {
                 createAddressBookLine({
                     address: legalAddress,
                     defaultBilling: true,
