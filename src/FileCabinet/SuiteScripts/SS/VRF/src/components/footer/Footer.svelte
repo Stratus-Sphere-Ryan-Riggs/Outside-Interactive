@@ -42,6 +42,7 @@
         else if (isCADTransfer === true) {
             formValues.update(o => {
                 o[$formFields.PREFERRED_PAYMENT_METHOD_2] = '6'; // Check
+                o[$formFields.PAYMENT_TYPE] = '1';
                 return o;
             });
         }
