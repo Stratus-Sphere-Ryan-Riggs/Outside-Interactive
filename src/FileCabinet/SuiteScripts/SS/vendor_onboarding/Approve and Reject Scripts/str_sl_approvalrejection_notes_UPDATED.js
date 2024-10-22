@@ -48,7 +48,7 @@
                 </div>
             </div>`;
         }
-    
+        
         function createForm(response, params) {
             let formTitle = params.action === 'approve' ? 'Enter Approval Notes' : 'Enter Rejection Notes';
             let form = serverWidget.createForm({ title: formTitle });
