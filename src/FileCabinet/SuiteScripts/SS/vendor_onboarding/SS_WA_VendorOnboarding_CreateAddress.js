@@ -59,16 +59,21 @@ define(
                 ...sublist,
                 fieldId: 'addressbookaddress'
             });
+            log.debug({ title: `createAddressBookLine addr`, details: JSON.stringify(addr) });
             // let companyName = record.getHeaderValue({ fieldId: SS_Constants.Entity.COMPANY_NAME });
             // log.debug({ title: `${TITLE}`, details: `companyName = ${companyName}` });
-            
-            addr.setValue({ fieldId: 'addressee', value: address.addressee });
+
+            log.debug({ title: `createAddressBookLine address`, details: JSON.stringify(address) });
+            log.debug({ title: `createAddressBookLine address.addressee`, details: address.addressee });
             addr.setText({ fieldId: 'country', text: address.country });
             addr.setValue({ fieldId: 'city', value: address.city });
             addr.setText({ fieldId: 'state', text: address.state });
             addr.setValue({ fieldId: 'zip', value: address.zip });
             addr.setValue({ fieldId: 'addr1', value: address.address_1 });
             addr.setValue({ fieldId: 'addr2', value: address.address_2 });
+            addr.setValue({ fieldId: 'addressee', value: address.addressee });
+
+            log.debug({ title: `createAddressBookLine`, details: `Committing address line...` });
 
             record.commitLine(sublist);
         };
@@ -114,6 +119,7 @@ define(
             }
 
             addSubsidiaries(vendor);
+            log.debug({ title: TITLE, details: `Subsidiaries for new vendor were successfully created.` });
             
             let id = vendor.save();
             log.debug({ title: TITLE, details: `Addresses for vendor ${id} were successfully created.` });
