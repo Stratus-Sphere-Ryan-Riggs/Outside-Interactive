@@ -158,7 +158,7 @@
         />
         <InputDate
             id="{$formFields.REFUND_PERIOD_END_DATE}"
-            label="Refund Period Start Date"
+            label="Refund Period End Date"
             bind:value={$formValues[$formFields.REFUND_PERIOD_END_DATE]}
         />
     </Row>
