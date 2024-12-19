@@ -207,8 +207,8 @@ define(
             try {
                 log.debug({ title: `${TITLE} id = ${id}`, details: JSON.stringify(options) });
                 let vendorRequest = isNaN(parseInt(id)) === true ?
-                    SS_Record.create({ type: SS_Constants.CustomRecords.VendorRequest.Id }) :
-                    SS_Record.load({ id, type: SS_Constants.CustomRecords.VendorRequest.Id });
+                    SS_Record.create({ type: SS_Constants.CustomRecords.VendorRequest.Id, isDynamic: true }) :
+                    SS_Record.load({ id, type: SS_Constants.CustomRecords.VendorRequest.Id, isDynamic: true });
                 let fields = Object.values(FIELDS);
                 for (let i = 0, count = fields.length; i < count; i++) {
                     let fieldId = fields[i];
@@ -221,13 +221,20 @@ define(
                     }
     
                     if (FIELDS_SETBYTEXT.includes(fieldId)) {
+                        log.debug({ title: `${TITLE} FIELDS_SETBYTEXT fieldId = ${fieldId}; value = ${data[fieldId]}`, details: data[fieldId] });
                         vendorRequest.setHeaderText({ fieldId, text: data[fieldId] });
                         continue;
                     }
     
                     if (FIELDS_DATE.includes(fieldId)) {
+                        log.debug({ title: `${TITLE} FIELDS_DATE fieldId = ${fieldId}`, details: `value = "${data[fieldId]}"` });
+
+                        if (!!data[fieldId] === false) {
+                            log.debug({ title: TITLE, details: `${fieldId} is BLANK. Skipping...` });
+                            continue;
+                        }
+
                         let dateValue = SS_Format.format({ type: 'Date', value: new Date(data[fieldId]) });
-                        log.debug({ title: `${TITLE} fieldId = ${fieldId}; value = ${data[fieldId]}`, details: dateValue });
                         vendorRequest.setHeaderText({ fieldId, text: dateValue });
                         continue;
                     }
