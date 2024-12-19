@@ -27,7 +27,11 @@ define(
         const CUSTOM_LISTS = {
             BankingMethod: 'customlist_vr_bankdetailmethod',
             DataTableSuiteletTypes: {
-                DUNNING_STATEMENTS: '1'
+                DUNNING_STATEMENTS: '1',
+                DUNNING_LETTERS: '101',
+                MEDIA_FULFILLMENT : '102',
+                DUNNING_LETTERS_INV : '103',
+                CUSTOMER_NOTICES: '104',
             },
             DataTableTaskStatus: {
                 PENDING: '1',
@@ -40,12 +44,11 @@ define(
                 Id: 'customlist_ss_dunning_levels',
                 Values: [
                     { id: '1', from: 0, to: 0 },
-                    { id: '2', from: 1, to: 30 },
-                    { id: '3', from: 31, to: 60 },
-                    { id: '4', from: 61, to: 90 },
-                    { id: '5', from: 90, to: 0 }
+                    { id: '2', from: 1, to: 59 },
+                    { id: '3', from: 60, to: 90 },
+                    { id: '4', from: 91, to: 120 },
+                    { id: '5', from: 120, to: 0 }
                 ]
-            
             },
             ProductsRefunded: 'customlist_vr_productrefunded',
             RefundReasons: 'customlist_vr_reasonforrefund',
@@ -151,6 +154,7 @@ define(
                     PAYMENT_TERMS               : 'custrecord_vr_payment_terms',
                     PAYMENT_TYPE                : 'custrecord_vr_paymenttype',
                     PHONE                       : 'custrecord_vr_phone',
+                    POTENTIAL_DUPLICATE         : 'custrecord_vr_potentialduplicate',
                     PREFERRED_PAYMENT_METHOD    : 'custrecord_vr_pref_pymt_method',
                     PREFERRED_PAYMENT_METHOD_2  : 'custrecord_vr_pref_payment_method',
                     PRODUCT_REFUNDED            : 'custrecord_vr_productrefunded',
