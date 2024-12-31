@@ -247,6 +247,8 @@ define(
             }
 
             save(options) {
+                // log.debug({ title: 'Record.Save options', details: JSON.stringify(options) });
+                // log.debug({ title: 'Record.Save record', details: JSON.stringify(this.record) });
                 return this.record.save(options);
             }
 
@@ -298,7 +300,7 @@ define(
             }
 
             setText(options) {
-                if (options.skipEmpty === true && !!options.value?.trim() === false) {
+                if (options.skipEmpty === true && !!options.text?.trim() === false) {
                     return;
                 }
 

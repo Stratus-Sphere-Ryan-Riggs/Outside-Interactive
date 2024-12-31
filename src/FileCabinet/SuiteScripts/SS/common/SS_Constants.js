@@ -57,6 +57,37 @@ define(
         };
 
         const CUSTOM_RECORDS = {
+            BankDetails: {
+                Id: 'customrecord_2663_entity_bank_details',
+                Fields: {
+                    ACCOUNT_TYPE                : 'custrecord_2663_acct_type',
+                    ADDRESS_1                   : 'custrecord_2663_entity_address1',
+                    ADDRESS_2                   : 'custrecord_2663_entity_address2',
+                    ADDRESS_3                   : 'custrecord_2663_entity_address3',
+                    BANK_ACCOUNT_NAME           : 'custrecord_2663_entity_acct_name',
+                    BANK_ACCOUNT_NUMBER         : 'custrecord_2663_entity_acct_no',
+                    BANK_ACCOUNT_TYPE           : 'custrecord_2663_entity_bank_acct_type',
+                    BANK_CODE                   : 'custrecord_2663_entity_bank_code',
+                    BANK_NAME                   : 'custrecord_2663_entity_bank_name',
+                    BANK_NUMBER                 : 'custrecord_2663_entity_bank_no',
+                    BBAN                        : 'custrecord_2663_entity_bban',
+                    BIC                         : 'custrecord_2663_entity_bic',
+                    BRANCH_NAME                 : 'custrecord_2663_entity_branch_name',
+                    BRANCH_NUMBER               : 'custrecord_2663_entity_branch_no',
+                    CITY                        : 'custrecord_2663_entity_city',
+                    COUNTRY                     : 'custrecord_2663_entity_country',
+                    COUNTRY_CODE                : 'custrecord_2663_entity_country_code',
+                    COUNTRY_CHECK               : 'custrecord_2663_entity_country_check',
+                    IBAN                        : 'custrecord_2663_entity_iban',
+                    IBAN_CHECK_DIGITS           : 'custrecord_2663_entity_iban_check',
+                    PARENT_VENDOR               : 'custrecord_2663_parent_vendor',
+                    PAYMENT_FILE_FORMAT         : 'custrecord_2663_entity_file_format',
+                    STATE                       : 'custrecord_2663_entity_state',
+                    SWIFT_CODE                  : 'custrecord_2663_entity_swift',
+                    TYPE                        : 'custrecord_2663_entity_bank_type',
+                    ZIP                         : 'custrecord_2663_entity_zip'
+                }
+            },
             DataTableTask: {
                 Id: 'customrecord_ss_dt_task',
                 Fields: {
@@ -389,6 +420,9 @@ define(
                 StatementForm           : 'custscript_ss_mr_dun_stm_form',
                 TaskRecord              : 'custscript_ss_mr_dun_stm_task',
                 TemplateId              : 'custscript_ss_mr_dun_stm_invgrp_template'
+            },
+            VendorOnboardingBankDetails : {
+                MappingSearchId         : 'custscript_ss_ue_vo_bank_det_ss_map'
             }
         };
 
