@@ -82,6 +82,7 @@ define(
                     IBAN_CHECK_DIGITS           : 'custrecord_2663_entity_iban_check',
                     PARENT_VENDOR               : 'custrecord_2663_parent_vendor',
                     PAYMENT_FILE_FORMAT         : 'custrecord_2663_entity_file_format',
+                    PROCESSOR_CODE              : 'custrecord_2663_entity_processor_code',
                     STATE                       : 'custrecord_2663_entity_state',
                     SWIFT_CODE                  : 'custrecord_2663_entity_swift',
                     TYPE                        : 'custrecord_2663_entity_bank_type',

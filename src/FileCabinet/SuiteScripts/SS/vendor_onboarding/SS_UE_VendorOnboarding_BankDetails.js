@@ -22,6 +22,7 @@ define(
     ) => {
         const MODULE = `SS.UE.VendorOnboarding.BankDetails`;
         const BANK = SS_Constants.CustomRecords.BankDetails;
+        const FIELDS = BANK.Fields;
 
         const createBankDetails = (options) => {
             const TITLE = `${MODULE}.CreateBankDetails`;
@@ -47,6 +48,9 @@ define(
                     bankDetails.setValue({ fieldId, value });
                 }
             }
+
+            setBankingNumberFields({ record: bankDetails, value: bankDetails.getValue({ fieldId: FIELDS.BANK_NUMBER }) });
+
             let bankDetailsId = bankDetails.save({ enableSourcing: true });
             log.debug({ title: TITLE, details: `Successfully created bank details ${bankDetailsId}.` });
         };
@@ -65,6 +69,27 @@ define(
             log.debug({ title: `${TITLE} mappingResults = ${mappingResults.length}`, details: JSON.stringify(mappingResults) });
 
             return mappingResults;
+        };
+
+        const setBankingNumberFields = (options) => {
+            const TITLE = `${MODULE}.SetBankingNumberFields`;
+            let { record, value } = options;
+
+            // Parse banking number field values
+            if (value.length !== 9) {
+                log.debug({ title: TITLE, details: `Bank routing number is invalid. Skipping...` });
+                return;
+            }
+
+            record.setValue({ fieldId: FIELDS.PROCESSOR_CODE, value: value.substring(0, 4) });
+            record.setValue({ fieldId: FIELDS.BANK_CODE, value: value.substring(4, 4) });
+
+            let checkDigit = (
+                (7 * (parseInt(value.charAt(0)) + parseInt(value.charAt(3)) + parseInt(value.charAt(6)))) +
+                (3 * (parseInt(value.charAt(1)) + parseInt(value.charAt(4)) + parseInt(value.charAt(7)))) +
+                (9 * (parseInt(value.charAt(2)) + parseInt(value.charAt(5))))
+            ) % 10;
+            record.setValue({ fieldId: FIELDS.COUNTRY_CHECK, value: checkDigit });
         };
 
         const validate = (options) => {
