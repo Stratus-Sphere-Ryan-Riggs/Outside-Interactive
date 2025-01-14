@@ -81,27 +81,22 @@ define(
                 return;
             }
 
-            record.setValue({ fieldId: FIELDS.PROCESSOR_CODE, value: value.substring(0, 4) });
-            record.setValue({ fieldId: FIELDS.BANK_CODE, value: value.substring(4, 4) });
-
             let checkDigit = (
                 (7 * (parseInt(value.charAt(0)) + parseInt(value.charAt(3)) + parseInt(value.charAt(6)))) +
                 (3 * (parseInt(value.charAt(1)) + parseInt(value.charAt(4)) + parseInt(value.charAt(7)))) +
                 (9 * (parseInt(value.charAt(2)) + parseInt(value.charAt(5))))
             ) % 10;
+
+            if (checkDigit.toString() !== value.charAt(8).toString()) { return; }
+
+            record.setValue({ fieldId: FIELDS.PROCESSOR_CODE, value: value.substring(0, 4) });
+            record.setValue({ fieldId: FIELDS.BANK_CODE, value: value.substring(4, 4) });
             record.setValue({ fieldId: FIELDS.COUNTRY_CHECK, value: checkDigit });
         };
 
         const validate = (options) => {
             const TITLE = `${MODULE}.Validate`;
             let { newRecord, type } = options;
-
-            // if ([
-            //     options.UserEventType.CREATE
-            // ].indexOf(type) < 0) {
-            //     log.audit({ title: TITLE, details: `Invalid event type (${type}). Exiting...` });
-            //     return false;
-            // }
 
             let mappingSearchId = SS_Script.getParameter(SS_Constants.ScriptParameters.VendorOnboardingBankDetails.MappingSearchId);
             if (!mappingSearchId) {

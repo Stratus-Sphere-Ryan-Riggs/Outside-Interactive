@@ -75,7 +75,18 @@ define(
 
             log.debug({ title: `createAddressBookLine`, details: `Committing address line...` });
 
-            record.commitLine(sublist);
+            try {
+                record.commitLine(sublist);
+            }
+            catch (ex) {
+                log.audit({ title: TITLE, details: `Error adding vendor address: ${ex.message || ex.toString()}` });
+
+                // ...dump address text into custom field on vendor record
+                record.setValue({ fieldId: 'custentity_strat_vendoraddressdetails', value: JSON.stringify(address) });
+
+                // ...flag vendor record
+                record.setValue({ fieldId: 'custentity_strat_venaddress_issue', value: true });
+            }
         };
 
         const onAction = (context) => {
@@ -108,6 +119,10 @@ define(
                     vendorRequest.getValue({ fieldId: 'custrecord_vr_pref_payment_method' }) === '4'
                 )
             );
+
+            addSubsidiaries(vendor);
+            log.debug({ title: TITLE, details: `Subsidiaries for new vendor were successfully created.` });
+
             if (createAddress === true) {
                 createAddressBookLine({
                     address: legalAddress,
@@ -117,9 +132,6 @@ define(
                     record: vendor
                 });
             }
-
-            addSubsidiaries(vendor);
-            log.debug({ title: TITLE, details: `Subsidiaries for new vendor were successfully created.` });
             
             let id = vendor.save();
             log.debug({ title: TITLE, details: `Addresses for vendor ${id} were successfully created.` });
