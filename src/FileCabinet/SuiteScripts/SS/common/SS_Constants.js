@@ -423,7 +423,9 @@ define(
                 TemplateId              : 'custscript_ss_mr_dun_stm_invgrp_template'
             },
             VendorOnboardingBankDetails : {
-                MappingSearchId         : 'custscript_ss_ue_vo_bank_det_ss_map'
+                // MappingSearchId         : 'custscript_ss_ue_vo_bank_det_ss_map',
+                MappingSearchId         : 'custscript_ss_wa_vo_bank_det_ss_map',
+                VendorLinkId            : 'custscript_ss_wa_ven_bank_det_vendor'
             }
         };
 

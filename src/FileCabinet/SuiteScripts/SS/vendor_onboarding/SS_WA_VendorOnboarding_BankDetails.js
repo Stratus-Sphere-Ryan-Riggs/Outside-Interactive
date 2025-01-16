@@ -1,6 +1,6 @@
 /**
  * @NApiVersion     2.1
- * @NScriptType     UserEventScript
+ * @NScriptType     WorkflowActionScript
  * @NModuleScope    SameAccount
  */
 
@@ -20,7 +20,7 @@ define(
 
         NS_Record
     ) => {
-        const MODULE = `SS.UE.VendorOnboarding.BankDetails`;
+        const MODULE = `SS.WA.VendorOnboarding.BankDetails`;
         const BANK = SS_Constants.CustomRecords.BankDetails;
         const FIELDS = BANK.Fields;
 
@@ -29,15 +29,17 @@ define(
             let { record } = options;
 
             // Get bank detail mapping...
-            let vendorId = record.getValue({ fieldId: 'custrecord_2663_parent_vendor' });
-            let mapping = getBankDetailMapping({ id: vendorId });
+            // let vendorId = record.getValue({ fieldId: 'custrecord_2663_parent_vendor' });
+            let vendorId = SS_Script.getParameter(SS_Constants.ScriptParameters.VendorOnboardingBankDetails.VendorLinkId);
+            log.debug({ title: TITLE, details: `vendorId = ${vendorId}` });
+            let mapping = getBankDetailMapping({ id: record.id });
             if (mapping.length <= 0) {
-                log.audit({ title: TITLE, details: `No field mapping retrieved for vendor ID ${vendorId}.` });
+                log.audit({ title: TITLE, details: `No field mapping retrieved for vendor request ID ${record.id}.` });
                 return;
             }
 
             // Create bank details record...
-            let bankDetails = SS_Record.load({ type: BANK.Id, id: record.id, isDynamic: true });
+            let bankDetails = SS_Record.create({ type: BANK.Id, isDynamic: true });
             for (const [ fieldId, value ] of Object.entries(mapping[0])) {
                 if (fieldId === 'id') { continue; }
                 if (fieldId.endsWith('_TEXT')) {
@@ -49,6 +51,7 @@ define(
                     bankDetails.setValue({ fieldId, value });
                 }
             }
+            bankDetails.setValue({ fieldId: 'custrecord_2663_parent_vendor', value: vendorId });
 
             setBankingNumberFields({ record: bankDetails, value: bankDetails.getValue({ fieldId: FIELDS.BANK_NUMBER }) });
 
@@ -64,7 +67,7 @@ define(
             let mappingSearch = SS_Search.load({ id: mappingSearchId });
             // log.debug({ title: `${TITLE} mappingSearchId = ${mappingSearchId}`, details: JSON.stringify(mappingSearch) })
             
-            mappingSearch.addExpression([ 'custrecord_vr_link_vendor', 'anyof', id ]);
+            mappingSearch.addExpression([ 'internalid', 'anyof', id ]);
             log.debug({ title: `${TITLE} filters`, details: JSON.stringify(mappingSearch.Expression) });
 
             let mappingResults = mappingSearch.getResults();
@@ -98,23 +101,27 @@ define(
 
         const validate = (options) => {
             const TITLE = `${MODULE}.Validate`;
-            let { newRecord, type } = options;
 
             let mappingSearchId = SS_Script.getParameter(SS_Constants.ScriptParameters.VendorOnboardingBankDetails.MappingSearchId);
             if (!mappingSearchId) {
-                log.audit({ title: TITLE, details: `Missing mapping saved search ID. Exiting...` });
+                log.audit({ title: TITLE, details: `Missing parameter: Mapping saved search ID. Exiting...` });
                 return false;
             }
 
             // Add additional 'false' conditions here...
+            // let vendorLinkId = SS_Script.getParameter(SS_Constants.ScriptParameters.VendorOnboardingBankDetails.VendorLinkId);
+            // if (!vendorLinkId) {
+            //     log.audit({ title: TITLE, details: `Missing parameter: Vendor ID. Exiting...` });
+            //     return false;
+            // }
 
             return true;
         };
 
         return {
-            afterSubmit: (context) => {
+            onAction: (context) => {
                 const TITLE = `${MODULE}.AfterSubmit`;
-                let { newRecord, type } = context;
+                let { newRecord } = context;
 
                 if (validate(context) === false) { return; }
 
