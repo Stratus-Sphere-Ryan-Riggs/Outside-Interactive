@@ -101,7 +101,7 @@ define(
             };
 
             getResults() {
-                log.debug({ title: `SS.Search|GetResults search`, details: JSON.stringify(this.search) });
+                // log.debug({ title: `SS.Search|GetResults search`, details: JSON.stringify(this.search) });
                 let allResults = [];
                 let subResults = [];
                 let start = 0;
@@ -141,7 +141,7 @@ define(
 
                     return rowObject;
                 });
-                log.debug({ title: `SS.Search|GetResults`, details: `allResults = ${allResults.length}` });
+                // log.debug({ title: `SS.Search|GetResults`, details: `allResults = ${allResults.length}` });
 
                 return allResults;
             }

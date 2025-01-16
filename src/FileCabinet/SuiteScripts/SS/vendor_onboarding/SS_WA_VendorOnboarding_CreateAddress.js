@@ -47,6 +47,7 @@ define(
         };
 
         const createAddressBookLine = (options) => {
+            const TITLE = `${MODULE}.CreateAddressBookLine`;
             let { address, defaultBilling, defaultShipping, label, record } = options;
 
             let sublist = { sublistId: 'addressbook' };

@@ -29,14 +29,15 @@ define(
             let { record } = options;
 
             // Get bank detail mapping...
-            let mapping = getBankDetailMapping({ id: record.id });
+            let vendorId = record.getValue({ fieldId: 'custrecord_2663_parent_vendor' });
+            let mapping = getBankDetailMapping({ id: vendorId });
             if (mapping.length <= 0) {
-                log.audit({ title: TITLE, details: `No field mapping retrieved for vendor request ID ${record.id}.` });
+                log.audit({ title: TITLE, details: `No field mapping retrieved for vendor ID ${vendorId}.` });
                 return;
             }
 
             // Create bank details record...
-            let bankDetails = SS_Record.create({ type: BANK.Id, isDynamic: true });
+            let bankDetails = SS_Record.load({ type: BANK.Id, id: record.id, isDynamic: true });
             for (const [ fieldId, value ] of Object.entries(mapping[0])) {
                 if (fieldId === 'id') { continue; }
                 if (fieldId.endsWith('_TEXT')) {
@@ -61,9 +62,10 @@ define(
 
             let mappingSearchId = SS_Script.getParameter(SS_Constants.ScriptParameters.VendorOnboardingBankDetails.MappingSearchId);
             let mappingSearch = SS_Search.load({ id: mappingSearchId });
-            log.debug({ title: `${TITLE} mappingSearchId = ${mappingSearchId}`, details: JSON.stringify(mappingSearch) })
+            // log.debug({ title: `${TITLE} mappingSearchId = ${mappingSearchId}`, details: JSON.stringify(mappingSearch) })
             
-            mappingSearch.addExpression([ 'internalid', 'anyof', id ]);
+            mappingSearch.addExpression([ 'custrecord_vr_link_vendor', 'anyof', id ]);
+            log.debug({ title: `${TITLE} filters`, details: JSON.stringify(mappingSearch.Expression) });
 
             let mappingResults = mappingSearch.getResults();
             log.debug({ title: `${TITLE} mappingResults = ${mappingResults.length}`, details: JSON.stringify(mappingResults) });
