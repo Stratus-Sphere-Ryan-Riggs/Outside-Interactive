@@ -95,7 +95,7 @@ define(
             if (checkDigit.toString() !== value.charAt(8).toString()) { return; }
 
             record.setValue({ fieldId: FIELDS.PROCESSOR_CODE, value: value.substring(0, 4) });
-            record.setValue({ fieldId: FIELDS.BANK_CODE, value: value.substring(4, 4) });
+            record.setValue({ fieldId: FIELDS.BANK_CODE, value: value.substring(4, 8) });
             record.setValue({ fieldId: FIELDS.COUNTRY_CHECK, value: checkDigit });
         };
 
