@@ -7,6 +7,7 @@ define(
     [
         './SS_Constants',
         './SS_File',
+        './SS_FileUpload',
         './SS_Format',
         './SS_Query',
         './SS_Record',
@@ -16,6 +17,7 @@ define(
     (
         SS_Constants,
         SS_File,
+        SS_FileUpload,
         SS_Format,
         SS_Query,
         SS_Record,
@@ -144,7 +146,8 @@ define(
                 RADIO_DATA: JSON.stringify(getRadioGroupData()),
                 REFUND_REASON: JSON.stringify(getRefundReasons()),
                 STATE_COUNTRIES: JSON.stringify(SS_Query.StatesWithCountries),
-                TIME_STAMP: new Date().getTime().toString()
+                TIME_STAMP: new Date().getTime().toString(),
+                UPLOAD_FOLDER: headerValues['custrecord_vr_upload_folder'] || SS_FileUpload.createFolder({})
             };
             if (id) {
                 mapValues = {
@@ -207,8 +210,8 @@ define(
             try {
                 log.debug({ title: `${TITLE} id = ${id}`, details: JSON.stringify(options) });
                 let vendorRequest = isNaN(parseInt(id)) === true ?
-                    SS_Record.create({ type: SS_Constants.CustomRecords.VendorRequest.Id, isDynamic: true }) :
-                    SS_Record.load({ id, type: SS_Constants.CustomRecords.VendorRequest.Id, isDynamic: true });
+                    SS_Record.create({ type: SS_Constants.CustomRecords.VendorRequest.Id }) :
+                    SS_Record.load({ id, type: SS_Constants.CustomRecords.VendorRequest.Id });
                 let fields = Object.values(FIELDS);
                 for (let i = 0, count = fields.length; i < count; i++) {
                     let fieldId = fields[i];

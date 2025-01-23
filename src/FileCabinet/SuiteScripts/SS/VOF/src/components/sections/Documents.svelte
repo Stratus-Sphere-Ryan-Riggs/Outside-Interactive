@@ -18,11 +18,12 @@
     const onFileChange = (e) => {
         let file = e.detail.file;
         console.log(`InputFile >>> selected file = ${file.name}`);
+        console.log('upload URL', `${window['backendURL']}&action=upload&folder=${window['uploadFolder']}`);
 
         let formData = new FormData();
         formData.append("file", file);
         fetch(
-            `${window['backendURL']}&action=upload`,
+            `${window['backendURL']}&action=upload&folder=${window['uploadFolder']}`,
             {
                 method: 'POST',
                 body: formData

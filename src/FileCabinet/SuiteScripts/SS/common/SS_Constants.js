@@ -225,6 +225,7 @@ define(
                     TAX_ID_US                   : 'custrecord_vr_tax_id',
                     TYPICAL_PRODUCTS_SERVICES   : 'custrecord_vr_typicalprodserv',
                     TYPE_OF_ACCOUNT             : 'custrecord_vendor_request_eft_bill_pay',
+                    UPLOAD_FOLDER               : 'custrecord_vr_upload_folder',
                     VENDOR_CATEGORY             : 'custrecord_vr_vendorcategory',
                     VENDOR_COMMENTS             : 'custrecord_vr_addtlveninfo',
                     W9                          : 'custrecord_vr_w9',
