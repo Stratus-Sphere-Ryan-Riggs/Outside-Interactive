@@ -5,10 +5,12 @@
 
 define(
     [
+        '../common/SS_File',
         '../common/SS_Record',
         '../common/SS_Search'
     ],
     (
+        SS_File,
         SS_Record,
         SS_Search
     ) => {
@@ -30,14 +32,14 @@ define(
             }
         ];
 
-        const createTemporaryFolder = () => {
+        const createTemporaryFolder = (options) => {
             const TITLE = `${MODULE}.CreateTemporaryFolder`;
+            let { name } = options;
+
+            name = `REFUND_${name || (new Date()).getTime().toString()}`;
 
             let folder = SS_Record.create({ type: 'folder' });
-            folder.setValue({
-                fieldId: 'name',
-                value: `VOF_TEMP_${(new Date()).getTime().toString()}`
-            });
+            folder.setValue({ fieldId: 'name', value: name });
             folder.setValue({ fieldId: 'parent', value: getSourceFolder({}) });
 
             let folderId = folder.save();
@@ -93,7 +95,7 @@ define(
                 let { id, name, source } = options;
                 
                 if (!id) {
-                    return createTemporaryFolder();
+                    return createTemporaryFolder({ name });
                 }
 
                 let folderId = getUploadFolder(options);
@@ -116,7 +118,38 @@ define(
                 return getUploadFolder(options);
             },
 
-            move: (options) => {},
+            move: (options) => {
+                const TITLE = `${MODULE}.Move`;
+                let { from, to } = options;
+                log.debug({ title: `${TITLE} options`, details: JSON.stringify(options) });
+
+                let fileSearch = SS_Search.create({
+                    type: 'file',
+                    filters: [
+                        'folder', 'anyof', from
+                    ]
+                });
+                let fileResults = fileSearch.getResults();
+                log.debug({ title: `${TITLE} fileResults`, details: JSON.stringify(fileResults) });
+                if (fileResults.length <= 0) {
+                    log.audit({ title: TITLE, details: `No files found within folder ID ${from}. Exiting...` });
+                    return false;
+                }
+
+                try {
+                    for (let i=0, count=fileResults.length; i < count; i++) {
+                        let fileId = parseInt(fileResults[i].id);
+                        fileId = SS_File.copy({ id: fileId, folder: to, move: true });
+                        log.debug({ title: TITLE, details: `Successfully moved file ${fileId} to folder ${to}.` });
+                    }
+    
+                    return true;
+                }
+                catch (ex) {
+                    log.error({ title: TITLE, details: ex.toString() });
+                    return false;
+                }
+            },
 
             upload: (options) => {}
         };

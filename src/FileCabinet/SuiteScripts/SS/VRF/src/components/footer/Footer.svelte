@@ -86,7 +86,7 @@
         overlay.classList.remove('hidden');
 
         fetch(
-            `${window['backendURL']}&request_id=${$formValues.id}&action=save`,
+            `${window['backendURL']}&request_id=${$formValues.id}&action=save&folder=${window['uploadFolder']}`,
             {
                 method: 'POST',
                 body: JSON.stringify($formValues)

@@ -25,6 +25,8 @@ define(
         SS_Url
     ) => {
         const MODULE = `SS|VendorOnboarding`;
+        const VENDOR_REQUEST = SS_Constants.CustomRecords.VendorRequest;
+        const FIELDS = VENDOR_REQUEST.Fields;
 
         const buildBackendUrl = (options) => {
             const TITLE = `${MODULE}.BuildBackendUrl`;
@@ -93,6 +95,63 @@ define(
             return refundReasons;
         };
 
+        const getVendorName = (options) => {
+            let { record } = options;
+            let output = '';
+
+            let type = record.getValue({ fieldId: FIELDS.CATEGORY });
+            switch (type.toString()) {
+                case '1': {
+                    // Individual
+                    output = `${record.getValue({ fieldId: FIELDS.FIRST_NAME })} ${record.getValue({ fieldId: FIELDS.LAST_NAME })}`
+                    break;
+                }
+                case '2': {
+                    // Company
+                    output = `${record.getValue({ fieldId: FIELDS.COMPANY_NAME })}`;
+                    break;
+                }
+            }
+
+            return output;
+        };
+
+        const moveFiles = (options) => {
+            const TITLE = `${MODULE}.MoveFiles`;
+            let { id, from } = options;
+            log.debug({ title: `${TITLE} options`, details: JSON.stringify(options) });
+
+            if (!id) {
+                log.error({ title: TITLE, details: `Missing required value: Request ID.` });
+                return;
+            }
+
+            if (!from) {
+                log.error({ title: TITLE, details: `Missing required value: From Folder ID.` });
+                return;
+            }
+
+            try {
+                let vendorRequest = SS_Record.load({ type: VENDOR_REQUEST.Id, id });
+                let folderId = SS_FileUpload.createFolder({
+                    id,
+                    name: getVendorName({ record: vendorRequest }),
+                    source: vendorRequest.getValue({ fieldId: FIELDS.SOURCE })
+                });
+    
+                if (SS_FileUpload.move({ from, to: folderId }) === false) {
+                    log.debug({ title: TITLE, detail: `Something went wrong...` });
+                    return;
+                }
+
+                log.debug({ title: TITLE, detail: `Successfully moved files from folder ${from} to ${folderId}` });
+            }
+            catch (ex) {
+                log.error({ title: TITLE, details: ex.toString() });
+                return;
+            }
+        };
+
         const readVendorRequestValues = (options) => {
             const TITLE = `${MODULE}.ReadVendorRequestValues`;
             let VENDOR_REQUEST = SS_Constants.CustomRecords.VendorRequest;
@@ -137,6 +196,7 @@ define(
             let renderValue = SS_File.read({ name: templateParam });
             let backendUrl = buildBackendUrl(options);
             let headerValues = id ? readVendorRequestValues(options) : null;
+            let now = new Date().getTime().toString();
             let mapValues = {
                 BACKEND_URL: backendUrl,
                 CURRENCIES: JSON.stringify(SS_Query.Currencies),
@@ -146,8 +206,8 @@ define(
                 RADIO_DATA: JSON.stringify(getRadioGroupData()),
                 REFUND_REASON: JSON.stringify(getRefundReasons()),
                 STATE_COUNTRIES: JSON.stringify(SS_Query.StatesWithCountries),
-                TIME_STAMP: new Date().getTime().toString(),
-                UPLOAD_FOLDER: headerValues['custrecord_vr_upload_folder'] || SS_FileUpload.createFolder({})
+                TIME_STAMP: now,
+                UPLOAD_FOLDER: headerValues?.['custrecord_vr_upload_folder'] || SS_FileUpload.createFolder({ name: now })
             };
             if (id) {
                 mapValues = {
@@ -251,7 +311,7 @@ define(
                 vendorRequest.setHeaderValue({ fieldId: 'custrecord_vr_vendorformsubmitted', value: true });
                 let requestId = vendorRequest.save({ ignoreMandatoryFields: true });
                 log.debug({ title: TITLE, detail: `Successfully updated Vendor Request ID = ${requestId}` });
-                return { status: true };
+                return { status: true, id: requestId };
             }
             catch (ex) {
                 log.error({ title: TITLE, details: ex.toString() });
@@ -261,8 +321,8 @@ define(
 
         const upload = (options) => {
             const TITLE = `${MODULE}.Upload`;
-            let { file } = options;
-            let folder = SS_Script.getParameter(SS_Constants.ScriptParameters.FileUploadFolder);
+            let { file, folder } = options;
+            // let folder = SS_Script.getParameter(SS_Constants.ScriptParameters.FileUploadFolder);
             if (!folder) {
                 let message = `Missing required parameter: Folder.`;
                 log.error({ title: TITLE, details: message });
@@ -282,6 +342,7 @@ define(
         };
 
         return {
+            moveFiles,
             render,
             save,
             upload

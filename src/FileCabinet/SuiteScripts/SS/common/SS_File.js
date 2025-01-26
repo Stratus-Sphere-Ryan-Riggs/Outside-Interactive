@@ -8,13 +8,30 @@
 define(
     [
         'N/file',
+        './SS_Record',
         './SS_Search'
     ],
     (
         NS_File,
+        SS_Record,
         SS_Search
     ) => {
         const MODULE = 'SS.File';
+
+        const getContainingFolder = (options) => {
+            const TITLE = `${MODULE}.GetContainingFolder`;
+            let { id } = options;
+
+            let fileSearch = SS_Search.create({
+                type: 'file',
+                filters: [ 'internalid', 'anyof', id ],
+                columns: [ 'folder' ]
+            });
+            let fileResults = fileSearch.getResults();
+            log.debug({ title: TITLE, details: JSON.stringify(fileResults) });
+            
+            return fileResults[0]?.folder;
+        };
 
         const getType = (options) => {
             const TITLE = 'Get File Type';
@@ -60,6 +77,37 @@ define(
         };
 
         return {
+            copy (options) {
+                const TITLE = `${MODULE}.Delete`;
+                let { folder, id, move } = options;
+                log.debug({ title: `${TITLE} options`, details: JSON.stringify(options) });
+
+                if (!id) {
+                    log.debug({ title: TITLE, details: 'Missing required value: File Id.' });
+                    return id;
+                }
+
+                if (!folder) {
+                    log.debug({ title: TITLE, details: 'Missing required value: Destination Folder.' });
+                    return id;
+                }
+
+                let oldFolder = getContainingFolder({ id });
+                let fileObject = NS_File.copy({ id, folder });
+                let fileId = fileObject.save();
+                log.debug({ title: TITLE, details: `Successfully copied new file ${fileId}.` });
+
+                if (move === true) {
+                    NS_File.delete({ id });
+
+                    if (oldFolder) {
+                        log.debug({ title: TITLE, details: `Deleting old folder ${oldFolder}...` });
+                        SS_Record.delete({ type: 'folder', id: oldFolder });
+                    }
+                }
+
+                return fileId;
+            },
             create (options) {
                 let title = `${MODULE}.Create`;
 
@@ -101,6 +149,17 @@ define(
                     return { status: false, error: errorMessage };
                 }
             },
+            delete (options) {
+                const TITLE = `${MODULE}.Delete`;
+                let { id } = options;
+
+                if (!id) {
+                    log.debug({ title: TITLE, details: 'Missing required value: File Id.' });
+                    return id;
+                }
+
+                NS_File.delete({ id });
+            },
             get (options) {
                 let title = `${MODULE}.Get`;
                 let { name } =  options;
@@ -125,6 +184,7 @@ define(
     
                 return fileResults[0].id;
             },
+            getContainingFolder (options) {},
             load (options) {
                 let title = `${MODULE}.Load`;
                 let fileObject = null;

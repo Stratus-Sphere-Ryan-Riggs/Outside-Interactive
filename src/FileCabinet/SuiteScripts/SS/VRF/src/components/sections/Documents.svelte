@@ -22,7 +22,7 @@
         let formData = new FormData();
         formData.append("file", file);
         fetch(
-            `${window['backendURL']}&action=upload`,
+            `${window['backendURL']}&action=upload&folder=${window['uploadFolder']}`,
             {
                 method: 'POST',
                 body: formData

@@ -58,11 +58,15 @@ define(
         const saveRequestData = (context) => {
             const TITLE = `${MODULE}.SaveRequestData`;
             let { request, response } = context;
-            let vendorRequestId = request.parameters.request_id;
+            let { folder, request_id } = request.parameters;
+            log.debug({ title: `${TITLE} parameters`, details: JSON.stringify(request.parameters) });
+            
+            let vendorRequestId = request_id;
             let data = JSON.parse(request.body);
             log.debug({ title: TITLE, details: JSON.stringify(data) });
 
             let updateStatus = SS_VendorOnboarding.save({ id: vendorRequestId, data });
+            SS_VendorOnboarding.moveFiles({ from: folder, id: updateStatus.id });
             response.write({ output: JSON.stringify(updateStatus) });
         };
 
@@ -95,7 +99,14 @@ define(
                 return { status: false, message: msg };
             }
 
-            let uploadStatus = SS_VendorOnboarding.upload({ file: files.file });
+            let { folder } = request.parameters;
+            if (!folder) {
+                let msg = `Missing required parameter: Folder.`;
+                log.error({ title: TITLE, details: msg });
+                return { status: false, message: msg };
+            }
+
+            let uploadStatus = SS_VendorOnboarding.upload({ file: files.file, folder });
             response.write({ output: JSON.stringify(uploadStatus) });
         };
 

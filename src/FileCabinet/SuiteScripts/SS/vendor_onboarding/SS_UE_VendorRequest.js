@@ -18,6 +18,12 @@ define(
             const TITLE = `${MODULE}.AfterSubmit`;
 
             setAltName(context);
+            moveFiles(context);
+        };
+
+        const moveFiles = (context) => {
+            const TITLE = `${MODULE}.MoveFiles`;
+            let { newRecord } = context;
         };
 
         const setAltName = (context) => {
