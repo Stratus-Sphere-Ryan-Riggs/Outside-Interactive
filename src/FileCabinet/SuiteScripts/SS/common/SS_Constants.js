@@ -53,7 +53,11 @@ define(
             ProductsRefunded: 'customlist_vr_productrefunded',
             RefundReasons: 'customlist_vr_reasonforrefund',
             TaxClassification: 'customlist_vr_taxclassificationlist',
-            TypeOfAccount: 'customlist_vr_typeofaccount'
+            TypeOfAccount: 'customlist_vr_typeofaccount',
+            VendorRequestSource: {
+                ONLINE_FORM: '1',
+                REFUNDS: '5'
+            }
         };
 
         const CUSTOM_RECORDS = {

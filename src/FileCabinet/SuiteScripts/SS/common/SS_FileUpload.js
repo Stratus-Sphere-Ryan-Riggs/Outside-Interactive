@@ -136,19 +136,25 @@ define(
                     return false;
                 }
 
+                let output = [];
                 try {
                     for (let i=0, count=fileResults.length; i < count; i++) {
                         let fileId = parseInt(fileResults[i].id);
                         fileId = SS_File.copy({ id: fileId, folder: to, move: true });
                         log.debug({ title: TITLE, details: `Successfully moved file ${fileId} to folder ${to}.` });
+
+                        output.push({ old: fileResults[i].id, new: fileId });
                     }
     
-                    return true;
+                    // return true;
                 }
                 catch (ex) {
                     log.error({ title: TITLE, details: ex.toString() });
-                    return false;
+                    // return false;
                 }
+
+                log.debug({ title: `${TITLE} output`, details: JSON.stringify(output) });
+                return output;
             },
 
             upload: (options) => {}

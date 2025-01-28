@@ -27,6 +27,7 @@ define(
         const MODULE = `SS|VendorOnboarding`;
         const VENDOR_REQUEST = SS_Constants.CustomRecords.VendorRequest;
         const FIELDS = VENDOR_REQUEST.Fields;
+        const SOURCES = SS_Constants.CustomLists.VendorRequestSource;
 
         const buildBackendUrl = (options) => {
             const TITLE = `${MODULE}.BuildBackendUrl`;
@@ -59,6 +60,47 @@ define(
             ddData[FIELDS.TAX_CLASSIFICATION] = taxClassifications;
 
             return ddData;
+        };
+
+        const getFiles = (options) => {
+            const TITLE = `${MODULE}.GetFiles`;
+            let { id, record } = options;
+            let output = {};
+
+            if (!id && !record) {
+                log.audit({ title: TITLE, details: `Missing required parameter: ID or record object.` });
+                return output;
+            }
+            
+            let requestRecord = record || SS_Record.load({ type: VENDOR_REQUEST.Id, id });
+            let requestSource = requestRecord.getValue({ fieldId: FIELDS.SOURCE })
+            let FILE_FIELDS = [];
+
+            switch (requestSource) {
+                case SOURCES.ONLINE_FORM: {
+                    FILE_FIELDS[
+                        FIELDS.W9,
+                        FIELDS.SOC_CERTIFICATE,
+                        FIELDS.CERTIFICATE_OF_INSURANCE,
+                        FIELDS.DATA_BREACH_REPORT,
+                        FIELDS.OFAC_CHECK
+                    ];
+                    break;
+                }
+                case SOURCES.REFUNDS: {
+                    FILE_FIELDS = [
+                        FIELDS.ORIGINAL_RECEIPT_DOCUMENT
+                    ];
+                    break;
+                }
+            }
+
+            FILE_FIELDS.forEach(fieldId => {
+                output[fieldId] = requestRecord.getValue({ fieldId });
+            });
+            log.debug({ title: `${TITLE} output`, details: JSON.stringify(output) });
+
+            return output;
         };
 
         const getRadioGroupData = () => {
@@ -133,18 +175,29 @@ define(
 
             try {
                 let vendorRequest = SS_Record.load({ type: VENDOR_REQUEST.Id, id });
+                let vendorRequestFiles = getFiles({ record: vendorRequest });
                 let folderId = SS_FileUpload.createFolder({
                     id,
                     name: getVendorName({ record: vendorRequest }),
                     source: vendorRequest.getValue({ fieldId: FIELDS.SOURCE })
                 });
     
-                if (SS_FileUpload.move({ from, to: folderId }) === false) {
+                /* if (SS_FileUpload.move({ from, to: folderId }) === false) {
                     log.debug({ title: TITLE, detail: `Something went wrong...` });
                     return;
+                } */
+                let movedFiles = SS_FileUpload.move({ from, to: folderId });
+                if (movedFiles.length <= 0) {
+                    log.audit({ title: TITLE, details: `No files were moved.` });
+                    return;
                 }
-
                 log.debug({ title: TITLE, detail: `Successfully moved files from folder ${from} to ${folderId}` });
+
+                updateFileLinks({
+                    files: movedFiles,
+                    id,
+                    reference: vendorRequestFiles
+                });
             }
             catch (ex) {
                 log.error({ title: TITLE, details: ex.toString() });
@@ -317,6 +370,47 @@ define(
                 log.error({ title: TITLE, details: ex.toString() });
                 return { status: false, message: ex.message || ex.toString() };
             }
+        };
+
+        const updateFileLinks = (options) => {
+            const TITLE = `${MODULE}.UpdateFileLinks`;
+            let { files, id, reference } = options;
+
+            if (files?.length <= 0) {
+                log.audit({ title: TITLE, details: `Missing required parameter: Files. Exiting...` });
+                return;
+            }
+
+            if (!id) {
+                log.audit({ title: TITLE, details: `Missing required parameter: Vendor Request ID.` });
+                return;
+            }
+
+            if (!reference) {
+                log.audit({ title: TITLE, details: `Missing required parameter: File reference. Exiting...` });
+                return;
+            }
+
+            let doUpdate = false;
+            let values = {};
+            for (const [ fieldId, value ] of Object.entries(reference)) {
+                let fileObject = files.find(f => f.old === value);
+                if (!fileObject) { continue; }
+
+                values[fieldId] = fileObject.new;
+                doUpdate = true;
+            }
+            log.debug({ title: `${TITLE} values`, details: JSON.stringify(values) });
+
+            if (doUpdate === false) {
+                log.audit({ title: TITLE, details: `No matching files to update. Exiting...` });
+                return;
+            }
+            SS_Record.submitFields({
+                type: VENDOR_REQUEST.Id,
+                id,
+                values
+            });
         };
 
         const upload = (options) => {
