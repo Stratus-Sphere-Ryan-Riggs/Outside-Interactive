@@ -14,18 +14,6 @@ define(
     ) => {
         const MODULE = `SS.UE|VendorRequest`;
 
-        const afterSubmit = (context) => {
-            const TITLE = `${MODULE}.AfterSubmit`;
-
-            setAltName(context);
-            moveFiles(context);
-        };
-
-        const moveFiles = (context) => {
-            const TITLE = `${MODULE}.MoveFiles`;
-            let { newRecord } = context;
-        };
-
         const setAltName = (context) => {
             const TITLE = `${MODULE}.SetAltName`;
             const FIELDS = SS_Constants.Transaction.Fields;
@@ -43,6 +31,10 @@ define(
             });
         };
 
-        return { afterSubmit };
+        return {
+            afterSubmit: (context) => {
+                setAltName(context);
+            }
+        };
     }
 );

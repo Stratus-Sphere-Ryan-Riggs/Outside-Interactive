@@ -260,7 +260,7 @@ define(
                 REFUND_REASON: JSON.stringify(getRefundReasons()),
                 STATE_COUNTRIES: JSON.stringify(SS_Query.StatesWithCountries),
                 TIME_STAMP: now,
-                UPLOAD_FOLDER: headerValues?.['custrecord_vr_upload_folder'] || SS_FileUpload.createFolder({ name: now })
+                UPLOAD_FOLDER: headerValues?.[FIELDS.UPLOAD_FOLDER] || SS_FileUpload.createFolder({ name: now })
             };
             if (id) {
                 mapValues = {

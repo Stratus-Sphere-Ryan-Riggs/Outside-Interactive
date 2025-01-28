@@ -5,25 +5,28 @@
 
 define(
     [
+        '../common/SS_Constants',
         '../common/SS_File',
         '../common/SS_Record',
         '../common/SS_Search'
     ],
     (
+        SS_Constants,
         SS_File,
         SS_Record,
         SS_Search
     ) => {
         const MODULE = `SS.FileUpload`;
+        const SOURCES = SS_Constants.CustomLists.VendorRequestSource;
         const FOLDERS = [
             {
                 /* Online Form */
-                source: '1',
+                source: SOURCES.ONLINE_FORM,
                 folder: '526513'
             },
             {
                 /* _Refunds */
-                source: '5',
+                source: SOURCES.REFUNDS,
                 folder: '598457'
             },
             {
@@ -43,7 +46,7 @@ define(
             folder.setValue({ fieldId: 'parent', value: getSourceFolder({}) });
 
             let folderId = folder.save();
-            log.debug({ title: TITLE, details: `Successfully created temporary folder ID ${folderId}` })
+            log.debug({ title: TITLE, details: `Successfully created temporary folder ID ${folderId}.` });
 
             return folderId;
         };
@@ -76,6 +79,7 @@ define(
             return folderResults.length > 0 ? folderResults[0].id : '';
         };
 
+        /* DEPRECATE */
         const updateRequestUploadFolder = (options) => {
             const TITLE = `${MODULE}.UpdateRequestUploadFolder`;
             let { id, folder } = options;
