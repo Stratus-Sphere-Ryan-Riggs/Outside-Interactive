@@ -25,6 +25,27 @@ define(
             }
 
             // TODO: Update each file upload button handler
+            console.log(TITLE, window.vr_uploadButtons);
+            if (Array.isArray(window.vr_uploadButtons) === false) {
+                console.log(TITLE, `vr_uploadButtons is not a proper array. Exiting...`);
+                return;
+            }
+
+            window.vr_uploadButtons.forEach(b => {
+                let uploadButton = document.getElementById(`${b}_popup_new`);
+                if (!uploadButton) { return true; }
+
+                let onClick = uploadButton.onclick.toString();
+                if (!onClick) { return true; }
+
+                onClick = onClick.replaceAll('\n', ' ');
+                let funcContent = onClick.substring(onClick.indexOf('{') + 1, onClick.indexOf('}'));
+                funcContent = `window.wndFilePopup = ${funcContent}vr_setUploadFolder();`;
+                console.log(`${TITLE} "${uploadButton.id}"`, funcContent);
+
+                uploadButton.onclick = new Function('event', funcContent);
+                return true;
+            });
         };
 
         return {

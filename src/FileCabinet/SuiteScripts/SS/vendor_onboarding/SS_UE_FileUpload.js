@@ -35,6 +35,7 @@ define(
         };
         const VENDOR_ONBOARDING_FILES_FOLDER = '526513';
         const VENDOR_REQUEST = SS_Constants.CustomRecords.VendorRequest;
+        const VR_FIELDS = VENDOR_REQUEST.Fields;
 
         const createTempFolder = (options) => {
             const TITLE = `${MODULE}.CreateTempFolder`;
@@ -91,12 +92,30 @@ define(
 
         const getUploadScriptContent = (options) => {
             const TITLE = `${MODULE}.GetUploadScriptContent`;
+            const BUTTONS = [
+                VR_FIELDS.W9,
+                VR_FIELDS.SOC_CERTIFICATE,
+                VR_FIELDS.CERTIFICATE_OF_INSURANCE,
+                VR_FIELDS.DATA_BREACH_REPORT,
+                VR_FIELDS.OFAC_CHECK,
+                VR_FIELDS.ORIGINAL_RECEIPT_DOCUMENT
+            ];
+            log.debug({ title: TITLE, details: JSON.stringify(BUTTONS) });
+
             return `<script>
-            window.ss_getRequestUploadFolder = (options) => {
                 window.vr_uploadFolder = nlapiGetFieldValue('${VENDOR_REQUEST.Fields.UPLOAD_FOLDER}');
                 console.log('SS Vendor Request Upload Folder', window.vr_uploadFolder);
-            };
-            window.ss_getRequestUploadFolder();
+
+                window.vr_uploadButtons = ${JSON.stringify(BUTTONS)};
+                window.vr_setUploadFolder = () => {
+                    try {
+                        let wndBody = window.wndFilePopup.document.body;
+                        window.wndFilePopup.nlapiSetFieldValue('folder', vr_uploadFolder);
+                    }
+                    catch (e) {
+                        setTimeout("window.vr_setUploadFolder()", 500);
+                    }
+                };
             </script>`;
         };
 
@@ -151,7 +170,7 @@ define(
         return {
             beforeLoad: (context) => {
                 createTempFolder(context);
-                // updateFileUploadHandlers(context);
+                updateFileUploadHandlers(context);
             },
 
             afterSubmit: (context) => {
