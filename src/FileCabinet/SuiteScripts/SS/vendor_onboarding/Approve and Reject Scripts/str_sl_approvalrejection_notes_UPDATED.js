@@ -2,8 +2,8 @@
  *@NApiVersion 2.1
  *@NScriptType Suitelet
  */
- define(['N/runtime', 'N/ui/serverWidget', 'N/log', 'N/record', 'N/redirect'],
-    function (runtime, serverWidget, log, record, redirect) {
+ define(['N/record', 'N/runtime', 'N/ui/serverWidget', 'N/log', 'N/record', 'N/redirect'],
+    function (record, runtime, serverWidget, log, record, redirect) {
     
         function onRequest(context) {
             const request = context.request;
@@ -75,7 +75,8 @@
             const currentUserRole = runtime.getCurrentUser().role;
     
             if (params.custpage_rejectionnotes) {
-                processRejection(vendorRequest, params.custpage_rejectionnotes);
+                processRejection(params.custpage_recordtype, params.custpage_recordid, params.custpage_rejectionnotes);
+                // processRejection(vendorRequest, params.custpage_rejectionnotes);
             } else if (params.custpage_approvalnotes !== undefined) {
                 applyApprovalLogic(vendorRequest, anticipatedSpend, currentUserRole, params.custpage_approvalnotes);
             }
@@ -84,11 +85,22 @@
             redirectToOpener(response);
         }
     
-        function processRejection(vendorRequest, rejectionNotes) {
+        // function processRejection(vendorRequest, rejectionNotes) {
+        function processRejection(vendorRequestType, vendorRequestId, rejectionNotes) {
             const today = new Date();
-            vendorRequest.setValue({ fieldId: 'custrecord_rejection_notes', value: rejectionNotes });
-            vendorRequest.setValue({ fieldId: 'custrecord_vr_rejectedby', value: runtime.getCurrentUser().id });
-            vendorRequest.setValue({ fieldId: 'custrecord_vr_rejecteddate', value: today });
+            record.submitFields({
+                type: vendorRequestType,
+                id: vendorRequestId,
+                values: {
+                    custrecord_rejection_notes: rejectionNotes,
+                    custrecord_vr_rejectedby: runtime.getCurrentUser().id,
+                    custrecord_vr_rejecteddate: today
+                },
+                ignoreMandatoryFields: true
+            });
+            // vendorRequest.setValue({ fieldId: 'custrecord_rejection_notes', value: rejectionNotes });
+            // vendorRequest.setValue({ fieldId: 'custrecord_vr_rejectedby', value: runtime.getCurrentUser().id });
+            // vendorRequest.setValue({ fieldId: 'custrecord_vr_rejecteddate', value: today });
         }
     
         function applyApprovalLogic(vendorRequest, anticipatedSpend, currentUserRole, approvalNotes) {
