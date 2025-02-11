@@ -100,18 +100,18 @@ define(
 
             log.debug({ title: `createAddressBookLine`, details: `Committing address line...` });
 
-            try {
+            // try {
                 record.commitLine(sublist);
-            }
-            catch (ex) {
-                log.audit({ title: TITLE, details: `Error adding vendor address: ${ex.message || ex.toString()}` });
+            // }
+            // catch (ex) {
+            //     log.audit({ title: TITLE, details: `Error adding vendor address: ${ex.message || ex.toString()}` });
 
-                // ...dump address text into custom field on vendor record
-                record.setValue({ fieldId: 'custentity_strat_vendoraddressdetails', value: JSON.stringify(address) });
+            //     // ...dump address text into custom field on vendor record
+            //     record.setValue({ fieldId: 'custentity_strat_vendoraddressdetails', value: JSON.stringify(address) });
 
-                // ...flag vendor record
-                record.setValue({ fieldId: 'custentity_strat_venaddress_issue', value: true });
-            }
+            //     // ...flag vendor record
+            //     record.setValue({ fieldId: 'custentity_strat_venaddress_issue', value: true });
+            // }
         };
 
         const onAction = (context) => {
@@ -149,13 +149,24 @@ define(
             log.debug({ title: TITLE, details: `Subsidiaries for new vendor were successfully created.` });
 
             if (createAddress === true) {
-                createAddressBookLine({
-                    address: legalAddress,
-                    defaultBilling: true,
-                    defaultShipping: true,
-                    label: legalAddress.address_1,
-                    record: vendor
-                });
+                try {
+                    createAddressBookLine({
+                        address: legalAddress,
+                        defaultBilling: true,
+                        defaultShipping: true,
+                        label: legalAddress.address_1,
+                        record: vendor
+                    });
+                }
+                catch (ex) {
+                    log.audit({ title: TITLE, details: `Error adding vendor address: ${ex.message || ex.toString()}` });
+
+                    // ...dump address text into custom field on vendor record
+                    vendor.setValue({ fieldId: 'custentity_strat_vendoraddressdetails', value: JSON.stringify(legalAddress) });
+    
+                    // ...flag vendor record
+                    vendor.setValue({ fieldId: 'custentity_strat_venaddress_issue', value: true });
+                }
             }
             
             let id = vendor.save();
