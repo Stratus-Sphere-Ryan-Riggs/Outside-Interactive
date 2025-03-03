@@ -23,7 +23,7 @@ define(
                 return NS_Runtime.executionContext;
             },
 
-            isUserInterface() {
+            get isUserInterface() {
                 return NS_Runtime.executionContext === NS_Runtime.ContextType.USER_INTERFACE;
             }
         };

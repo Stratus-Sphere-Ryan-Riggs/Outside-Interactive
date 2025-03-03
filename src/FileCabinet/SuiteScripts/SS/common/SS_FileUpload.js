@@ -31,9 +31,28 @@ define(
             },
             {
                 temp: true,
-                folder: '603010'
+                folder: '703295'
+                /* QA ==> folder: '603010' */
             }
         ];
+
+        const changeFolderParent = (options) => {
+            const TITLE = `${MODULE}.ChangeFolderParent`;
+            let { id, source } = options;
+
+            let folder = SS_Record.load({ type: 'folder', id });
+            let parent = folder.getValue({ fieldId: 'parent' });
+            let sourceParent = getSourceFolder({ source });
+            if (parent.toString() ===  sourceParent.toString()) {
+                log.audit({ title: TITLE, details: `Parent folder is already ${sourceParent}. Exiting...` });
+                return;
+            }
+
+            folder.setValue({ fieldId: 'parent', value: sourceParent });
+            let folderId = folder.save();
+            log.debug({ title: TITLE, details: `Successfully moved folder ${folderId} to ${sourceParent}.` });
+            return sourceParent;
+        };
 
         const createTemporaryFolder = (options) => {
             const TITLE = `${MODULE}.CreateTemporaryFolder`;
@@ -55,9 +74,20 @@ define(
             const TITLE = `${MODULE}.GetSourceFolder`;
             let { source } = options;
 
-            let folder = source ?
-                FOLDERS.find(f => f.source === source && f.temp !== true) :
-                FOLDERS.find(f => f.temp === true);
+            let folder = {};
+            if (source === SOURCES.REFUNDS) {
+                folder = FOLDERS.find(f => f.source === SOURCES.REFUNDS)
+            }
+            else if (!!source === true) {
+                folder = FOLDERS.find(f => f.source !== SOURCES.REFUNDS && f.temp !== true);
+            }
+            else {
+                folder = FOLDERS.find(f => f.temp === true);
+            }
+            // let folder = source ?
+            //     (source === SOURCES.REFUND) ? '598457' : '526513' :
+            //     FOLDERS.find(f => f.temp === true);
+            /* FOLDERS.find(f => f.source === source && f.temp !== true) : */
             log.debug({ title: TITLE, details: JSON.stringify(folder) });
 
             /* Default folder is "Attachments Received" */
@@ -94,6 +124,8 @@ define(
         };
 
         return {
+            changeFolderParent,
+
             createFolder: (options) => {
                 const TITLE = `${MODULE}.CreateFolder`;
                 let { id, name, source } = options;

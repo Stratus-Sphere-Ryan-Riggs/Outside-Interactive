@@ -6,12 +6,12 @@
 
 define(
     [
-        '../common/SS_AddressFormMapping',
+        // '../common/SS_AddressFormMapping',
         '../common/SS_Constants',
         '../common/SS_Record'
     ],
     (
-        SS_AddressFormMapping,
+        // SS_AddressFormMapping,
         SS_Constants,
         SS_Record
     ) => {
@@ -70,7 +70,7 @@ define(
             log.debug({ title: `createAddressBookLine`, details: `addressee = ${address.addressee}; country = ${address.country}` });
             addr.setText({ fieldId: 'country', text: address.country });
 
-            let mappedAddress = SS_AddressFormMapping.mapAddress({
+            /* let mappedAddress = SS_AddressFormMapping.mapAddress({
                 country: addr.getValue({ fieldId: 'country' }),
                 data: {
                     addressee: address.addressee,
@@ -89,14 +89,14 @@ define(
                 }
                 log.debug({ title: TITLE, details: `Setting ${fieldId} = "${value}"...` });
                 addr.setValue({ fieldId, value });
-            }
+            } */
 
-            // addr.setValue({ fieldId: 'city', value: address.city });
-            // addr.setText({ fieldId: 'state', text: address.state });
-            // addr.setValue({ fieldId: 'zip', value: address.zip });
-            // addr.setValue({ fieldId: 'addr1', value: address.address_1 });
-            // addr.setValue({ fieldId: 'addr2', value: address.address_2 });
-            // addr.setValue({ fieldId: 'addressee', value: address.addressee });
+            addr.setValue({ fieldId: 'city', value: address.city });
+            addr.setText({ fieldId: 'state', text: address.state });
+            addr.setValue({ fieldId: 'zip', value: address.zip });
+            addr.setValue({ fieldId: 'addr1', value: address.address_1 });
+            addr.setValue({ fieldId: 'addr2', value: address.address_2 });
+            addr.setValue({ fieldId: 'addressee', value: address.addressee });
 
             log.debug({ title: `createAddressBookLine`, details: `Committing address line...` });
 
@@ -171,6 +171,8 @@ define(
             
             let id = vendor.save();
             log.debug({ title: TITLE, details: `Addresses for vendor ${id} were successfully created.` });
+
+            // updateFolderName({ id: })
         };
 
         return { onAction };

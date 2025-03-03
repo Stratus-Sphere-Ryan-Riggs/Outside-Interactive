@@ -78,7 +78,7 @@ define(
 
         return {
             copy (options) {
-                const TITLE = `${MODULE}.Delete`;
+                const TITLE = `${MODULE}.Copy`;
                 let { folder, id, move } = options;
                 log.debug({ title: `${TITLE} options`, details: JSON.stringify(options) });
 
@@ -93,13 +93,12 @@ define(
                 }
 
                 let oldFolder = getContainingFolder({ id });
-                let fileObject = NS_File.copy({ id, folder });
+                let fileObject = NS_File.load({ id });
+                fileObject.folder = parseInt(folder);
                 let fileId = fileObject.save();
                 log.debug({ title: TITLE, details: `Successfully copied new file ${fileId}.` });
 
                 if (move === true) {
-                    NS_File.delete({ id });
-
                     if (oldFolder) {
                         log.debug({ title: TITLE, details: `Deleting old folder ${oldFolder}...` });
                         SS_Record.delete({ type: 'folder', id: oldFolder });
@@ -184,7 +183,7 @@ define(
     
                 return fileResults[0].id;
             },
-            getContainingFolder (options) {},
+            // getContainingFolder (options) {},
             load (options) {
                 let title = `${MODULE}.Load`;
                 let fileObject = null;

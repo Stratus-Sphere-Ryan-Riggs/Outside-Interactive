@@ -66,7 +66,13 @@ define(
             log.debug({ title: TITLE, details: JSON.stringify(data) });
 
             let updateStatus = SS_VendorOnboarding.save({ id: vendorRequestId, data });
-            SS_VendorOnboarding.moveFiles({ from: folder, id: updateStatus.id });
+            // folder = folder || data[SS_Constants.CustomRecords.VendorRequest.Fields.UPLOAD_FOLDER];
+
+            let source = data[SS_Constants.CustomRecords.VendorRequest.Fields.SOURCE];
+            if (folder && source === SS_Constants.CustomLists.VendorRequestSource.REFUNDS) {
+                SS_VendorOnboarding.moveFiles({ from: folder, id: updateStatus.id });
+            }
+
             response.write({ output: JSON.stringify(updateStatus) });
         };
 

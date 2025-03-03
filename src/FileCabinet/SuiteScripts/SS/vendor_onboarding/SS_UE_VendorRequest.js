@@ -19,7 +19,13 @@ define(
             const FIELDS = SS_Constants.Transaction.Fields;
             let { newRecord, type } = context;
 
-            if (type !== context.UserEventType.CREATE) { return; }
+            if ([
+                context.UserEventType.CREATE,
+                context.UserEventType.EDIT
+            ].indexOf(type) < 0) {
+                log.audit({ title: TITLE, details: `Invalid view (${type}). Exiting...` });
+                return;
+            }
             
             let updateValues = {};
             updateValues[FIELDS.ALT_NAME] = newRecord.id;
@@ -29,6 +35,7 @@ define(
                 id: newRecord.id,
                 values: updateValues
             });
+            log.audit({ title: TITLE, details: `Successfully updated record ${newRecord.id}.` });
         };
 
         return {

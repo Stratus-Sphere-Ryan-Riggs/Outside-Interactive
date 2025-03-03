@@ -53,7 +53,7 @@ define(
                 const TITLE = `${MODULE}.PageInit`;
                 let { mode } = context;
 
-                if ([ 'create', 'copy' ].indexOf(mode) < 0) {
+                if ([ 'create', 'edit', 'copy' ].indexOf(mode) < 0) {
                     console.log(TITLE, `Invalid mode (${mode}). Exiting Page Init...`);
                     return;
                 }

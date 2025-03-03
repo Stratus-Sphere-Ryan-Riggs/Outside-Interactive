@@ -186,7 +186,7 @@ define(
                     log.debug({ title: TITLE, detail: `Something went wrong...` });
                     return;
                 } */
-                let movedFiles = SS_FileUpload.move({ from, to: folderId });
+                let movedFiles = SS_FileUpload.move({ from: parseInt(from), to: folderId });
                 if (movedFiles.length <= 0) {
                     log.audit({ title: TITLE, details: `No files were moved.` });
                     return;

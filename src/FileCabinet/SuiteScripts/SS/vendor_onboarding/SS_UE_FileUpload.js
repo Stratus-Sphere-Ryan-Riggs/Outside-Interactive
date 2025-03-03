@@ -61,20 +61,34 @@ define(
         /**
          * Invoked immediately after creation of New Vendor Request record only.
          */
-        const createUploadFolder = (options) => {
-            const TITLE = `${MODULE}.CreateUploadFolder`;
+        const upsertUploadFolder = (options) => {
+            const TITLE = `${MODULE}.UpsertUploadFolder`;
             let { newRecord, type } = options;
 
+            log.debug({ title: TITLE, details: `type = ${type}; context = ${SS_Runtime.ExecutionContext}` });
             if ([
-                options.UserEventType.CREATE
+                options.UserEventType.CREATE,
+                options.UserEventType.EDIT
             ].indexOf(type) < 0) {
                 log.audit({ title: TITLE, details: `Invalid event type (${type}). Exiting...` });
                 return;
             }
 
             let uploadFolder = newRecord.getValue({ fieldId: VENDOR_REQUEST.Fields.UPLOAD_FOLDER });
-            
-            if (!uploadFolder) {
+            let source = newRecord.getValue({ fieldId: VENDOR_REQUEST.Fields.SOURCE });
+
+            if (uploadFolder) {
+                let vendorName = getVendorName({ newRecord });
+                log.debug({ title: TITLE, details: `uploadFolder = ${uploadFolder}; vendorName = ${vendorName}` });
+                SS_Record.submitFields({
+                    type: 'folder',
+                    id: uploadFolder,
+                    values: { name: `${newRecord.id}_${vendorName}` }
+                });
+                log.audit({ title: TITLE, details: `Successfully updated folder name to ${vendorName}` })
+            }
+            else {
+                log.debug({ title: TITLE, details: `creating new folder...` });
                 let folderId = SS_FileUpload.createFolder({
                     id: newRecord.id,
                     name: getVendorName({ newRecord }),
@@ -85,8 +99,29 @@ define(
                 SS_Record.submitFields({ type: newRecord.type, id: newRecord.id, values });
             }
 
-            if (SS_Runtime.isUserInterface === true && uploadFolder) {
+            if (!uploadFolder) {
+                log.audit({ title: TITLE, details: `Missing required parameter: Upload folder. Exiting...` });
+                return;
+            }
+
+            if (source === SS_Constants.CustomLists.VendorRequestSource.ONLINE_FORM) {
+                log.audit({ title: TITLE, details: `Source is 'Online Form'. Exiting...` });
+                return;
+            }
+
+            if (source === SS_Constants.CustomLists.VendorRequestSource.REFUNDS) {
                 SS_VendorOnboarding.moveFiles({ id: newRecord.id, from: uploadFolder });
+            }
+            else {
+                SS_FileUpload.changeFolderParent({ id: uploadFolder, source });
+                // let updateValues = {};
+                // updateValues[] = 
+                // SS_Record.submitFields({
+                //     type: newRecord.type,
+                //     id: newRecord.id,
+                //     values: { name: `${newRecord.id}_${vendorName}` }
+                // });
+                // log.audit({ title: TITLE, details: `Successfully updated folder name to ${vendorName}` })
             }
         };
 
@@ -110,7 +145,7 @@ define(
                 window.vr_setUploadFolder = () => {
                     try {
                         let wndBody = window.wndFilePopup.document.body;
-                        window.wndFilePopup.nlapiSetFieldValue('folder', vr_uploadFolder);
+                        window.wndFilePopup.nlapiSetFieldValue('folder', window.vr_uploadFolder);
                     }
                     catch (e) {
                         setTimeout("window.vr_setUploadFolder()", 500);
@@ -154,7 +189,8 @@ define(
             }
 
             if ([
-                options.UserEventType.CREATE
+                options.UserEventType.CREATE,
+                options.UserEventType.EDIT
             ].indexOf(type) < 0) {
                 log.audit({ title: TITLE, details: `Invalid event type (${type}). Exiting...` });
                 return;
@@ -174,7 +210,7 @@ define(
             },
 
             afterSubmit: (context) => {
-                createUploadFolder(context);
+                upsertUploadFolder(context);
             }
         }
     }
