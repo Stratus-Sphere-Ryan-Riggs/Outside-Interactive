@@ -23,6 +23,7 @@ define(
             const TITLE = `${MODULE}.AddSubsidiaries`;
             // addSubsidiaryLine({ record, value: SS_Constants.Subsidiaries.OUTSIDE_INC });
             addSubsidiaryLine({ record, value: SS_Constants.Subsidiaries.OUTSIDE_INC_CANADA });
+            addSubsidiaryLine({ record, value: SS_Constants.Subsidiaries.STERLING_VALLEY });
         };
 
         const addSubsidiaryLine = (options) => {
@@ -171,8 +172,6 @@ define(
             
             let id = vendor.save();
             log.debug({ title: TITLE, details: `Addresses for vendor ${id} were successfully created.` });
-
-            // updateFolderName({ id: })
         };
 
         return { onAction };

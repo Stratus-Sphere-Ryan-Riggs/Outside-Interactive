@@ -436,7 +436,8 @@ define(
 
         const SUBSIDIARIES = {
             OUTSIDE_INC:                        '1',
-            OUTSIDE_INC_CANADA:                '12'
+            OUTSIDE_INC_CANADA:                '12',
+            STERLING_VALLEY:                   '16'
         };
 
         return {
